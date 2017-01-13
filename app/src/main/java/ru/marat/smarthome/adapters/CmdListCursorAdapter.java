@@ -16,7 +16,6 @@ public class CmdListCursorAdapter extends SimpleCursorAdapter{
 
     private Context mContext;
     private int layout;
-    private Cursor cr;
     private final LayoutInflater inflater;
     public static final String irSenderIp = "192.168.1.120";
 
@@ -25,7 +24,6 @@ public class CmdListCursorAdapter extends SimpleCursorAdapter{
         this.layout=layout;
         this.mContext = context;
         this.inflater=LayoutInflater.from(context);
-        this.cr=c;
     }
 
     @Override

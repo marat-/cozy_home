@@ -1,5 +1,6 @@
 package ru.marat.smarthome;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -19,8 +20,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 import ru.marat.smarthome.core.BaseRoboActivity;
-import ru.marat.smarthome.widget.fragment.CmdListFragment;
-import ru.marat.smarthome.widget.fragment.ScenariosListFragment;
+import ru.marat.smarthome.entity.device.DeviceManagerActivity;
 import ru.marat.smarthome.widget.fragment.WidgetsFragment;
 
 @ContentView(R.layout.activity_main)
@@ -104,17 +104,20 @@ public class MainActivity extends BaseRoboActivity implements NavigationView.OnN
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         mDrawerLayout.closeDrawers();
+        Intent intent = new Intent(this, DeviceManagerActivity.class);
+        startActivity(intent);
 
-        if (menuItem.getItemId() == R.id.navigation_item_widgets) {
-            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerView, new ScenariosListFragment()).commit();
 
-        }
-
-        if (menuItem.getItemId() == R.id.navigation_item_settings) {
-            FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
-            xfragmentTransaction.replace(R.id.containerView,new CmdListFragment()).commit();
-        }
+//        if (menuItem.getItemId() == R.id.navigation_item_device_manager) {
+//            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+//            fragmentTransaction.replace(R.id.containerView, new ScenariosListFragment()).commit();
+//
+//        }
+//
+//        if (menuItem.getItemId() == R.id.navigation_item_settings) {
+//            FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
+//            xfragmentTransaction.replace(R.id.containerView,new CmdListFragment()).commit();
+//        }
 
         return false;
     }

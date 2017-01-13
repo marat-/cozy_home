@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -16,7 +15,6 @@ public class ScnrListCursorAdapter extends SimpleCursorAdapter{
 
     private Context mContext;
     private int layout;
-    private Cursor cr;
     private final LayoutInflater inflater;
     public static final String irSenderIp = "192.168.1.120";
 
@@ -25,7 +23,6 @@ public class ScnrListCursorAdapter extends SimpleCursorAdapter{
         this.layout=layout;
         this.mContext = context;
         this.inflater=LayoutInflater.from(context);
-        this.cr=c;
     }
 
     @Override
@@ -45,11 +42,11 @@ public class ScnrListCursorAdapter extends SimpleCursorAdapter{
         scnrName.setText(cursor.getString(scnrNameIndex));
         scnrDescription.setText(cursor.getString(scnrDescriptionIndex));
 
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                new IrSenderConnect(mContext).execute(String.format("http://%s/?%s", irSenderIp, irCommand));
-//            }
-//        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new IrSenderConnect(mContext).execute(String.format("http://%s/?%s", irSenderIp, ""));
+            }
+        });
     }
 }

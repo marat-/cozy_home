@@ -3,10 +3,10 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navigation_item_widgets"
+            android:id="@+id/navigation_item_device_manager"
             android:checked="true"
             android:icon="@drawable/ic_attachment"
-            android:title="@string/nav_item_attachment" />
+            android:title="@string/nav_item_devices" />
         <item
             android:id="@+id/navigation_item_settings"
             android:icon="@drawable/ic_image"
