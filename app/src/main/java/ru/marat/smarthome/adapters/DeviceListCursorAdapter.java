@@ -32,25 +32,27 @@ public class DeviceListCursorAdapter extends SimpleCursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         super.bindView(view, context, cursor);
-        TextView cmdName = (TextView) view.findViewById(R.id.cmd_name);
-        TextView cmdDescription = (TextView) view.findViewById(R.id.cmd_description);
+        TextView deviceName = (TextView) view.findViewById(R.id.device_name);
         ImageView deviceImage = (ImageView) view.findViewById(R.id.device_image);
 
-        int cmdDeviceNameIndex = cursor.getColumnIndexOrThrow("device_name");
+        int deviceNameIndex = cursor.getColumnIndexOrThrow("name");
         int deviceImageIndex = cursor.getColumnIndexOrThrow("image");
-        int commandIndex = cursor.getColumnIndexOrThrow("value");
-        int commandDescription = cursor.getColumnIndexOrThrow("cmd_name");
 
-        cmdName.setText(cursor.getString(cmdDeviceNameIndex));
-        cmdDescription.setText(cursor.getString(commandDescription));
+        deviceName.setText(cursor.getString(deviceNameIndex));
         int imageResID = mContext.getResources().getIdentifier(cursor.getString(deviceImageIndex), "drawable", mContext.getPackageName());
         deviceImage.setImageResource(imageResID);
 
-        final String irCommand = cursor.getString(commandIndex);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
             }
         });
     }

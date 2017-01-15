@@ -14,7 +14,7 @@
             android:orientation="vertical">
 
             <GridView
-                android:id="@+id/commandsGridView"
+                android:id="@+id/commands_grid_view"
                 android:layout_margin="10dp"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"

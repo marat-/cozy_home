@@ -26,7 +26,7 @@ public class CmdListFragment extends RoboFragment {
     @InjectView(R.id.main_fab_menu)
     private FloatingActionsMenu mainFABMenu;
 
-    @InjectView(R.id.commandsGridView)
+    @InjectView(R.id.commands_grid_view)
     private GridView commandsGridView;
 
     @Override

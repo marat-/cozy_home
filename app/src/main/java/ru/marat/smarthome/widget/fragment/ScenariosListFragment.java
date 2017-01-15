@@ -15,13 +15,12 @@ import com.activeandroid.query.Select;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.adapters.CmdListCursorAdapter;
 import ru.marat.smarthome.adapters.ScnrListCursorAdapter;
 import ru.marat.smarthome.model.Scnr;
 
 public class ScenariosListFragment extends RoboFragment {
 
-    @InjectView(R.id.scnrListGridView)
+    @InjectView(R.id.scnr_list_grid_view)
     private GridView scnrListGridView;
 
     @Override

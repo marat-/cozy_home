@@ -29,32 +29,32 @@ public class MainActivity extends BaseRoboActivity implements NavigationView.OnN
     private static final Logger logger = LoggerFactory.getLogger(MainActivity.class);
 
     @InjectView(R.id.drawer_layout)
-    private DrawerLayout mDrawerLayout;
+    private DrawerLayout drawerLayout;
 
-    @InjectView(R.id.toolbar)
+    @InjectView(R.id.main_activity_toolbar)
     private Toolbar toolbar;
 
-    @InjectView(R.id.navigation_view)
+    @InjectView(R.id.main_activity_navigation_view)
     private NavigationView navigationView;
 
     @InjectResource(R.drawable.ic_menu)
     private Drawable ic_menu;
 
-    private FragmentManager mFragmentManager;
-    private FragmentTransaction mFragmentTransaction;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.setDrawerListener(toggle);
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        mFragmentManager = getSupportFragmentManager();
-        mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView,new WidgetsFragment()).commit();
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_activity_container_view, new WidgetsFragment()).commit();
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -91,7 +91,7 @@ public class MainActivity extends BaseRoboActivity implements NavigationView.OnN
 
         switch (id) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                drawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_settings:
                 return true;
@@ -103,19 +103,15 @@ public class MainActivity extends BaseRoboActivity implements NavigationView.OnN
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        mDrawerLayout.closeDrawers();
-        Intent intent = new Intent(this, DeviceManagerActivity.class);
-        startActivity(intent);
+        drawerLayout.closeDrawers();
 
-
-//        if (menuItem.getItemId() == R.id.navigation_item_device_manager) {
-//            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.containerView, new ScenariosListFragment()).commit();
-//
-//        }
+        if (menuItem.getItemId() == R.id.navigation_item_device_manager) {
+            Intent intent = new Intent(this, DeviceManagerActivity.class);
+            startActivity(intent);
+        }
 //
 //        if (menuItem.getItemId() == R.id.navigation_item_settings) {
-//            FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
+//            FragmentTransaction xfragmentTransaction = fragmentManager.beginTransaction();
 //            xfragmentTransaction.replace(R.id.containerView,new CmdListFragment()).commit();
 //        }
 

@@ -14,7 +14,7 @@
     tools:showIn="@layout/activity_device_manager">
 
     <ListView
-        android:id="@+id/deviceManagerListView"
+        android:id="@+id/device_manager_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></ListView>
 
