@@ -2,25 +2,25 @@ package ru.marat.smarthome.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import ru.marat.smarthome.R;
 
-public class DeviceListCursorAdapter extends SimpleCursorAdapter {
+public class DeviceListCursorAdapter extends CursorAdapter {
 
-    private Context mContext;
+    private Context context;
     private int layout;
     private final LayoutInflater inflater;
 
-    public DeviceListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
-        super(context, layout, c, from, to, flags);
+    public DeviceListCursorAdapter(Context context, int layout, Cursor c, int flags) {
+        super(context, c, flags);
         this.layout = layout;
-        this.mContext = context;
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
     }
 
@@ -31,7 +31,6 @@ public class DeviceListCursorAdapter extends SimpleCursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        super.bindView(view, context, cursor);
         TextView deviceName = (TextView) view.findViewById(R.id.device_name);
         ImageView deviceImage = (ImageView) view.findViewById(R.id.device_image);
 
@@ -39,7 +38,7 @@ public class DeviceListCursorAdapter extends SimpleCursorAdapter {
         int deviceImageIndex = cursor.getColumnIndexOrThrow("image");
 
         deviceName.setText(cursor.getString(deviceNameIndex));
-        int imageResID = mContext.getResources().getIdentifier(cursor.getString(deviceImageIndex), "drawable", mContext.getPackageName());
+        int imageResID = this.context.getResources().getIdentifier(cursor.getString(deviceImageIndex), "drawable", this.context.getPackageName());
         deviceImage.setImageResource(imageResID);
 
         view.setOnClickListener(new View.OnClickListener() {

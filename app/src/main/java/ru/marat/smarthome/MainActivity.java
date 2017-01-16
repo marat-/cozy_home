@@ -16,29 +16,28 @@ import android.view.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectResource;
-import roboguice.inject.InjectView;
-import ru.marat.smarthome.core.BaseRoboActivity;
+import butterknife.BindDrawable;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import ru.marat.smarthome.core.BaseActivity;
 import ru.marat.smarthome.entity.device.DeviceManagerActivity;
 import ru.marat.smarthome.widget.fragment.WidgetsFragment;
 
-@ContentView(R.layout.activity_main)
-public class MainActivity extends BaseRoboActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final Logger logger = LoggerFactory.getLogger(MainActivity.class);
 
-    @InjectView(R.id.drawer_layout)
-    private DrawerLayout drawerLayout;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
 
-    @InjectView(R.id.main_activity_toolbar)
-    private Toolbar toolbar;
+    @BindView(R.id.main_activity_toolbar)
+    Toolbar toolbar;
 
-    @InjectView(R.id.main_activity_navigation_view)
-    private NavigationView navigationView;
+    @BindView(R.id.main_activity_navigation_view)
+    NavigationView navigationView;
 
-    @InjectResource(R.drawable.ic_menu)
-    private Drawable ic_menu;
+    @BindDrawable(R.drawable.ic_menu)
+    Drawable ic_menu;
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -46,6 +45,8 @@ public class MainActivity extends BaseRoboActivity implements NavigationView.OnN
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

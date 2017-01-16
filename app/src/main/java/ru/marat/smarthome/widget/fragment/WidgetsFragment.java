@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
 
 public class WidgetsFragment extends Fragment {
@@ -26,6 +27,7 @@ public class WidgetsFragment extends Fragment {
          *Inflate tab_layout and setup Views.
          */
         View widgetsFamilyView = inflater.inflate(R.layout.widget_tab_layout, null);
+        ButterKnife.bind(this, widgetsFamilyView);
         tabLayout = (TabLayout) widgetsFamilyView.findViewById(R.id.tabs);
         viewPager = (ViewPager) widgetsFamilyView.findViewById(R.id.viewpager);
 

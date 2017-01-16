@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.CursorAdapter;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -19,16 +18,17 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 
-import roboguice.inject.InjectView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.adapters.DeviceListCursorAdapter;
-import ru.marat.smarthome.core.BaseRoboActivity;
+import ru.marat.smarthome.core.BaseActivity;
 import ru.marat.smarthome.model.Device;
 
-public class DeviceManagerActivity extends BaseRoboActivity {
+public class DeviceManagerActivity extends BaseActivity {
 
-    @InjectView(R.id.device_manager_list_view)
-    private ListView deviceManagerListView;
+    @BindView(R.id.device_manager_list_view)
+    ListView deviceManagerListView;
 
     private ActionMode.Callback actionModeCallback;
     private ActionMode actionMode;
@@ -37,6 +37,8 @@ public class DeviceManagerActivity extends BaseRoboActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_manager);
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.device_manager_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -55,8 +57,6 @@ public class DeviceManagerActivity extends BaseRoboActivity {
 
         fillDeviceListView();
 
-        final AppCompatActivity activityContext = this;
-
         deviceManagerListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,7 +65,7 @@ public class DeviceManagerActivity extends BaseRoboActivity {
                 }
 
                 // Start the CAB using the ActionMode.Callback defined above
-                actionMode = activityContext.startSupportActionMode(actionModeCallback);
+                actionMode = DeviceManagerActivity.this.startSupportActionMode(actionModeCallback);
                 view.setSelected(true);
                 return true;
             }
@@ -77,16 +77,12 @@ public class DeviceManagerActivity extends BaseRoboActivity {
                 .from(Device.class).as("device")
                 .orderBy("device.active DESC");
 
-        String[] from = {"name"};
-        int[] to = {R.id.cmd_name};
         Cursor cursor = ActiveAndroid.getDatabase().rawQuery(query.toSql(), query.getArguments());
 
-        DeviceListCursorAdapter deviceListCursorAdapter = new DeviceListCursorAdapter(
+        CursorAdapter deviceListCursorAdapter = new DeviceListCursorAdapter(
                 this,
                 R.layout.device_list_grid_row,
                 cursor,
-                from,
-                to,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         deviceManagerListView.setAdapter(deviceListCursorAdapter);
