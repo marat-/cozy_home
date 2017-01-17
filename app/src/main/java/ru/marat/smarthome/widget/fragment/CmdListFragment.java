@@ -24,7 +24,7 @@ import ru.marat.smarthome.model.Device;
 
 public class CmdListFragment extends Fragment {
 
-    @BindView(R.id.main_fab_menu)
+    @BindView(R.id.cmd_list_fab_menu)
     FloatingActionsMenu mainFABMenu;
 
     @BindView(R.id.commands_grid_view)

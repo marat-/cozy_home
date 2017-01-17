@@ -48,7 +48,17 @@
         <activity
             android:name=".entity.device.DeviceManagerActivity"
             android:label="@string/title_activity_device_manager"
-            android:theme="@style/AppTheme"></activity>
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".entity.device.DeviceEditActivity"
+            android:label="@string/title_activity_device_edit"
+            android:parentActivityName=".entity.device.DeviceManagerActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.marat.smarthome.core.BaseActivity" />
+        </activity>
     </application>
 
 </manifest>

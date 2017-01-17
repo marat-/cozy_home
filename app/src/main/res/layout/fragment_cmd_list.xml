@@ -29,7 +29,7 @@
 
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/main_fab_menu"
+            android:id="@+id/cmd_list_fab_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

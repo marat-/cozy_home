@@ -1,9 +1,9 @@
 package ru.marat.smarthome.entity.device;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
@@ -48,8 +48,8 @@ public class DeviceManagerActivity extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(DeviceManagerActivity.this, DeviceEditActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -57,6 +57,13 @@ public class DeviceManagerActivity extends BaseActivity {
 
         fillDeviceListView();
 
+        setUpContextualActionToolbar();
+    }
+
+    /**
+     * Binds contextual action toolbar on listview's long click
+     */
+    protected void setUpContextualActionToolbar() {
         deviceManagerListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -66,12 +73,16 @@ public class DeviceManagerActivity extends BaseActivity {
 
                 // Start the CAB using the ActionMode.Callback defined above
                 actionMode = DeviceManagerActivity.this.startSupportActionMode(actionModeCallback);
+                actionMode.setTag(id);
                 view.setSelected(true);
                 return true;
             }
         });
     }
 
+    /**
+     * Query database and fill listview using CursorAdapter
+     */
     protected void fillDeviceListView() {
         From query = new Select("device._id, device.name, device.active, device.image")
                 .from(Device.class).as("device")
@@ -88,6 +99,9 @@ public class DeviceManagerActivity extends BaseActivity {
         deviceManagerListView.setAdapter(deviceListCursorAdapter);
     }
 
+    /**
+     * Initialize callback action mode
+     */
     private void initCallbackActionMode() {
         actionModeCallback = new ActionMode.Callback() {
 
@@ -110,11 +124,16 @@ public class DeviceManagerActivity extends BaseActivity {
             // Called when the user selects a contextual menu item
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                String deviceId = mode.getTag().toString();
                 switch (item.getItemId()) {
                     case R.id.modify_device:
+                        Intent intent = new Intent(DeviceManagerActivity.this, DeviceEditActivity.class);
+                        intent.putExtra("item_id", deviceId);
+                        startActivity(intent);
                         mode.finish(); // Action picked, so close the CAB
                         return true;
                     case R.id.delete_device:
+                        Device.delete(Device.class, Long.valueOf(deviceId));
                         mode.finish(); // Action picked, so close the CAB
                         return true;
                     default:

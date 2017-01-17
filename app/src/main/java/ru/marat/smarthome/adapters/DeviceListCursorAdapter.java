@@ -38,8 +38,11 @@ public class DeviceListCursorAdapter extends CursorAdapter {
         int deviceImageIndex = cursor.getColumnIndexOrThrow("image");
 
         deviceName.setText(cursor.getString(deviceNameIndex));
-        int imageResID = this.context.getResources().getIdentifier(cursor.getString(deviceImageIndex), "drawable", this.context.getPackageName());
-        deviceImage.setImageResource(imageResID);
+        String deviceImageValue = cursor.getString(deviceImageIndex);
+        if (deviceImageValue != null) {
+            int imageResID = this.context.getResources().getIdentifier(cursor.getString(deviceImageIndex), "drawable", this.context.getPackageName());
+            deviceImage.setImageResource(imageResID);
+        }
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

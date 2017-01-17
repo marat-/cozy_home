@@ -16,8 +16,13 @@
 
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
-    <string name="title_activity_device_manager">DeviceManagerActivity</string>
+    <string name="title_activity_device_manager">Device Manager</string>
 
     <string name="device_manager_modify_item">Modify</string>
     <string name="device_manager_delete_item">Delete</string>
+    <string name="title_activity_device_edit">Edit device</string>
+    <string name="device_edit_name">Name</string>
+    <string name="device_edit_active">Active</string>
+    <string name="device_edit_icon">Icon</string>
+    <string name="device_edit_save_action">Save</string>
 </resources>
