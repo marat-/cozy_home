@@ -24,6 +24,7 @@ import ru.marat.smarthome.R;
 import ru.marat.smarthome.adapters.DeviceListCursorAdapter;
 import ru.marat.smarthome.core.BaseActivity;
 import ru.marat.smarthome.model.Device;
+import ru.marat.smarthome.model.DeviceType;
 
 public class DeviceManagerActivity extends BaseActivity {
 
@@ -84,8 +85,10 @@ public class DeviceManagerActivity extends BaseActivity {
      * Query database and fill listview using CursorAdapter
      */
     protected void fillDeviceListView() {
-        From query = new Select("device._id, device.name, device.active, device.image")
+        From query = new Select("device._id, device.name, device.active, device_type.image")
                 .from(Device.class).as("device")
+                .leftJoin(DeviceType.class).as("device_type")
+                .on("device.type_id = device_type._id")
                 .orderBy("device.active DESC");
 
         Cursor cursor = ActiveAndroid.getDatabase().rawQuery(query.toSql(), query.getArguments());

@@ -7,14 +7,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.activeandroid.query.Select;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.adapters.DeviceTypeArrayAdapter;
 import ru.marat.smarthome.core.BaseActivity;
 import ru.marat.smarthome.model.Device;
+import ru.marat.smarthome.model.DeviceType;
 
 public class DeviceEditActivity extends BaseActivity {
 
@@ -23,6 +28,9 @@ public class DeviceEditActivity extends BaseActivity {
 
     @BindView(R.id.device_edit_active)
     CheckBox deviceEditActive;
+
+    @BindView(R.id.device_edit_icon)
+    Spinner deviceEditIcon;
 
     private String deviceId;
 
@@ -40,10 +48,24 @@ public class DeviceEditActivity extends BaseActivity {
         deviceId = intent.getStringExtra("item_id");
 
         if (deviceId != null) {
-            Device device = new Select().from(Device.class).where("_id = ?", new String[]{deviceId}).executeSingle();
+            Device device = new Select()
+                    .from(Device.class)
+                    .leftJoin(DeviceType.class).as("device_type")
+                    .on("device.type_id = device_type._id")
+                    .where("device._id = ?", new String[]{deviceId})
+                    .orderBy("device.active DESC")
+                    .executeSingle();
             deviceEditName.setText(device.getName());
             deviceEditActive.setChecked(device.isActive());
         }
+
+        fillDeviceTypeSpinner();
+    }
+
+    protected void fillDeviceTypeSpinner() {
+        List<DeviceType> deviceTypeList = new Select().from(DeviceType.class).orderBy("active DESC").execute();
+        deviceEditIcon.setAdapter(new DeviceTypeArrayAdapter(DeviceEditActivity.this, R.layout.device_edit_spinner_row,
+                deviceTypeList));
     }
 
     @Override

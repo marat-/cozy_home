@@ -46,4 +46,10 @@
         android:layout_below="@+id/device_edit_active"
         android:text="@string/device_edit_icon" />
 
+    <Spinner
+        android:id="@+id/device_edit_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/device_edit_icon_text" />
+
 </RelativeLayout>

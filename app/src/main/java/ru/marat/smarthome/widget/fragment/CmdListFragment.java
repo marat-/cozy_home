@@ -21,6 +21,7 @@ import ru.marat.smarthome.adapters.CmdListCursorAdapter;
 import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.CmdType;
 import ru.marat.smarthome.model.Device;
+import ru.marat.smarthome.model.DeviceType;
 
 public class CmdListFragment extends Fragment {
 
@@ -54,12 +55,14 @@ public class CmdListFragment extends Fragment {
             }
         });
 
-        From query = new Select("cmd._id, cmd.name AS cmd_name, device.name AS device_name, cmd.value, device.image")
+        From query = new Select("cmd._id, cmd.name AS cmd_name, device.name AS device_name, cmd.value, device_type.image")
                 .from(Cmd.class).as("cmd")
                 .innerJoin(CmdType.class).as("cmd_type")
                 .on("cmd.type_id=cmd_type._id")
                 .innerJoin(Device.class).as("device")
-                .on("cmd.device_id=device._id");
+                .on("cmd.device_id=device._id")
+                .innerJoin(DeviceType.class).as("device_type")
+                .on("device.type_id = device_type._id");
 
         Cursor cursor = ActiveAndroid.getDatabase().rawQuery(query.toSql(), query.getArguments());
 

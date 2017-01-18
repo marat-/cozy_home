@@ -28,7 +28,7 @@
             android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="ru.marat.smarthome.model.Cmd, ru.marat.smarthome.model.CmdType, ru.marat.smarthome.model.Device,             ru.marat.smarthome.model.CmdAttr, ru.marat.smarthome.model.CmdAttrValue, ru.marat.smarthome.model.Scnr, ru.marat.smarthome.model.ScnrCmd" />
+            android:value="ru.marat.smarthome.model.Cmd, ru.marat.smarthome.model.CmdType, ru.marat.smarthome.model.Device, ru.marat.smarthome.model.DeviceType, ru.marat.smarthome.model.CmdAttr, ru.marat.smarthome.model.CmdAttrValue, ru.marat.smarthome.model.Scnr, ru.marat.smarthome.model.ScnrCmd" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
