@@ -1,4 +1,4 @@
-package ru.marat.smarthome.core;
+package ru.marat.smarthome.app.core;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

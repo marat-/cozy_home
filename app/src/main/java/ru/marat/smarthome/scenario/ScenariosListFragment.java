@@ -1,4 +1,4 @@
-package ru.marat.smarthome.widget.fragment;
+package ru.marat.smarthome.scenario;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,7 +16,6 @@ import com.activeandroid.query.Select;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.adapters.ScnrListCursorAdapter;
 import ru.marat.smarthome.model.Scnr;
 
 public class ScenariosListFragment extends Fragment {

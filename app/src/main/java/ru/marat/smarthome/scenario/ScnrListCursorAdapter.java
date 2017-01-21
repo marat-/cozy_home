@@ -1,4 +1,4 @@
-package ru.marat.smarthome.adapters;
+package ru.marat.smarthome.scenario;
 
 import android.content.Context;
 import android.database.Cursor;

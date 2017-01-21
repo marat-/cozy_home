@@ -1,4 +1,4 @@
-package ru.marat.smarthome.widget.fragment;
+package ru.marat.smarthome.command;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,7 +17,6 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.adapters.CmdListCursorAdapter;
 import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.CmdType;
 import ru.marat.smarthome.model.Device;

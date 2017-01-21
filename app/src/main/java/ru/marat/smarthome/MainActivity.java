@@ -19,9 +19,9 @@ import org.slf4j.LoggerFactory;
 import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.marat.smarthome.core.BaseActivity;
-import ru.marat.smarthome.entity.device.DeviceManagerActivity;
-import ru.marat.smarthome.widget.fragment.WidgetsFragment;
+import ru.marat.smarthome.app.core.BaseActivity;
+import ru.marat.smarthome.device.DeviceManagerActivity;
+import ru.marat.smarthome.widget.WidgetsFragment;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 

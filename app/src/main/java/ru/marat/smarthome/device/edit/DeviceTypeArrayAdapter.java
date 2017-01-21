@@ -1,4 +1,4 @@
-package ru.marat.smarthome.adapters;
+package ru.marat.smarthome.device.edit;
 
 import android.app.Activity;
 import android.content.Context;

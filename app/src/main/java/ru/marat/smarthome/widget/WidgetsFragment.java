@@ -1,4 +1,4 @@
-package ru.marat.smarthome.widget.fragment;
+package ru.marat.smarthome.widget;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.command.CmdListFragment;
+import ru.marat.smarthome.scenario.ScenariosListFragment;
 
 public class WidgetsFragment extends Fragment {
 

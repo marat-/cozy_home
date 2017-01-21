@@ -1,4 +1,4 @@
-package ru.marat.smarthome.entity.device;
+package ru.marat.smarthome.device;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,8 +21,8 @@ import com.activeandroid.query.Select;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.adapters.DeviceListCursorAdapter;
-import ru.marat.smarthome.core.BaseActivity;
+import ru.marat.smarthome.app.core.BaseActivity;
+import ru.marat.smarthome.device.edit.DeviceEditActivity;
 import ru.marat.smarthome.model.Device;
 import ru.marat.smarthome.model.DeviceType;
 
