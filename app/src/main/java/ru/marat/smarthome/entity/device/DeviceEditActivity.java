@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -29,10 +30,12 @@ public class DeviceEditActivity extends BaseActivity {
     @BindView(R.id.device_edit_active)
     CheckBox deviceEditActive;
 
-    @BindView(R.id.device_edit_icon)
-    Spinner deviceEditIcon;
+    @BindView(R.id.device_edit_type)
+    Spinner deviceEditType;
 
     private String deviceId;
+
+    protected List<DeviceType> deviceTypeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +50,13 @@ public class DeviceEditActivity extends BaseActivity {
         Intent intent = getIntent();
         deviceId = intent.getStringExtra("item_id");
 
+        deviceTypeList = new Select().from(DeviceType.class).orderBy("active DESC").execute();
+        ArrayAdapter deviceTypeAdapter = new DeviceTypeArrayAdapter(DeviceEditActivity.this, R.layout.device_edit_spinner_row,
+                deviceTypeList);
+        deviceEditType.setAdapter(deviceTypeAdapter);
         if (deviceId != null) {
             Device device = new Select()
-                    .from(Device.class)
+                    .from(Device.class).as("device")
                     .leftJoin(DeviceType.class).as("device_type")
                     .on("device.type_id = device_type._id")
                     .where("device._id = ?", new String[]{deviceId})
@@ -57,15 +64,12 @@ public class DeviceEditActivity extends BaseActivity {
                     .executeSingle();
             deviceEditName.setText(device.getName());
             deviceEditActive.setChecked(device.isActive());
+            for (int i = 0; i < deviceEditType.getCount(); i++) {
+                if (deviceTypeList.get(i).getId() == Long.valueOf(device.getTypeId())) {
+                    deviceEditType.setSelection(i);
+                }
+            }
         }
-
-        fillDeviceTypeSpinner();
-    }
-
-    protected void fillDeviceTypeSpinner() {
-        List<DeviceType> deviceTypeList = new Select().from(DeviceType.class).orderBy("active DESC").execute();
-        deviceEditIcon.setAdapter(new DeviceTypeArrayAdapter(DeviceEditActivity.this, R.layout.device_edit_spinner_row,
-                deviceTypeList));
     }
 
     @Override
@@ -91,6 +95,7 @@ public class DeviceEditActivity extends BaseActivity {
                 }
                 device.setName(deviceEditName.getText().toString());
                 device.setActive(deviceEditActive.isChecked());
+                device.setTypeId(deviceTypeList.get(deviceEditType.getSelectedItemPosition()).getId());
                 device.save();
                 DeviceEditActivity.this.finish();
                 return true;

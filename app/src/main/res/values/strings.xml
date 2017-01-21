@@ -23,6 +23,6 @@
     <string name="title_activity_device_edit">Edit device</string>
     <string name="device_edit_name">Name</string>
     <string name="device_edit_active">Active</string>
-    <string name="device_edit_icon">Icon</string>
+    <string name="device_edit_type">Type</string>
     <string name="device_edit_save_action">Save</string>
 </resources>

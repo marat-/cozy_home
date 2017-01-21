@@ -12,8 +12,8 @@ public class Device extends Model{
     @Column(name = "active")
     public boolean active;
 
-    @Column(name = "image")
-    public String image;
+    @Column(name = "type_id")
+    public long type_id;
 
     public boolean isActive() {
         return active;
@@ -31,11 +31,11 @@ public class Device extends Model{
         this.name = name;
     }
 
-    public String getImage() {
-        return image;
+    public long getTypeId() {
+        return type_id;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setTypeId(long type_id) {
+        this.type_id = type_id;
     }
 }

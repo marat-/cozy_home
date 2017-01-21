@@ -37,19 +37,20 @@
         android:id="@+id/device_edit_active"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/device_edit_active_text" />
+        android:layout_below="@+id/device_edit_active_text"
+        android:checked="true" />
 
     <TextView
-        android:id="@+id/device_edit_icon_text"
+        android:id="@+id/device_edit_type_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/device_edit_active"
-        android:text="@string/device_edit_icon" />
+        android:text="@string/device_edit_type" />
 
     <Spinner
-        android:id="@+id/device_edit_icon"
+        android:id="@+id/device_edit_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/device_edit_icon_text" />
+        android:layout_below="@+id/device_edit_type_text" />
 
 </RelativeLayout>

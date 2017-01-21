@@ -34,6 +34,8 @@ public class DeviceManagerActivity extends BaseActivity {
     private ActionMode.Callback actionModeCallback;
     private ActionMode actionMode;
 
+    private CursorAdapter deviceListCursorAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +57,6 @@ public class DeviceManagerActivity extends BaseActivity {
         });
 
         initCallbackActionMode();
-
-        fillDeviceListView();
 
         setUpContextualActionToolbar();
     }
@@ -81,6 +81,12 @@ public class DeviceManagerActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        fillDeviceListView();
+    }
+
     /**
      * Query database and fill listview using CursorAdapter
      */
@@ -93,7 +99,7 @@ public class DeviceManagerActivity extends BaseActivity {
 
         Cursor cursor = ActiveAndroid.getDatabase().rawQuery(query.toSql(), query.getArguments());
 
-        CursorAdapter deviceListCursorAdapter = new DeviceListCursorAdapter(
+        deviceListCursorAdapter = new DeviceListCursorAdapter(
                 this,
                 R.layout.device_list_grid_row,
                 cursor,
@@ -137,6 +143,7 @@ public class DeviceManagerActivity extends BaseActivity {
                         return true;
                     case R.id.delete_device:
                         Device.delete(Device.class, Long.valueOf(deviceId));
+                        fillDeviceListView();
                         mode.finish(); // Action picked, so close the CAB
                         return true;
                     default:

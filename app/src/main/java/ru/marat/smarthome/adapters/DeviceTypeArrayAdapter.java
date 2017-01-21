@@ -15,16 +15,15 @@ import ru.marat.smarthome.R;
 import ru.marat.smarthome.model.DeviceType;
 
 /**
- * Created by Марат on 18.01.2017.
+ * Custom ArrayAdapter for spinner in DeviceEditActivity
  */
-
 public class DeviceTypeArrayAdapter extends ArrayAdapter<DeviceType> {
 
     private Context context;
     private List<DeviceType> deviceTypeList;
 
     public DeviceTypeArrayAdapter(Context context, int viewResourceId, List<DeviceType> deviceTypeList) {
-        super(context, viewResourceId);
+        super(context, viewResourceId, deviceTypeList);
         this.context = context;
         this.deviceTypeList = deviceTypeList;
     }
@@ -40,6 +39,14 @@ public class DeviceTypeArrayAdapter extends ArrayAdapter<DeviceType> {
         return this.getCustomView(position, convertView, parent);
     }
 
+    /**
+     * Custom view for spinner
+     *
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     public View getCustomView(int position, View convertView, ViewGroup parent) {
         DeviceType deviceType = deviceTypeList.get(position);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
