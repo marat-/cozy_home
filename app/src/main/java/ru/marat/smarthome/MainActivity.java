@@ -1,5 +1,6 @@
 package ru.marat.smarthome;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -15,46 +16,46 @@ import android.view.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectResource;
-import roboguice.inject.InjectView;
-import ru.marat.smarthome.core.BaseRoboActivity;
-import ru.marat.smarthome.widget.fragment.CmdListFragment;
-import ru.marat.smarthome.widget.fragment.ScenariosListFragment;
-import ru.marat.smarthome.widget.fragment.WidgetsFragment;
+import butterknife.BindDrawable;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import ru.marat.smarthome.app.core.BaseActivity;
+import ru.marat.smarthome.device.DeviceManagerActivity;
+import ru.marat.smarthome.widget.WidgetsFragment;
 
-@ContentView(R.layout.activity_main)
-public class MainActivity extends BaseRoboActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final Logger logger = LoggerFactory.getLogger(MainActivity.class);
 
-    @InjectView(R.id.drawer_layout)
-    private DrawerLayout mDrawerLayout;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
 
-    @InjectView(R.id.toolbar)
-    private Toolbar toolbar;
+    @BindView(R.id.main_activity_toolbar)
+    Toolbar toolbar;
 
-    @InjectView(R.id.navigation_view)
-    private NavigationView navigationView;
+    @BindView(R.id.main_activity_navigation_view)
+    NavigationView navigationView;
 
-    @InjectResource(R.drawable.ic_menu)
-    private Drawable ic_menu;
+    @BindDrawable(R.drawable.ic_menu)
+    Drawable ic_menu;
 
-    private FragmentManager mFragmentManager;
-    private FragmentTransaction mFragmentTransaction;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.setDrawerListener(toggle);
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        mFragmentManager = getSupportFragmentManager();
-        mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView,new WidgetsFragment()).commit();
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_activity_container_view, new WidgetsFragment()).commit();
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -91,7 +92,7 @@ public class MainActivity extends BaseRoboActivity implements NavigationView.OnN
 
         switch (id) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                drawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_settings:
                 return true;
@@ -103,18 +104,17 @@ public class MainActivity extends BaseRoboActivity implements NavigationView.OnN
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        mDrawerLayout.closeDrawers();
+        drawerLayout.closeDrawers();
 
-        if (menuItem.getItemId() == R.id.navigation_item_widgets) {
-            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerView, new ScenariosListFragment()).commit();
-
+        if (menuItem.getItemId() == R.id.navigation_item_device_manager) {
+            Intent intent = new Intent(this, DeviceManagerActivity.class);
+            startActivity(intent);
         }
-
-        if (menuItem.getItemId() == R.id.navigation_item_settings) {
-            FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
-            xfragmentTransaction.replace(R.id.containerView,new CmdListFragment()).commit();
-        }
+//
+//        if (menuItem.getItemId() == R.id.navigation_item_settings) {
+//            FragmentTransaction xfragmentTransaction = fragmentManager.beginTransaction();
+//            xfragmentTransaction.replace(R.id.containerView,new CmdListFragment()).commit();
+//        }
 
         return false;
     }

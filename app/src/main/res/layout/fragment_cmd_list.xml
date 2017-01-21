@@ -14,12 +14,12 @@
             android:orientation="vertical">
 
             <GridView
-                android:id="@+id/commandsGridView"
+                android:id="@+id/commands_grid_view"
                 android:layout_margin="10dp"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:columnWidth="100dp"
-                android:numColumns="2"
+                android:numColumns="3"
                 android:verticalSpacing="10dp"
                 android:horizontalSpacing="10dp"
                 android:stretchMode="columnWidth"
@@ -29,7 +29,7 @@
 
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/main_fab_menu"
+            android:id="@+id/cmd_list_fab_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

@@ -4,16 +4,19 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name = "device", id = "_id")
-public class Device extends Model{
+@Table(name = "device_type", id = "_id")
+public class DeviceType extends Model {
     @Column(name = "name")
     public String name;
 
     @Column(name = "active")
     public boolean active;
 
-    @Column(name = "type_id")
-    public long type_id;
+    @Column(name = "image")
+    public String image;
+
+    @Column(name = "sort")
+    public int sort;
 
     public boolean isActive() {
         return active;
@@ -31,11 +34,19 @@ public class Device extends Model{
         this.name = name;
     }
 
-    public long getTypeId() {
-        return type_id;
+    public String getImage() {
+        return image;
     }
 
-    public void setTypeId(long type_id) {
-        this.type_id = type_id;
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 }

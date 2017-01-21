@@ -1,4 +1,4 @@
-package ru.marat.smarthome.widget.fragment;
+package ru.marat.smarthome.widget;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.command.CmdListFragment;
+import ru.marat.smarthome.scenario.ScenariosListFragment;
 
 public class WidgetsFragment extends Fragment {
 
@@ -26,6 +29,7 @@ public class WidgetsFragment extends Fragment {
          *Inflate tab_layout and setup Views.
          */
         View widgetsFamilyView = inflater.inflate(R.layout.widget_tab_layout, null);
+        ButterKnife.bind(this, widgetsFamilyView);
         tabLayout = (TabLayout) widgetsFamilyView.findViewById(R.id.tabs);
         viewPager = (ViewPager) widgetsFamilyView.findViewById(R.id.viewpager);
 

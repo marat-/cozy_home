@@ -1,31 +1,29 @@
-package ru.marat.smarthome.adapters;
+package ru.marat.smarthome.command;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import ru.marat.smarthome.IrSenderConnect;
 import ru.marat.smarthome.R;
 
-public class CmdListCursorAdapter extends SimpleCursorAdapter{
+public class CmdListCursorAdapter extends CursorAdapter {
 
-    private Context mContext;
+    private Context context;
     private int layout;
-    private Cursor cr;
     private final LayoutInflater inflater;
     public static final String irSenderIp = "192.168.1.120";
 
-    public CmdListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
-        super(context,layout, c, from, to, flags);
+    public CmdListCursorAdapter(Context context, int layout, Cursor c, int flags) {
+        super(context, c, flags);
         this.layout=layout;
-        this.mContext = context;
+        this.context = context;
         this.inflater=LayoutInflater.from(context);
-        this.cr=c;
     }
 
     @Override
@@ -35,7 +33,6 @@ public class CmdListCursorAdapter extends SimpleCursorAdapter{
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        super.bindView(view, context, cursor);
         TextView cmdName=(TextView)view.findViewById(R.id.cmd_name);
         TextView cmdDescription=(TextView)view.findViewById(R.id.cmd_description);
         ImageView deviceImage=(ImageView)view.findViewById(R.id.device_image);
@@ -47,14 +44,14 @@ public class CmdListCursorAdapter extends SimpleCursorAdapter{
 
         cmdName.setText(cursor.getString(cmdDeviceNameIndex));
         cmdDescription.setText(cursor.getString(commandDescription));
-        int imageResID = mContext.getResources().getIdentifier(cursor.getString(deviceImageIndex) , "drawable", mContext.getPackageName());
+        int imageResID = this.context.getResources().getIdentifier(cursor.getString(deviceImageIndex), "drawable", this.context.getPackageName());
         deviceImage.setImageResource(imageResID);
 
         final String irCommand = cursor.getString(commandIndex);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new IrSenderConnect(mContext).execute(String.format("http://%s/?%s", irSenderIp, irCommand));
+                new IrSenderConnect(CmdListCursorAdapter.this.context).execute(String.format("http://%s/?%s", irSenderIp, irCommand));
             }
         });
     }
