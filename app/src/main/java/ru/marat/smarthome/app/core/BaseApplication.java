@@ -3,7 +3,7 @@ package ru.marat.smarthome.app.core;
 import com.activeandroid.ActiveAndroid;
 
 /**
- * Created by Марат on 04.01.2016.
+ * Base application class
  */
 public class BaseApplication extends com.activeandroid.app.Application {
     @Override

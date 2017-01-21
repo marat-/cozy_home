@@ -24,5 +24,7 @@
     <string name="device_edit_name">Name</string>
     <string name="device_edit_active">Active</string>
     <string name="device_edit_type">Type</string>
-    <string name="device_edit_save_action">Save</string>
+    <string name="device_edit_save_action">Save</string>\
+    <string name="device_edit_cancel_action">Cancel</string>
+    <string name="device_edit_name_empty_error">Please enter device name</string>
 </resources>

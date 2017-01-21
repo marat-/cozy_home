@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- * Created by Марат on 04.01.2016.
+ * Base activity class
  */
 public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {

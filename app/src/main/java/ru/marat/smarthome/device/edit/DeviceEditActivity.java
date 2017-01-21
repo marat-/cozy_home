@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.activeandroid.query.Select;
 
@@ -18,11 +19,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.core.BaseActivity;
+import ru.marat.smarthome.app.validator.TextValidator;
 import ru.marat.smarthome.model.Device;
 import ru.marat.smarthome.model.DeviceType;
 
 public class DeviceEditActivity extends BaseActivity {
-
     @BindView(R.id.device_edit_name)
     EditText deviceEditName;
 
@@ -69,6 +70,25 @@ public class DeviceEditActivity extends BaseActivity {
                 }
             }
         }
+
+        validateFields();
+    }
+
+    protected void validateFields() {
+        deviceEditName.addTextChangedListener(new TextValidator(deviceEditName) {
+            @Override
+            public void validate(TextView textView, String text) {
+                validataDeviceEditName(textView, text);
+            }
+        });
+    }
+
+    private boolean validataDeviceEditName(TextView textView, String text) {
+        if (text != null && text.isEmpty()) {
+            deviceEditName.setError(getString(R.string.device_edit_name_empty_error));
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -86,18 +106,22 @@ public class DeviceEditActivity extends BaseActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.device_edit_save_action:
-                Device device;
-                if (deviceId != null) {
-                    device = new Select().from(Device.class).where("_id = ?", new String[]{deviceId}).executeSingle();
-                } else {
-                    device = new Device();
+                if (validataDeviceEditName(deviceEditName, deviceEditName.getText().toString())) {
+                    Device device;
+                    if (deviceId != null) {
+                        device = new Select().from(Device.class).where("_id = ?", new String[]{deviceId}).executeSingle();
+                    } else {
+                        device = new Device();
+                    }
+                    device.setName(deviceEditName.getText().toString());
+                    device.setActive(deviceEditActive.isChecked());
+                    device.setTypeId(deviceTypeList.get(deviceEditType.getSelectedItemPosition()).getId());
+                    device.save();
+                    DeviceEditActivity.this.finish();
                 }
-                device.setName(deviceEditName.getText().toString());
-                device.setActive(deviceEditActive.isChecked());
-                device.setTypeId(deviceTypeList.get(deviceEditType.getSelectedItemPosition()).getId());
-                device.save();
-                DeviceEditActivity.this.finish();
                 return true;
+            case R.id.device_edit_delete_action:
+                DeviceEditActivity.this.finish();
         }
 
         return super.onOptionsItemSelected(item);
