@@ -26,13 +26,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.model.Cmd;
@@ -43,7 +46,7 @@ import ru.marat.smarthome.model.DeviceType;
 public class CmdListFragment extends Fragment {
 
   @BindView(R.id.cmd_list_fab_menu)
-  FloatingActionsMenu mainFABMenu;
+  FloatingActionsMenu fabMenu;
 
   @BindView(R.id.commands_grid_view)
   GridView commandsGridView;
@@ -60,10 +63,10 @@ public class CmdListFragment extends Fragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    final com.getbase.floatingactionbutton.FloatingActionButton mainFABMenuEnable = (com.getbase.floatingactionbutton.FloatingActionButton) view
-        .findViewById(R.id.main_fab_menu_enable);
-    mainFABMenu.setEnabled(false);
-    mainFABMenu.setOnFloatingActionsMenuUpdateListener(
+//    final com.getbase.floatingactionbutton.FloatingActionButton mainFABMenuEnable = (com.getbase.floatingactionbutton.FloatingActionButton) view
+//        .findViewById(R.id.main_fab_menu_enable);
+//    //fabMenu.setEnabled(false);
+    fabMenu.setOnFloatingActionsMenuUpdateListener(
         new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
           @Override
           public void onMenuExpanded() {
@@ -73,6 +76,16 @@ public class CmdListFragment extends Fragment {
           public void onMenuCollapsed() {
           }
         });
+
+    final FloatingActionButton addCmdFabButton = (FloatingActionButton) getActivity()
+        .findViewById(R.id.cmd_fab_menu_add_cmd);
+    addCmdFabButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Toast toast = Toast.makeText(getActivity(), "123", Toast.LENGTH_LONG);
+        toast.show();
+      }
+    });
 
     From query = new Select(
         "cmd._id, cmd.name AS cmd_name, device.name AS device_name, cmd.value, device_type.image")

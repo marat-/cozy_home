@@ -108,15 +108,14 @@ public class WidgetsFragment extends Fragment {
     /**
      * This method returns the title of the tab according to the position.
      */
-
     @Override
     public CharSequence getPageTitle(int position) {
 
       switch (position) {
         case 0:
-          return "Commands";
+          return getString(R.string.cmd_fragment_title);
         case 1:
-          return "Scenarios";
+          return getString(R.string.scnr_fragment_title);
       }
       return null;
     }
