@@ -70,7 +70,7 @@ public class DeviceTypeArrayAdapter extends ArrayAdapter<DeviceType> {
     deviceTypeName.setText(deviceType.getName());
 
     TextView deviceTypeActive = (TextView) view.findViewById(R.id.device_type_active);
-    deviceTypeActive.setText(deviceType.isActive() ? "Active" : "Disactive");
+    deviceTypeActive.setText(deviceType.isActive() ? "Active" : "Inactive");
 
     ImageView deviceImage = (ImageView) view.findViewById(R.id.device_type_icon);
     String deviceImageValue = deviceType.getImage();

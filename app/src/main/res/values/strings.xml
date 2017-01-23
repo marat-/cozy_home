@@ -33,4 +33,16 @@
 
   <string name="cmd_fab_action_add_cmd">Create command</string>
   <string name="cmd_fab_action_add_scnr">Create scenario</string>
+
+  <string name="title_activity_cmd_edit">Edit command</string>
+  <string name="cmd_list_modify_item">Modify</string>
+  <string name="cmd_list_delete_item">Delete</string>
+  <string name="cmd_edit_name">Name</string>
+  <string name="cmd_edit_active">Active</string>
+  <string name="cmd_edit_type">Command type</string>
+  <string name="cmd_edit_device">Device</string>
+  <string name="cmd_edit_value">Command value</string>
+  <string name="cmd_edit_save_action">Save</string>\
+  <string name="cmd_edit_cancel_action">Cancel</string>
+  <string name="cmd_edit_name_empty_error">Please enter command name</string>
 </resources>

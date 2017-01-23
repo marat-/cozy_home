@@ -18,7 +18,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome.device.edit;
+package ru.marat.smarthome.command.edit;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,28 +37,36 @@ import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.core.BaseActivity;
 import ru.marat.smarthome.app.validator.TextValidator;
+import ru.marat.smarthome.model.Cmd;
+import ru.marat.smarthome.model.CmdType;
 import ru.marat.smarthome.model.Device;
-import ru.marat.smarthome.model.DeviceType;
 
-public class DeviceEditActivity extends BaseActivity {
+public class CmdEditActivity extends BaseActivity {
 
-  @BindView(R.id.device_edit_name)
-  EditText deviceEditName;
+  @BindView(R.id.cmd_edit_name)
+  EditText cmdEditName;
 
-  @BindView(R.id.device_edit_active)
-  CheckBox deviceEditActive;
+  @BindView(R.id.cmd_edit_active)
+  CheckBox cmdEditActive;
 
-  @BindView(R.id.device_edit_type)
-  Spinner deviceEditType;
+  @BindView(R.id.cmd_edit_type)
+  Spinner cmdEditType;
 
-  private String deviceId;
+  @BindView(R.id.cmd_edit_device)
+  Spinner cmdEditDevice;
 
-  protected List<DeviceType> deviceTypeList;
+  @BindView(R.id.cmd_edit_value)
+  EditText cmdEditValue;
+
+  private String cmdId;
+
+  protected List<CmdType> cmdTypeList;
+  protected List<Device> deviceList;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_device_edit);
+    setContentView(R.layout.activity_cmd_edit);
     ButterKnife.bind(this);
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -66,45 +74,58 @@ public class DeviceEditActivity extends BaseActivity {
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     Intent intent = getIntent();
-    deviceId = intent.getStringExtra("item_id");
+    cmdId = intent.getStringExtra("item_id");
 
-    deviceTypeList = new Select().from(DeviceType.class).orderBy("active DESC").execute();
-    ArrayAdapter deviceTypeAdapter = new DeviceTypeArrayAdapter(DeviceEditActivity.this,
-        R.layout.device_edit_spinner_row,
-        deviceTypeList);
-    deviceEditType.setAdapter(deviceTypeAdapter);
-    if (deviceId != null) {
-      Device device = new Select()
-          .from(Device.class).as("device")
-          .leftJoin(DeviceType.class).as("device_type")
-          .on("device.type_id = device_type._id")
-          .where("device._id = ?", new String[]{deviceId})
-          .orderBy("device.active DESC")
+    cmdTypeList = new Select().from(CmdType.class).orderBy("active DESC").execute();
+    ArrayAdapter cmdTypeAdapter = new CmdTypeArrayAdapter(CmdEditActivity.this,
+        R.layout.cmd_type_edit_spinner_row,
+        cmdTypeList);
+    cmdEditType.setAdapter(cmdTypeAdapter);
+
+    deviceList = new Select()
+        .from(Device.class).as("device")
+        .orderBy("active DESC")
+        .execute();
+    ArrayAdapter deviceAdapter = new DeviceArrayAdapter(CmdEditActivity.this,
+        R.layout.cmd_device_edit_spinner_row,
+        deviceList);
+    cmdEditDevice.setAdapter(deviceAdapter);
+
+    if (cmdId != null) {
+      Cmd cmd = new Select()
+          .from(Cmd.class).as("cmd")
+          .where("cmd._id = ?", new String[]{cmdId})
           .executeSingle();
-      deviceEditName.setText(device.getName());
-      deviceEditActive.setChecked(device.isActive());
-      for (int i = 0; i < deviceEditType.getCount(); i++) {
-        if (deviceTypeList.get(i).getId() == Long.valueOf(device.getDeviceType().getId())) {
-          deviceEditType.setSelection(i);
+      cmdEditName.setText(cmd.getName());
+      cmdEditActive.setChecked(cmd.isActive());
+      for (int i = 0; i < cmdEditType.getCount(); i++) {
+        if (cmdTypeList.get(i).getId() == Long.valueOf(cmd.getType().getId())) {
+          cmdEditType.setSelection(i);
         }
       }
+      for (int i = 0; i < cmdEditDevice.getCount(); i++) {
+        if (deviceList.get(i).getId() == Long.valueOf(cmd.getDevice().getId())) {
+          cmdEditDevice.setSelection(i);
+        }
+      }
+      cmdEditValue.setText(cmd.getValue());
     }
 
     validateFields();
   }
 
   protected void validateFields() {
-    deviceEditName.addTextChangedListener(new TextValidator(deviceEditName) {
+    cmdEditName.addTextChangedListener(new TextValidator(cmdEditName) {
       @Override
       public void validate(TextView textView, String text) {
-        validataDeviceEditName(textView, text);
+        validataCmdEditName(textView, text);
       }
     });
   }
 
-  private boolean validataDeviceEditName(TextView textView, String text) {
+  private boolean validataCmdEditName(TextView textView, String text) {
     if (text != null && text.isEmpty()) {
-      deviceEditName.setError(getString(R.string.device_edit_name_empty_error));
+      cmdEditName.setError(getString(R.string.cmd_edit_name_empty_error));
       return false;
     }
     return true;
@@ -125,24 +146,25 @@ public class DeviceEditActivity extends BaseActivity {
     int id = item.getItemId();
     switch (id) {
       case R.id.device_edit_save_action:
-        if (validataDeviceEditName(deviceEditName, deviceEditName.getText().toString())) {
-          Device device;
-          if (deviceId != null) {
-            device = new Select().from(Device.class).where("_id = ?", new String[]{deviceId})
+        if (validataCmdEditName(cmdEditName, cmdEditName.getText().toString())) {
+          Cmd cmd;
+          if (cmdId != null) {
+            cmd = new Select().from(Device.class).where("_id = ?", new String[]{cmdId})
                 .executeSingle();
           } else {
-            device = new Device();
+            cmd = new Cmd();
           }
-          device.setName(deviceEditName.getText().toString());
-          device.setActive(deviceEditActive.isChecked());
-
-          device.setDeviceType(deviceTypeList.get(deviceEditType.getSelectedItemPosition()));
-          device.save();
-          DeviceEditActivity.this.finish();
+          cmd.setName(cmdEditName.getText().toString());
+          cmd.setActive(cmdEditActive.isChecked());
+          cmd.setType(cmdTypeList.get(cmdEditType.getSelectedItemPosition()));
+          cmd.setDevice(deviceList.get(cmdEditDevice.getSelectedItemPosition()));
+          cmd.setValue(cmdEditValue.getText().toString());
+          cmd.save();
+          CmdEditActivity.this.finish();
         }
         return true;
       case R.id.device_edit_cancel_action:
-        DeviceEditActivity.this.finish();
+        CmdEditActivity.this.finish();
     }
 
     return super.onOptionsItemSelected(item);

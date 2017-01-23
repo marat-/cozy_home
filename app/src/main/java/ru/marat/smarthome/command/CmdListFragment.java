@@ -20,24 +20,31 @@
 
 package ru.marat.smarthome.command;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.command.edit.CmdEditActivity;
 import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.CmdType;
 import ru.marat.smarthome.model.Device;
@@ -45,11 +52,14 @@ import ru.marat.smarthome.model.DeviceType;
 
 public class CmdListFragment extends Fragment {
 
-  @BindView(R.id.cmd_list_fab_menu)
-  FloatingActionsMenu fabMenu;
+  @BindView(R.id.cmd_fab_menu_add_cmd)
+  FloatingActionButton addCmdFabButton;
 
   @BindView(R.id.commands_grid_view)
   GridView commandsGridView;
+
+  private ActionMode.Callback actionModeCallback;
+  private ActionMode actionMode;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,30 +73,21 @@ public class CmdListFragment extends Fragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-//    final com.getbase.floatingactionbutton.FloatingActionButton mainFABMenuEnable = (com.getbase.floatingactionbutton.FloatingActionButton) view
-//        .findViewById(R.id.main_fab_menu_enable);
-//    //fabMenu.setEnabled(false);
-    fabMenu.setOnFloatingActionsMenuUpdateListener(
-        new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
-          @Override
-          public void onMenuExpanded() {
-          }
 
-          @Override
-          public void onMenuCollapsed() {
-          }
-        });
-
-    final FloatingActionButton addCmdFabButton = (FloatingActionButton) getActivity()
-        .findViewById(R.id.cmd_fab_menu_add_cmd);
     addCmdFabButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Toast toast = Toast.makeText(getActivity(), "123", Toast.LENGTH_LONG);
-        toast.show();
+        Intent intent = new Intent(getActivity(), CmdEditActivity.class);
+        startActivity(intent);
       }
     });
 
+    fillCmdGridView();
+
+    setUpContextualActionToolbar();
+  }
+
+  protected void fillCmdGridView() {
     From query = new Select(
         "cmd._id, cmd.name AS cmd_name, device.name AS device_name, cmd.value, device_type.image")
         .from(Cmd.class).as("cmd")
@@ -106,5 +107,76 @@ public class CmdListFragment extends Fragment {
         CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
     commandsGridView.setAdapter(cmdListCursorAdapter);
+  }
+
+  /**
+   * Binds contextual action toolbar on listview's long click
+   */
+  protected void setUpContextualActionToolbar() {
+    commandsGridView.setOnItemLongClickListener(new OnItemLongClickListener() {
+      public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+          int position, long arg3) {
+        if (actionMode != null) {
+          return false;
+        }
+
+        // Start the CAB using the ActionMode.Callback defined above
+        actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
+//        actionMode.setTag(id);
+//        view.setSelected(true);
+        return true;
+      }
+    });
+  }
+
+  /**
+   * Initialize callback action mode
+   */
+  private void initCallbackActionMode() {
+    actionModeCallback = new ActionMode.Callback() {
+
+      // Called when the action mode is created; startActionMode() was called
+      @Override
+      public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        // Inflate a menu resource providing context menu items
+        MenuInflater inflater = mode.getMenuInflater();
+        inflater.inflate(R.menu.cmd_list_menu, menu);
+        return true;
+      }
+
+      // Called each time the action mode is shown. Always called after onCreateActionMode, but
+      // may be called multiple times if the mode is invalidated.
+      @Override
+      public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false; // Return false if nothing is done
+      }
+
+      // Called when the user selects a contextual menu item
+      @Override
+      public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        String cmdId = mode.getTag().toString();
+        switch (item.getItemId()) {
+          case R.id.modify_cmd:
+            Intent intent = new Intent(getActivity(), CmdEditActivity.class);
+            intent.putExtra("item_id", cmdId);
+            startActivity(intent);
+            mode.finish(); // Action picked, so close the CAB
+            return true;
+          case R.id.delete_cmd:
+            Cmd.delete(Cmd.class, Long.valueOf(cmdId));
+            fillCmdGridView();
+            mode.finish(); // Action picked, so close the CAB
+            return true;
+          default:
+            return false;
+        }
+      }
+
+      // Called when the user exits the action mode
+      @Override
+      public void onDestroyActionMode(ActionMode mode) {
+        actionMode = null;
+      }
+    };
   }
 }

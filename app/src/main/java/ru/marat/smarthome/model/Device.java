@@ -34,7 +34,7 @@ public class Device extends Model {
   public boolean active;
 
   @Column(name = "type_id")
-  public long type_id;
+  public DeviceType deviceType;
 
   public boolean isActive() {
     return active;
@@ -52,11 +52,11 @@ public class Device extends Model {
     this.name = name;
   }
 
-  public long getTypeId() {
-    return type_id;
+  public DeviceType getDeviceType() {
+    return deviceType;
   }
 
-  public void setTypeId(long type_id) {
-    this.type_id = type_id;
+  public void setDeviceType(DeviceType deviceType) {
+    this.deviceType = deviceType;
   }
 }

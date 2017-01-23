@@ -18,89 +18,50 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome.model;
+package ru.marat.smarthome.app.adapter;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import java.util.List;
 
-@Table(name = "cmd", id = "_id")
-public class Cmd extends Model {
+public abstract class CustomArrayAdapter<T> extends ArrayAdapter<T> {
 
-  @Column(name = "name")
-  public String name;
+  protected Context context;
+  protected List<T> elemList;
+  protected int rowViewResourceId;
 
-  @Column(name = "active")
-  public boolean active;
-
-  @Column(name = "type_id")
-  public CmdType type;
-
-  @Column(name = "popular")
-  public int popular;
-
-  @Column(name = "sort")
-  public int sort;
-
-  @Column(name = "device_id")
-  public Device device;
-
-  @Column(name = "value")
-  public String value;
-
-  public String getName() {
-    return name;
+  public CustomArrayAdapter(Context context, int viewResourceId,
+      List<T> elemList) {
+    super(context, viewResourceId, elemList);
+    this.context = context;
+    this.elemList = elemList;
+    this.rowViewResourceId = viewResourceId;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    return this.prepareAndGetView(position, convertView, parent);
   }
 
-  public CmdType getType() {
-    return type;
+  @Override
+  public View getDropDownView(int position, View convertView,
+      ViewGroup parent) {
+    return this.prepareAndGetView(position, convertView, parent);
   }
 
-  public void setType(CmdType type) {
-    this.type = type;
+  public View prepareAndGetView(int position, View convertView, ViewGroup parent) {
+    LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+    View view = inflater.inflate(this.rowViewResourceId, parent, false);
+    T value = elemList.get(position);
+    return this.getCustomView(value, view, convertView, parent);
   }
 
-  public int getPopular() {
-    return popular;
-  }
-
-  public void setPopular(int popular) {
-    this.popular = popular;
-  }
-
-  public int getSort() {
-    return sort;
-  }
-
-  public void setSort(int sort) {
-    this.sort = sort;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
-  public Device getDevice() {
-    return device;
-  }
-
-  public void setDevice(Device device) {
-    this.device = device;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
+  /**
+   * Custom view for spinner
+   */
+  public abstract View getCustomView(T value, View view, View convertView, ViewGroup parent);
 }
