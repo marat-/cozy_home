@@ -119,7 +119,7 @@ public class DeviceManagerActivity extends BaseActivity {
 
     deviceListCursorAdapter = new DeviceListCursorAdapter(
         this,
-        R.layout.device_list_grid_row,
+        R.layout.device_list_row,
         cursor,
         CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 

@@ -28,7 +28,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import ru.marat.smarthome.IrSenderConnect;
 import ru.marat.smarthome.R;
 
 public class CmdListCursorAdapter extends CursorAdapter {
@@ -69,12 +68,12 @@ public class CmdListCursorAdapter extends CursorAdapter {
     deviceImage.setImageResource(imageResID);
 
     final String irCommand = cursor.getString(commandIndex);
-    view.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        new IrSenderConnect(CmdListCursorAdapter.this.context)
-            .execute(String.format("http://%s/?%s", irSenderIp, irCommand));
-      }
-    });
+//    view.setOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View view) {
+//        new IrSenderConnect(CmdListCursorAdapter.this.context)
+//            .execute(String.format("http://%s/?%s", irSenderIp, irCommand));
+//      }
+//    });
   }
 }

@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import butterknife.BindView;
@@ -84,6 +85,8 @@ public class CmdListFragment extends Fragment {
 
     fillCmdGridView();
 
+    initCallbackActionMode();
+
     setUpContextualActionToolbar();
   }
 
@@ -114,17 +117,24 @@ public class CmdListFragment extends Fragment {
    */
   protected void setUpContextualActionToolbar() {
     commandsGridView.setOnItemLongClickListener(new OnItemLongClickListener() {
-      public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-          int position, long arg3) {
+      @Override
+      public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         if (actionMode != null) {
           return false;
         }
 
         // Start the CAB using the ActionMode.Callback defined above
         actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
-//        actionMode.setTag(id);
-//        view.setSelected(true);
+        actionMode.setTag(id);
+        view.setSelected(true);
         return true;
+      }
+    });
+
+    commandsGridView.setOnItemClickListener(new OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        int a = 1;
       }
     });
   }
