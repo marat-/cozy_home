@@ -149,7 +149,7 @@ public class CmdEditActivity extends BaseActivity {
         if (validataCmdEditName(cmdEditName, cmdEditName.getText().toString())) {
           Cmd cmd;
           if (cmdId != null) {
-            cmd = new Select().from(Device.class).where("_id = ?", new String[]{cmdId})
+            cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{cmdId})
                 .executeSingle();
           } else {
             cmd = new Cmd();

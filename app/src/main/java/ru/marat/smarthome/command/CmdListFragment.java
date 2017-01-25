@@ -90,6 +90,12 @@ public class CmdListFragment extends Fragment {
     setUpContextualActionToolbar();
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+    fillCmdGridView();
+  }
+
   protected void fillCmdGridView() {
     From query = new Select(
         "cmd._id, cmd.name AS cmd_name, device.name AS device_name, cmd.value, device_type.image")
