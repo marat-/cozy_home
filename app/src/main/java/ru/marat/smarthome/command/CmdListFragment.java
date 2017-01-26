@@ -37,6 +37,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.GridView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +62,8 @@ public class CmdListFragment extends Fragment {
 
   private ActionMode.Callback actionModeCallback;
   private ActionMode actionMode;
+
+  private int selectedRow;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -133,7 +136,21 @@ public class CmdListFragment extends Fragment {
         actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
         actionMode.setTag(id);
         view.setSelected(true);
+        view.setBackgroundResource(R.drawable.round_rect_shape_selected);
+        selectedRow = position;
         return true;
+      }
+    });
+
+    commandsGridView.setOnItemSelectedListener(new OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        view.setBackgroundResource(R.drawable.round_rect_shape_selected);
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+        //view.setBackgroundResource(R.drawable.round_rect_shape);
       }
     });
 
@@ -192,6 +209,7 @@ public class CmdListFragment extends Fragment {
       @Override
       public void onDestroyActionMode(ActionMode mode) {
         actionMode = null;
+        commandsGridView.getChildAt(selectedRow).setBackgroundResource(R.drawable.round_rect_shape);
       }
     };
   }
