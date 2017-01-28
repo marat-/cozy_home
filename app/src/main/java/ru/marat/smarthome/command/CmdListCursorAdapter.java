@@ -29,13 +29,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.cab.OnActionModeListener;
 
-public class CmdListCursorAdapter extends CursorAdapter {
+public class CmdListCursorAdapter extends CursorAdapter implements OnActionModeListener<Long> {
 
   private Context context;
   private int layout;
   private final LayoutInflater inflater;
   public static final String irSenderIp = "192.168.1.120";
+
+  private long selectedCmdId;
 
   public CmdListCursorAdapter(Context context, int layout, Cursor c, int flags) {
     super(context, c, flags);
@@ -55,6 +58,7 @@ public class CmdListCursorAdapter extends CursorAdapter {
     TextView cmdDescription = (TextView) view.findViewById(R.id.cmd_description);
     ImageView deviceImage = (ImageView) view.findViewById(R.id.device_image);
 
+    int cmdDeviceIdIndex = cursor.getColumnIndexOrThrow("_id");
     int cmdDeviceNameIndex = cursor.getColumnIndexOrThrow("device_name");
     int deviceImageIndex = cursor.getColumnIndexOrThrow("image");
     int commandIndex = cursor.getColumnIndexOrThrow("value");
@@ -67,13 +71,20 @@ public class CmdListCursorAdapter extends CursorAdapter {
             this.context.getPackageName());
     deviceImage.setImageResource(imageResID);
 
-    final String irCommand = cursor.getString(commandIndex);
-//    view.setOnClickListener(new View.OnClickListener() {
-//      @Override
-//      public void onClick(View view) {
-//        new IrSenderTask(CmdListCursorAdapter.this.context)
-//            .execute(String.format("http://%s/?%s", irSenderIp, irCommand));
-//      }
-//    });
+    if (cursor.getLong(cmdDeviceIdIndex) == selectedCmdId) {
+      view.setBackgroundResource(R.drawable.round_rect_shape_selected);
+    } else {
+      view.setBackgroundResource(R.drawable.round_rect_shape);
+    }
+  }
+
+  @Override
+  public void onDestroyActionMode() {
+    this.selectedCmdId = 0;
+  }
+
+  @Override
+  public void onCreateActionMode(Long selectedItemId) {
+    this.selectedCmdId = selectedItemId;
   }
 }

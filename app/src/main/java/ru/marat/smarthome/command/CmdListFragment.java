@@ -37,7 +37,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.GridView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -47,6 +46,7 @@ import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.cab.OnActionModeListener;
 import ru.marat.smarthome.app.task.AsyncTaskManager;
 import ru.marat.smarthome.app.task.OnTaskCompleteListener;
 import ru.marat.smarthome.app.task.Task;
@@ -69,9 +69,9 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
   private ActionMode.Callback actionModeCallback;
   private ActionMode actionMode;
 
-  private int selectedRow;
-
   private AsyncTaskManager<String> asyncTaskManager;
+
+  private OnActionModeListener<Long> onActionModeListener;
 
   public static final String irSenderIp = "192.168.1.204:7474";
 
@@ -127,13 +127,14 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
 
     Cursor cursor = ActiveAndroid.getDatabase().rawQuery(query.toSql(), query.getArguments());
 
-    CursorAdapter cmdListCursorAdapter = new CmdListCursorAdapter(
+    CmdListCursorAdapter cmdListCursorAdapter = new CmdListCursorAdapter(
         this.getActivity(),
         R.layout.cmd_grid_row,
         cursor,
         CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
     commandsGridView.setAdapter(cmdListCursorAdapter);
+    onActionModeListener = cmdListCursorAdapter;
   }
 
   /**
@@ -151,21 +152,9 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
         actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
         actionMode.setTag(id);
         view.setSelected(true);
-        view.setBackgroundResource(R.drawable.round_rect_shape_selected);
-        selectedRow = position;
+        onActionModeListener.onCreateActionMode(id);
+        ((CmdListCursorAdapter) commandsGridView.getAdapter()).notifyDataSetChanged();
         return true;
-      }
-    });
-
-    commandsGridView.setOnItemSelectedListener(new OnItemSelectedListener() {
-      @Override
-      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        view.setBackgroundResource(R.drawable.round_rect_shape_selected);
-      }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-        //view.setBackgroundResource(R.drawable.round_rect_shape);
       }
     });
 
@@ -227,7 +216,8 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
       @Override
       public void onDestroyActionMode(ActionMode mode) {
         actionMode = null;
-        commandsGridView.getChildAt(selectedRow).setBackgroundResource(R.drawable.round_rect_shape);
+        onActionModeListener.onDestroyActionMode();
+        ((CmdListCursorAdapter) commandsGridView.getAdapter()).notifyDataSetChanged();
       }
     };
   }
