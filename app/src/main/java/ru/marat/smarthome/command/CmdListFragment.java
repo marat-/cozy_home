@@ -39,6 +39,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.GridView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.activeandroid.ActiveAndroid;
@@ -46,13 +47,18 @@ import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.task.AsyncTaskManager;
+import ru.marat.smarthome.app.task.OnTaskCompleteListener;
+import ru.marat.smarthome.app.task.Task;
+import ru.marat.smarthome.app.task.TaskStatus;
+import ru.marat.smarthome.app.task.impl.IrSenderTask;
 import ru.marat.smarthome.command.edit.CmdEditActivity;
 import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.CmdType;
 import ru.marat.smarthome.model.Device;
 import ru.marat.smarthome.model.DeviceType;
 
-public class CmdListFragment extends Fragment {
+public class CmdListFragment extends Fragment implements OnTaskCompleteListener {
 
   @BindView(R.id.cmd_fab_menu_add_cmd)
   FloatingActionButton addCmdFabButton;
@@ -65,11 +71,20 @@ public class CmdListFragment extends Fragment {
 
   private int selectedRow;
 
+  private AsyncTaskManager<String> asyncTaskManager;
+
+  public static final String irSenderIp = "192.168.1.204:7474";
+
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_cmd_list, null);
     ButterKnife.bind(this, view);
+
+    // Create manager and set this activity as context and listener
+    asyncTaskManager = new AsyncTaskManager<>(getActivity(), this);
+    // Handle task that can be retained before
+    //asyncTaskManager.handleRetainedTask(getActivity().getLastNonConfigurationInstance());
 
     return view;
   }
@@ -157,7 +172,10 @@ public class CmdListFragment extends Fragment {
     commandsGridView.setOnItemClickListener(new OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        int a = 1;
+        Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
+            .executeSingle();
+        asyncTaskManager.setupTask(new IrSenderTask(getActivity()),
+            String.format("http://%s/%s", irSenderIp, cmd.getValue()));
       }
     });
   }
@@ -171,7 +189,7 @@ public class CmdListFragment extends Fragment {
       // Called when the action mode is created; startActionMode() was called
       @Override
       public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        // Inflate a menu resource providing context menu items
+        // Inflate a menu resource providing context muenu items
         MenuInflater inflater = mode.getMenuInflater();
         inflater.inflate(R.menu.cmd_list_menu, menu);
         return true;
@@ -212,5 +230,27 @@ public class CmdListFragment extends Fragment {
         commandsGridView.getChildAt(selectedRow).setBackgroundResource(R.drawable.round_rect_shape);
       }
     };
+  }
+
+  @Override
+  public void onTaskComplete(Task task) {
+    IrSenderTask irSenderTask = (IrSenderTask) task;
+    if (irSenderTask.isCancelled()) {
+      // Report about cancel
+      Toast.makeText(getActivity(), R.string.task_cancelled, Toast.LENGTH_LONG)
+          .show();
+    } else {
+      // Get result
+      TaskStatus result = null;
+      try {
+        result = irSenderTask.get();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      // Report about result
+      Toast.makeText(getActivity(),
+          getString(R.string.task_completed),
+          Toast.LENGTH_LONG).show();
+    }
   }
 }

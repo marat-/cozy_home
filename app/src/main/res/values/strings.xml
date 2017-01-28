@@ -45,4 +45,10 @@
   <string name="cmd_edit_save_action">Save</string>\
   <string name="cmd_edit_cancel_action">Cancel</string>
   <string name="cmd_edit_name_empty_error">Please enter command name</string>
+
+  <string name="task_connecting">Connecting to the IR device...</string>
+  <string name="task_sent_command">Command sent...</string>
+  <string name="task_starting">Starting...</string>
+  <string name="task_cancelled">Task is cancelled by user</string>
+  <string name="task_completed">Command execution was completed</string>
 </resources>

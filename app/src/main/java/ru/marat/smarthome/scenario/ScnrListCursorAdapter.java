@@ -27,8 +27,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import ru.marat.smarthome.IrSenderConnect;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.task.impl.IrSenderTask;
 
 public class ScnrListCursorAdapter extends CursorAdapter {
 
@@ -63,7 +63,7 @@ public class ScnrListCursorAdapter extends CursorAdapter {
     view.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        new IrSenderConnect(ScnrListCursorAdapter.this.context)
+        new IrSenderTask(ScnrListCursorAdapter.this.context)
             .execute(String.format("http://%s/?%s", irSenderIp, ""));
       }
     });

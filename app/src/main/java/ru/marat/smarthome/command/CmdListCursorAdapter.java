@@ -71,7 +71,7 @@ public class CmdListCursorAdapter extends CursorAdapter {
 //    view.setOnClickListener(new View.OnClickListener() {
 //      @Override
 //      public void onClick(View view) {
-//        new IrSenderConnect(CmdListCursorAdapter.this.context)
+//        new IrSenderTask(CmdListCursorAdapter.this.context)
 //            .execute(String.format("http://%s/?%s", irSenderIp, irCommand));
 //      }
 //    });

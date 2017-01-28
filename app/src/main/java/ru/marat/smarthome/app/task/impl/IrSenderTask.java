@@ -18,10 +18,9 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome;
+package ru.marat.smarthome.app.task.impl;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,14 +28,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.task.Task;
+import ru.marat.smarthome.app.task.TaskStatus;
 
-public class IrSenderConnect extends AsyncTask<String, Void, String> {
+public class IrSenderTask extends Task<String, String, TaskStatus> {
 
-  private Context mContext;
+  private Context context;
 
-  public IrSenderConnect(Context context) {
-    super();
-    this.mContext = context;
+  public IrSenderTask(Context context) {
+    super(context);
+    this.context = context;
   }
 
   @Override
@@ -45,7 +47,8 @@ public class IrSenderConnect extends AsyncTask<String, Void, String> {
   }
 
   @Override
-  protected String doInBackground(String... command) {
+  protected TaskStatus doInBackground(String... command) {
+    publishProgress(resources.getString(R.string.task_connecting));
     BufferedReader reader = null;
     HttpURLConnection urlConnection = null;
     StringBuilder response = new StringBuilder();
@@ -55,8 +58,13 @@ public class IrSenderConnect extends AsyncTask<String, Void, String> {
       reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
       String line = null;
       while ((line = reader.readLine()) != null) {
+        if (isCancelled()) {
+          // This return causes onPostExecute call on UI thread
+          return TaskStatus.ERROR;
+        }
         response.append(line + "\n");
       }
+      publishProgress(resources.getString(R.string.task_sent_command));
     } catch (MalformedURLException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -73,13 +81,13 @@ public class IrSenderConnect extends AsyncTask<String, Void, String> {
         urlConnection.disconnect();
       }
     }
-    return response.toString();
+    return TaskStatus.DONE;
   }
 
   @Override
-  protected void onPostExecute(String result) {
-    super.onPostExecute(result);
-    Toast.makeText(mContext, result,
+  protected void onPostExecute(TaskStatus taskStatus) {
+    super.onPostExecute(taskStatus);
+    Toast.makeText(context, resources.getString(R.string.task_completed),
         Toast.LENGTH_SHORT).show();
   }
 }
