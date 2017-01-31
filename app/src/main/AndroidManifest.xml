@@ -68,6 +68,15 @@
               android:name="android.support.PARENT_ACTIVITY"
               android:value=".app.core.BaseActivity" />
         </activity>
+        <activity
+          android:name=".scenario.edit.ScnrEditActivity"
+          android:label="@string/title_activity_scnr_edit"
+          android:parentActivityName=".MainActivity"
+          android:theme="@style/AppTheme">
+            <meta-data
+              android:name="android.support.PARENT_ACTIVITY"
+              android:value=".app.core.BaseActivity" />
+        </activity>
     </application>
 
 </manifest>
