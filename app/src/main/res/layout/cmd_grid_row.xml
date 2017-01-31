@@ -1,43 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:layout_columnWeight="1"
+  android:layout_gravity="fill"
+  android:padding="9dip"
+  android:background="@drawable/round_rect_shape"
+  android:descendantFocusability="blocksDescendants"
+  android:orientation="vertical">
+
+  <ImageView
+    android:id="@+id/device_image"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentTop="true"
+    android:focusable="false"
+    android:focusableInTouchMode="false" />
+
+  <TextView
+    android:id="@+id/cmd_description"
+    android:layout_width="wrap_content"
+    android:layout_height="70dp"
+    android:layout_marginLeft="10dp"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@+id/device_image"
+    android:ellipsize="marquee"
+    android:gravity="bottom"
+    android:marqueeRepeatLimit="marquee_forever"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textColor="#ffffff" />
+
+  <TextView
+    android:id="@+id/cmd_name"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_columnWeight="1"
-    android:layout_gravity="fill"
-    android:background="@drawable/round_rect_shape"
-    android:orientation="vertical"
-    android:padding="9dip">
-
-    <ImageView
-        android:id="@+id/device_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
-
-    <TextView
-        android:id="@+id/cmd_description"
-        android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/device_image"
-        android:layout_marginLeft="10dp"
-        android:ellipsize="marquee"
-        android:gravity="bottom"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ffffff" />
-
-    <TextView
-        android:id="@+id/cmd_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/cmd_description"
-        android:layout_marginLeft="10dp"
-        android:gravity="bottom"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ffffff" />
+    android:layout_marginLeft="10dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_below="@+id/cmd_description"
+    android:gravity="bottom"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textColor="#ffffff" />
 
 </RelativeLayout>

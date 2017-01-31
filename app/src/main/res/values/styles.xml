@@ -1,16 +1,32 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="windowActionModeOverlay">true</item>
-    </style>
+  <!-- Base application theme. -->
+  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Customize your theme here. -->
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
+    <item name="colorAccent">@color/accent</item>
+    <item name="windowActionModeOverlay">true</item>
+    <item name="actionModeStyle">@style/Styled.ActionMode</item>
+    <item name="actionMenuTextColor">@color/white</item>
+    <item name="actionModeCloseButtonStyle">@style/Styled.ActionModeCloseButton</item>
+  </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+  <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+  <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+  <style name="fab_labels_style">
+    <item name="android:background">@drawable/fab_label_background</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
+
+  <style name="Styled.ActionMode" parent="@style/Widget.AppCompat.ActionMode">
+    <item name="background">@color/primary_dark</item>
+  </style>
+
+  <style name="Styled.ActionModeCloseButton" parent="Widget.AppCompat.Light.ActionButton.CloseMode">
+    <item name="android:tint">@color/white</item>
+  </style>
 
 </resources>

@@ -18,89 +18,37 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome.model;
+package ru.marat.smarthome.command.edit;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import java.util.List;
+import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.adapter.CustomArrayAdapter;
+import ru.marat.smarthome.model.CmdType;
 
-@Table(name = "cmd", id = "_id")
-public class Cmd extends Model {
+/**
+ * Custom ArrayAdapter for spinner in DeviceEditActivity
+ */
+public class CmdTypeArrayAdapter extends CustomArrayAdapter<CmdType> {
 
-  @Column(name = "name")
-  public String name;
-
-  @Column(name = "active")
-  public boolean active;
-
-  @Column(name = "type_id")
-  public CmdType type;
-
-  @Column(name = "popular")
-  public int popular;
-
-  @Column(name = "sort")
-  public int sort;
-
-  @Column(name = "device_id")
-  public Device device;
-
-  @Column(name = "value")
-  public String value;
-
-  public String getName() {
-    return name;
+  public CmdTypeArrayAdapter(Context context, int viewResourceId,
+      List<CmdType> elemList) {
+    super(context, viewResourceId, elemList);
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+  /**
+   * Custom view for spinner
+   */
+  public View getCustomView(CmdType cmdType, View view, View convertView, ViewGroup parent) {
+    TextView cmdTypeName = (TextView) view.findViewById(R.id.cmd_type_name);
+    cmdTypeName.setText(cmdType.getName());
 
-  public CmdType getType() {
-    return type;
-  }
+    TextView cmdTypeActive = (TextView) view.findViewById(R.id.cmd_type_active);
+    cmdTypeActive.setText(cmdType.isActive() ? "Active" : "Inactive");
 
-  public void setType(CmdType type) {
-    this.type = type;
-  }
-
-  public int getPopular() {
-    return popular;
-  }
-
-  public void setPopular(int popular) {
-    this.popular = popular;
-  }
-
-  public int getSort() {
-    return sort;
-  }
-
-  public void setSort(int sort) {
-    this.sort = sort;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
-  public Device getDevice() {
-    return device;
-  }
-
-  public void setDevice(Device device) {
-    this.device = device;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
+    return view;
   }
 }
