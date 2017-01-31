@@ -37,7 +37,7 @@ public class Scnr extends Model {
   public int sort;
 
   @Column(name = "active")
-  public int active;
+  public boolean active;
 
   @Column(name = "date_create")
   public String date_create;
@@ -66,11 +66,11 @@ public class Scnr extends Model {
     this.sort = sort;
   }
 
-  public int getActive() {
+  public boolean isActive() {
     return active;
   }
 
-  public void setActive(int active) {
+  public void setActive(boolean active) {
     this.active = active;
   }
 

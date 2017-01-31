@@ -57,11 +57,15 @@ import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.CmdType;
 import ru.marat.smarthome.model.Device;
 import ru.marat.smarthome.model.DeviceType;
+import ru.marat.smarthome.scenario.edit.ScnrEditActivity;
 
 public class CmdListFragment extends Fragment implements OnTaskCompleteListener {
 
   @BindView(R.id.cmd_fab_menu_add_cmd)
   FloatingActionButton addCmdFabButton;
+
+  @BindView(R.id.cmd_fab_menu_add_scnr)
+  FloatingActionButton addScnrFabButton;
 
   @BindView(R.id.commands_grid_view)
   GridView commandsGridView;
@@ -97,6 +101,14 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
       @Override
       public void onClick(View v) {
         Intent intent = new Intent(getActivity(), CmdEditActivity.class);
+        startActivity(intent);
+      }
+    });
+
+    addScnrFabButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getActivity(), ScnrEditActivity.class);
         startActivity(intent);
       }
     });
