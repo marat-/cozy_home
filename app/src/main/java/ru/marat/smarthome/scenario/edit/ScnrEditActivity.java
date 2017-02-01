@@ -22,9 +22,11 @@ package ru.marat.smarthome.scenario.edit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -45,6 +47,9 @@ public class ScnrEditActivity extends BaseActivity {
   @BindView(R.id.scnr_edit_active)
   CheckBox scnrEditActive;
 
+  @BindView(R.id.add_cmd_to_scnr_fab)
+  FloatingActionButton addCmdToScnrFab;
+
   private String scnrId;
 
   @Override
@@ -56,6 +61,15 @@ public class ScnrEditActivity extends BaseActivity {
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    addCmdToScnrFab.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent intent = new Intent(ScnrEditActivity.this, CmdPickActivity.class);
+        startActivity(intent);
+      }
+    });
+
 
     Intent intent = getIntent();
     scnrId = intent.getStringExtra("scnr_id");

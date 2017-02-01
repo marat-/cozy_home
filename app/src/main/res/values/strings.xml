@@ -60,4 +60,6 @@
   <string name="scnr_edit_save_action">Save</string>
   <string name="scnr_edit_cancel_action">Cancel</string>
   <string name="scnr_edit_name_empty_error">Please enter scenario name</string>
+
+  <string name="title_activity_cmd_pick">Select required command.</string>
 </resources>

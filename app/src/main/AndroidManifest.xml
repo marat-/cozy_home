@@ -77,6 +77,15 @@
               android:name="android.support.PARENT_ACTIVITY"
               android:value=".app.core.BaseActivity" />
         </activity>
+        <activity
+          android:name=".scenario.edit.CmdPickActivity"
+          android:label="@string/title_activity_cmd_pick"
+          android:parentActivityName=".scenario.edit.ScnrEditActivity"
+          android:theme="@style/AppTheme">
+            <meta-data
+              android:name="android.support.PARENT_ACTIVITY"
+              android:value=".app.core.BaseActivity" />
+        </activity>
     </application>
 
 </manifest>

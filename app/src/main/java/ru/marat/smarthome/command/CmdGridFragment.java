@@ -20,27 +20,43 @@
 
 package ru.marat.smarthome.command;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import android.widget.GridView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.activeandroid.query.Select;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.task.AsyncTaskManager;
+import ru.marat.smarthome.app.task.OnTaskCompleteListener;
+import ru.marat.smarthome.app.task.Task;
+import ru.marat.smarthome.app.task.TaskStatus;
+import ru.marat.smarthome.app.task.impl.IrSenderTask;
+import ru.marat.smarthome.command.edit.CmdEditActivity;
 import ru.marat.smarthome.model.Cmd;
+import ru.marat.smarthome.scenario.edit.ScnrEditActivity;
 
-public class CmdListFragment extends AbstractCmdListFragment {
+public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCompleteListener {
 
-  @BindView(R.id.commands_list_view)
-  ListView commandsListView;
+  @BindView(R.id.cmd_fab_menu_add_cmd)
+  FloatingActionButton addCmdFabButton;
+
+  @BindView(R.id.cmd_fab_menu_add_scnr)
+  FloatingActionButton addScnrFabButton;
+
+  @BindView(R.id.commands_grid_view)
+  GridView commandsGridView;
 
   private AsyncTaskManager<String> asyncTaskManager;
 
@@ -49,19 +65,41 @@ public class CmdListFragment extends AbstractCmdListFragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_cmd_list, null);
+    View view = inflater.inflate(R.layout.fragment_cmd_grid, null);
     ButterKnife.bind(this, view);
+
+    // Create manager and set this activity as context and listener
+    asyncTaskManager = new AsyncTaskManager<>(getActivity(), this);
+    // Handle task that can be retained before
+    //asyncTaskManager.handleRetainedTask(getActivity().getLastNonConfigurationInstance());
+
     return view;
   }
 
   @Override
   public AbsListView getListView() {
-    return commandsListView;
+    return commandsGridView;
   }
 
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
+    addCmdFabButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getActivity(), CmdEditActivity.class);
+        startActivity(intent);
+      }
+    });
+
+    addScnrFabButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getActivity(), ScnrEditActivity.class);
+        startActivity(intent);
+      }
+    });
   }
 
   @Override
@@ -74,21 +112,45 @@ public class CmdListFragment extends AbstractCmdListFragment {
           cursor,
           CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
-      commandsListView.setAdapter(cmdListCursorAdapter);
+      commandsGridView.setAdapter(cmdListCursorAdapter);
     } else {
-      cmdListCursorAdapter = (CmdListCursorAdapter) commandsListView.getAdapter();
+      cmdListCursorAdapter = (CmdListCursorAdapter) commandsGridView.getAdapter();
     }
     return cmdListCursorAdapter;
   }
 
   @Override
   public void setUpOnItemClickListener() {
-    commandsListView.setOnItemClickListener(new OnItemClickListener() {
+    commandsGridView.setOnItemClickListener(new OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
             .executeSingle();
+        asyncTaskManager.setupTask(new IrSenderTask(getActivity()),
+            String.format("http://%s/%s", irSenderIp, cmd.getValue()));
       }
     });
+  }
+
+  @Override
+  public void onTaskComplete(Task task) {
+    IrSenderTask irSenderTask = (IrSenderTask) task;
+    if (irSenderTask.isCancelled()) {
+      // Report about cancel
+      Toast.makeText(getActivity(), R.string.task_cancelled, Toast.LENGTH_LONG)
+          .show();
+    } else {
+      // Get result
+      TaskStatus result = null;
+      try {
+        result = irSenderTask.get();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      // Report about result
+      Toast.makeText(getActivity(),
+          getString(R.string.task_completed),
+          Toast.LENGTH_LONG).show();
+    }
   }
 }

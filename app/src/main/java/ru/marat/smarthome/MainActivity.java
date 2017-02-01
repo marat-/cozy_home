@@ -133,7 +133,7 @@ public class MainActivity extends BaseActivity implements
 //
 //        if (menuItem.getItemId() == R.id.navigation_item_settings) {
 //            FragmentTransaction xfragmentTransaction = fragmentManager.beginTransaction();
-//            xfragmentTransaction.replace(R.id.containerView,new CmdListFragment()).commit();
+//            xfragmentTransaction.replace(R.id.containerView,new CmdGridFragment()).commit();
 //        }
 
     return false;
