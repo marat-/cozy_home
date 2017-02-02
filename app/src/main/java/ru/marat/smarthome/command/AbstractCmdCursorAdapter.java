@@ -20,70 +20,49 @@
 
 package ru.marat.smarthome.command;
 
+import android.content.Context;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import com.activeandroid.query.Select;
-import ru.marat.smarthome.R;
-import ru.marat.smarthome.model.Cmd;
+import ru.marat.smarthome.app.cab.OnActionModeListener;
 
-public class CmdListFragment extends AbstractCmdListFragment {
+public abstract class AbstractCmdCursorAdapter extends CursorAdapter implements
+    OnActionModeListener<Long> {
 
-  @BindView(R.id.commands_list_view)
-  ListView commandsListView;
+  protected Context context;
+  protected int layout;
+  protected final LayoutInflater inflater;
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_cmd_list, null);
-    ButterKnife.bind(this, view);
-    return view;
+  protected long selectedCmdId;
+
+  public AbstractCmdCursorAdapter(Context context, int layout, Cursor c, int flags) {
+    super(context, c, flags);
+    this.layout = layout;
+    this.context = context;
+    this.inflater = LayoutInflater.from(context);
   }
 
   @Override
-  public AbsListView getListView() {
-    return commandsListView;
+  public View newView(Context context, Cursor cursor, ViewGroup parent) {
+    return inflater.inflate(layout, null);
   }
 
   @Override
-  public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
+  public void bindView(View view, Context context, Cursor cursor) {
+    bindCustomView(view, context, cursor);
+  }
+
+  public abstract void bindCustomView(View view, Context context, Cursor cursor);
+
+  @Override
+  public void onDestroyActionMode() {
+    this.selectedCmdId = 0;
   }
 
   @Override
-  public CmdListCursorAdapter getCustomAdapter(Cursor cursor) {
-    CmdListCursorAdapter cmdListCursorAdapter;
-    if (cursor != null) {
-      cmdListCursorAdapter = new CmdListCursorAdapter(
-          this.getActivity(),
-          R.layout.cmd_list_row,
-          cursor,
-          CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-
-      commandsListView.setAdapter(cmdListCursorAdapter);
-    } else {
-      cmdListCursorAdapter = (CmdListCursorAdapter) commandsListView.getAdapter();
-    }
-    return cmdListCursorAdapter;
-  }
-
-  @Override
-  public void setUpOnItemClickListener() {
-    commandsListView.setOnItemClickListener(new OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
-            .executeSingle();
-      }
-    });
+  public void onCreateActionMode(Long selectedItemId) {
+    this.selectedCmdId = selectedItemId;
   }
 }

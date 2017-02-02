@@ -103,20 +103,20 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
   }
 
   @Override
-  public CmdListCursorAdapter getCustomAdapter(Cursor cursor) {
-    CmdListCursorAdapter cmdListCursorAdapter;
+  public CmdGridCursorAdapter getCustomAdapter(Cursor cursor) {
+    CmdGridCursorAdapter cmdGridCursorAdapter;
     if (cursor != null) {
-      cmdListCursorAdapter = new CmdListCursorAdapter(
+      cmdGridCursorAdapter = new CmdGridCursorAdapter(
           this.getActivity(),
           R.layout.cmd_grid_row,
           cursor,
           CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
-      commandsGridView.setAdapter(cmdListCursorAdapter);
+      commandsGridView.setAdapter(cmdGridCursorAdapter);
     } else {
-      cmdListCursorAdapter = (CmdListCursorAdapter) commandsGridView.getAdapter();
+      cmdGridCursorAdapter = (CmdGridCursorAdapter) commandsGridView.getAdapter();
     }
-    return cmdListCursorAdapter;
+    return cmdGridCursorAdapter;
   }
 
   @Override

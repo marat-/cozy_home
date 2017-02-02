@@ -27,31 +27,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import ru.marat.smarthome.R;
 
-public class CmdListCursorAdapter extends AbstractCmdCursorAdapter {
+public class CmdGridCursorAdapter extends AbstractCmdCursorAdapter {
 
-  public CmdListCursorAdapter(Context context, int layout, Cursor c, int flags) {
+  public CmdGridCursorAdapter(Context context, int layout, Cursor c, int flags) {
     super(context, layout, c, flags);
   }
 
   @Override
   public void bindCustomView(View view, Context context, Cursor cursor) {
     TextView cmdName = (TextView) view.findViewById(R.id.cmd_name);
-    ImageView cmdDeviceImage = (ImageView) view.findViewById(R.id.cmd_device_image);
+    TextView cmdDescription = (TextView) view.findViewById(R.id.cmd_description);
+    ImageView deviceImage = (ImageView) view.findViewById(R.id.device_image);
 
     int cmdDeviceIdIndex = cursor.getColumnIndexOrThrow("_id");
+    int cmdDeviceNameIndex = cursor.getColumnIndexOrThrow("device_name");
     int deviceImageIndex = cursor.getColumnIndexOrThrow("image");
-    int cmdNameIndex = cursor.getColumnIndexOrThrow("cmd_name");
+    int commandIndex = cursor.getColumnIndexOrThrow("value");
+    int commandDescription = cursor.getColumnIndexOrThrow("cmd_name");
 
-    cmdName.setText(cursor.getString(cmdNameIndex));
+    cmdName.setText(cursor.getString(cmdDeviceNameIndex));
+    cmdDescription.setText(cursor.getString(commandDescription));
     int imageResID = this.context.getResources()
         .getIdentifier(cursor.getString(deviceImageIndex), "drawable",
             this.context.getPackageName());
-    cmdDeviceImage.setImageResource(imageResID);
+    deviceImage.setImageResource(imageResID);
 
     if (cursor.getLong(cmdDeviceIdIndex) == selectedCmdId) {
-      view.setBackgroundResource(R.drawable.round_grey_shape_selected);
+      view.setBackgroundResource(R.drawable.round_rect_shape_selected);
     } else {
-      view.setBackgroundResource(R.drawable.round_grey_shape);
+      view.setBackgroundResource(R.drawable.round_rect_shape);
     }
   }
 }

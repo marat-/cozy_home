@@ -83,12 +83,12 @@ public abstract class AbstractCmdListFragment extends Fragment {
 
     Cursor cursor = ActiveAndroid.getDatabase().rawQuery(query.toSql(), query.getArguments());
 
-    CmdListCursorAdapter cmdListCursorAdapter = getCustomAdapter(cursor);
+    AbstractCmdCursorAdapter cmdCursorAdapter = getCustomAdapter(cursor);
 
-    onActionModeListener = cmdListCursorAdapter;
+    onActionModeListener = cmdCursorAdapter;
   }
 
-  public abstract CmdListCursorAdapter getCustomAdapter(Cursor cursor);
+  public abstract AbstractCmdCursorAdapter getCustomAdapter(Cursor cursor);
 
   /**
    * Binds contextual action toolbar on listview's long click
