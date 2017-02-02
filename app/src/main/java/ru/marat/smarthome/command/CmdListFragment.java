@@ -20,6 +20,9 @@
 
 package ru.marat.smarthome.command;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
@@ -83,6 +86,10 @@ public class CmdListFragment extends AbstractCmdListFragment {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
             .executeSingle();
+        Intent intent = new Intent();
+        intent.putExtra("cmd_id", cmd.getId());
+        getActivity().setResult(RESULT_OK, intent);
+        getActivity().finish();
       }
     });
   }

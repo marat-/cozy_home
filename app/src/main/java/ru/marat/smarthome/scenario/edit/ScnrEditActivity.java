@@ -27,17 +27,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.activeandroid.query.Select;
+import java.util.ArrayList;
+import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.core.BaseActivity;
 import ru.marat.smarthome.app.validator.TextValidator;
 import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.Scnr;
+import ru.marat.smarthome.model.ScnrCmd;
 
 public class ScnrEditActivity extends BaseActivity {
 
@@ -50,7 +55,12 @@ public class ScnrEditActivity extends BaseActivity {
   @BindView(R.id.add_cmd_to_scnr_fab)
   FloatingActionButton addCmdToScnrFab;
 
+  @BindView(R.id.scnr_edit_cmd_list_view)
+  ListView scnrEditCmdListView;
+
   private String scnrId;
+
+  private List<Cmd> cmdInScnr = new ArrayList<>();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +76,9 @@ public class ScnrEditActivity extends BaseActivity {
       @Override
       public void onClick(View view) {
         Intent intent = new Intent(ScnrEditActivity.this, CmdPickActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
       }
     });
-
 
     Intent intent = getIntent();
     scnrId = intent.getStringExtra("scnr_id");
@@ -81,9 +90,34 @@ public class ScnrEditActivity extends BaseActivity {
           .executeSingle();
       scnrEditName.setText(scnr.getName());
       scnrEditActive.setChecked(scnr.isActive());
+
+      List<Cmd> cmdInScnrFromDB = new Select()
+          .from(Cmd.class).as("cmd")
+          .innerJoin(ScnrCmd.class).as("scnr_cmd")
+          .on("cmd._id = scnr_cmd.cmd_id")
+          .where("scnr_cmd.scnr_id = ?", new String[]{scnrId})
+          .orderBy("order ASC").execute();
+      cmdInScnr.addAll(cmdInScnrFromDB);
     }
 
+    ArrayAdapter cmdTypeAdapter = new CmdInScnrArrayAdapter(ScnrEditActivity.this,
+        R.layout.cmd_in_scnr_row,
+        cmdInScnr);
+    scnrEditCmdListView.setAdapter(cmdTypeAdapter);
+
     validateFields();
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (data == null) {
+      return;
+    }
+    long cmdId = data.getLongExtra("cmd_id", -1);
+    Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(cmdId)})
+        .executeSingle();
+    cmdInScnr.add(cmd);
+    ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
   }
 
   protected void validateFields() {
