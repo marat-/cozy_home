@@ -33,7 +33,7 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.command.CmdGridFragment;
-import ru.marat.smarthome.scenario.ScenariosListFragment;
+import ru.marat.smarthome.scenario.ScnrGridFragment;
 
 public class WidgetsFragment extends Fragment {
 
@@ -91,9 +91,9 @@ public class WidgetsFragment extends Fragment {
         case 0:
           return new CmdGridFragment();
         case 1:
-          return new ScenariosListFragment();
+          return new ScnrGridFragment();
         default:
-          return new ScenariosListFragment();
+          return new ScnrGridFragment();
 
       }
     }

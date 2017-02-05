@@ -35,8 +35,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +66,7 @@ public class ScnrEditActivity extends BaseActivity {
   @BindView(R.id.scnr_edit_cmd_list_view)
   ListView scnrEditCmdListView;
 
-  private String scnrId;
+  private long scnrId;
   private List<Cmd> cmdInScnr = new ArrayList<>();
   private ActionMode.Callback actionModeCallback;
   private ActionMode actionMode;
@@ -89,12 +92,12 @@ public class ScnrEditActivity extends BaseActivity {
     });
 
     Intent intent = getIntent();
-    scnrId = intent.getStringExtra("scnr_id");
+    scnrId = intent.getLongExtra("item_id", -1);
 
-    if (scnrId != null) {
+    if (scnrId != -1) {
       Scnr scnr = new Select()
           .from(Scnr.class).as("scnr")
-          .where("scnr._id = ?", new String[]{scnrId})
+          .where("scnr._id = ?", Long.toString(scnrId))
           .executeSingle();
       scnrEditName.setText(scnr.getName());
       scnrEditActive.setChecked(scnr.isActive());
@@ -103,8 +106,8 @@ public class ScnrEditActivity extends BaseActivity {
           .from(Cmd.class).as("cmd")
           .innerJoin(ScnrCmd.class).as("scnr_cmd")
           .on("cmd._id = scnr_cmd.cmd_id")
-          .where("scnr_cmd.scnr_id = ?", new String[]{scnrId})
-          .orderBy("order ASC").execute();
+          .where("scnr_cmd.scnr_id = ?", Long.toString(scnrId))
+          .orderBy("sort ASC").execute();
       cmdInScnr.addAll(cmdInScnrFromDB);
     }
 
@@ -167,17 +170,43 @@ public class ScnrEditActivity extends BaseActivity {
     switch (id) {
       case R.id.scnr_edit_save_action:
         if (validataScnrEditName(scnrEditName, scnrEditName.getText().toString())) {
-          Scnr scnr;
-          if (scnrId != null) {
-            scnr = new Select().from(Cmd.class).where("_id = ?", new String[]{scnrId})
-                .executeSingle();
-          } else {
-            scnr = new Scnr();
+          ActiveAndroid.beginTransaction();
+          try {
+            Scnr scnr;
+            if (scnrId != -1) {
+              scnr = new Select().from(Scnr.class).where("_id = ?", Long.toString(scnrId))
+                  .executeSingle();
+            } else {
+              scnr = new Scnr();
+            }
+            scnr.setName(scnrEditName.getText().toString());
+            scnr.setActive(scnrEditActive.isChecked());
+
+            scnr.save();
+            long scnrId = scnr.getId();
+
+            if (scnrId != -1) {
+              new Delete().from(ScnrCmd.class).where("scnr_id = ?", scnrId).execute();
+            }
+
+            int order = 0;
+            for (Cmd cmd : cmdInScnr) {
+              ScnrCmd scnrCmd = new ScnrCmd();
+              scnrCmd.setScnrId(scnrId);
+              scnrCmd.setCmdId(cmd.getId());
+              scnrCmd.setOrder(order);
+              scnrCmd.setWaitTime(0);
+              scnrCmd.save();
+              order++;
+            }
+            ActiveAndroid.setTransactionSuccessful();
+          } catch (Exception e) {
+            Toast.makeText(this, getString(R.string.scnr_edit_save_to_db_error), Toast.LENGTH_SHORT)
+                .show();
+          } finally {
+            ActiveAndroid.endTransaction();
+            ScnrEditActivity.this.finish();
           }
-          scnr.setName(scnrEditName.getText().toString());
-          scnr.setActive(scnrEditActive.isChecked());
-          scnr.save();
-          ScnrEditActivity.this.finish();
         }
         return true;
       case R.id.scnr_edit_cancel_action:

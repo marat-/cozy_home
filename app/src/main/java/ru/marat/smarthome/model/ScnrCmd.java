@@ -24,14 +24,14 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name = "scnr_cmd")
+@Table(name = "scnr_cmd", id = "_id")
 public class ScnrCmd extends Model {
 
   @Column(name = "scnr_id")
-  public int scnrId;
+  public long scnrId;
 
   @Column(name = "cmd_id")
-  public int cmdId;
+  public long cmdId;
 
   @Column(name = "wait_time")
   public int waitTime;
@@ -39,19 +39,19 @@ public class ScnrCmd extends Model {
   @Column(name = "order")
   public int order;
 
-  public int getScnrId() {
+  public long getScnrId() {
     return scnrId;
   }
 
-  public void setScnrId(int scnrId) {
+  public void setScnrId(long scnrId) {
     this.scnrId = scnrId;
   }
 
-  public int getCmdId() {
+  public long getCmdId() {
     return cmdId;
   }
 
-  public void setCmdId(int cmdId) {
+  public void setCmdId(long cmdId) {
     this.cmdId = cmdId;
   }
 

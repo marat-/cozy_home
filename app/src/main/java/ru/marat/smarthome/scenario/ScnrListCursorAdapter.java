@@ -28,14 +28,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.app.task.impl.IrSenderTask;
+import ru.marat.smarthome.app.cab.OnActionModeListener;
 
-public class ScnrListCursorAdapter extends CursorAdapter {
+public class ScnrListCursorAdapter extends CursorAdapter implements OnActionModeListener<Long> {
 
   private Context context;
   private int layout;
   private final LayoutInflater inflater;
-  public static final String irSenderIp = "192.168.1.120";
+  protected long selectedCmdId;
 
   public ScnrListCursorAdapter(Context context, int layout, Cursor c, int flags) {
     super(context, c, flags);
@@ -60,12 +60,22 @@ public class ScnrListCursorAdapter extends CursorAdapter {
     scnrName.setText(cursor.getString(scnrNameIndex));
     scnrDescription.setText(cursor.getString(scnrDescriptionIndex));
 
-    view.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        new IrSenderTask(ScnrListCursorAdapter.this.context)
-            .execute(String.format("http://%s/?%s", irSenderIp, ""));
-      }
-    });
+//    view.setOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View view) {
+//        new IrSenderTask(ScnrListCursorAdapter.this.context)
+//            .execute(String.format("http://%s/?%s", irSenderIp, ""));
+//      }
+//    });
+  }
+
+  @Override
+  public void onDestroyActionMode() {
+    this.selectedCmdId = 0;
+  }
+
+  @Override
+  public void onCreateActionMode(Long selectedItemId) {
+    this.selectedCmdId = selectedItemId;
   }
 }

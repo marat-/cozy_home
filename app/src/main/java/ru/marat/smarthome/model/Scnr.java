@@ -40,7 +40,7 @@ public class Scnr extends Model {
   public boolean active;
 
   @Column(name = "date_create")
-  public String date_create;
+  public long date_create;
 
   public String getName() {
     return name;
@@ -74,11 +74,11 @@ public class Scnr extends Model {
     this.active = active;
   }
 
-  public String getDate_create() {
+  public long getDate_create() {
     return date_create;
   }
 
-  public void setDate_create(String date_create) {
+  public void setDateCreate(long date_create) {
     this.date_create = date_create;
   }
 }
