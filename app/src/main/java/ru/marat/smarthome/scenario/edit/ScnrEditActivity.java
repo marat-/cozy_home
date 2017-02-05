@@ -20,14 +20,19 @@
 
 package ru.marat.smarthome.scenario.edit;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.View.DragShadowBuilder;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -38,8 +43,10 @@ import com.activeandroid.query.Select;
 import java.util.ArrayList;
 import java.util.List;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.cab.OnActionModeListener;
 import ru.marat.smarthome.app.core.BaseActivity;
 import ru.marat.smarthome.app.validator.TextValidator;
+import ru.marat.smarthome.command.edit.CmdEditActivity;
 import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.Scnr;
 import ru.marat.smarthome.model.ScnrCmd;
@@ -59,8 +66,11 @@ public class ScnrEditActivity extends BaseActivity {
   ListView scnrEditCmdListView;
 
   private String scnrId;
-
   private List<Cmd> cmdInScnr = new ArrayList<>();
+  private ActionMode.Callback actionModeCallback;
+  private ActionMode actionMode;
+
+  private OnActionModeListener<Long> onActionModeListener;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -100,12 +110,18 @@ public class ScnrEditActivity extends BaseActivity {
       cmdInScnr.addAll(cmdInScnrFromDB);
     }
 
-    ArrayAdapter cmdTypeAdapter = new CmdInScnrArrayAdapter(ScnrEditActivity.this,
+    CmdInScnrArrayAdapter cmdTypeAdapter = new CmdInScnrArrayAdapter(ScnrEditActivity.this,
         R.layout.cmd_in_scnr_row,
         cmdInScnr);
     scnrEditCmdListView.setAdapter(cmdTypeAdapter);
 
+    onActionModeListener = cmdTypeAdapter;
+
     validateFields();
+
+    initCallbackActionMode();
+
+    setUpContextualActionToolbar();
   }
 
   @Override
@@ -171,6 +187,107 @@ public class ScnrEditActivity extends BaseActivity {
     }
 
     return super.onOptionsItemSelected(item);
+  }
+
+  /**
+   * Binds contextual action toolbar on listview's long click
+   */
+  protected void setUpContextualActionToolbar() {
+    scnrEditCmdListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+      @Override
+      public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (actionMode != null) {
+          return false;
+        }
+
+        // Start the CAB using the ActionMode.Callback defined above
+        actionMode = startSupportActionMode(actionModeCallback);
+        actionMode.setTag(id);
+        view.setSelected(true);
+        onActionModeListener.onCreateActionMode(id);
+        ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
+
+        Cmd selectedItem = (Cmd) (parent.getItemAtPosition(position));
+        PassObject passObj = new PassObject(view, selectedItem, scnrEditCmdListView);
+
+        ClipData data = ClipData.newPlainText("", "");
+        DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+        view.startDrag(data, shadowBuilder, passObj, 0);
+
+        return true;
+      }
+    });
+
+    //setUpOnItemClickListener();
+  }
+
+  /**
+   * Initialize callback action mode
+   */
+  private void initCallbackActionMode() {
+    actionModeCallback = new ActionMode.Callback() {
+
+      // Called when the action mode is created; startActionMode() was called
+      @Override
+      public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        // Inflate a menu resource providing context muenu items
+        MenuInflater inflater = mode.getMenuInflater();
+        inflater.inflate(R.menu.cmd_list_menu, menu);
+        return true;
+      }
+
+      // Called each time the action mode is shown. Always called after onCreateActionMode, but
+      // may be called multiple times if the mode is invalidated.
+      @Override
+      public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false; // Return false if nothing is done
+      }
+
+      // Called when the user selects a contextual menu item
+      @Override
+      public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        String cmdId = mode.getTag().toString();
+        switch (item.getItemId()) {
+          case R.id.modify_cmd:
+            Intent intent = new Intent(ScnrEditActivity.this, CmdEditActivity.class);
+            intent.putExtra("item_id", cmdId);
+            startActivity(intent);
+            mode.finish(); // Action picked, so close the CAB
+            return true;
+          case R.id.delete_cmd:
+            Cmd.delete(Cmd.class, Long.valueOf(cmdId));
+            //fillCmdListView();
+            mode.finish(); // Action picked, so close the CAB
+            return true;
+          default:
+            return false;
+        }
+      }
+
+      // Called when the user exits the action mode
+      @Override
+      public void onDestroyActionMode(ActionMode mode) {
+        actionMode = null;
+        onActionModeListener.onDestroyActionMode();
+        ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
+      }
+    };
+  }
+
+  /**
+   * Objects passed in Drag and Drop operation
+   */
+  class PassObject {
+
+    View view;
+    Cmd item;
+    ListView listView;
+
+    PassObject(View v, Cmd i, ListView listView) {
+      this.view = v;
+      this.item = i;
+      this.listView = listView;
+    }
   }
 
 }

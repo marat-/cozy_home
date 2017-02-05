@@ -40,6 +40,12 @@ public class CmdInScnrArrayAdapter extends CustomArrayAdapter<Cmd> {
     super(context, viewResourceId, elemList);
   }
 
+  public View prepareAndGetView(int position, View convertView, ViewGroup parent) {
+    View rowView = super.prepareAndGetView(position, convertView, parent);
+    rowView.setOnDragListener(new ItemOnDragListener(getList().get(position), context));
+    return rowView;
+  }
+
   /**
    * Custom view for spinner
    */

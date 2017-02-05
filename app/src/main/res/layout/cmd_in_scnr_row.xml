@@ -5,6 +5,7 @@
   android:layout_gravity="fill"
   android:orientation="vertical"
   android:padding="9dip"
+  android:background="@color/white"
   android:descendantFocusability="blocksDescendants">
 
   <ImageView
