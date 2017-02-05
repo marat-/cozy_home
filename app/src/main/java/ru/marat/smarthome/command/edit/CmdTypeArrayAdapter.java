@@ -42,7 +42,8 @@ public class CmdTypeArrayAdapter extends CustomArrayAdapter<CmdType> {
   /**
    * Custom view for spinner
    */
-  public View getCustomView(CmdType cmdType, View view, View convertView, ViewGroup parent) {
+  public View getCustomView(int position, CmdType cmdType, View view, View convertView,
+      ViewGroup parent) {
     TextView cmdTypeName = (TextView) view.findViewById(R.id.cmd_type_name);
     cmdTypeName.setText(cmdType.getName());
 

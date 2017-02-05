@@ -20,10 +20,14 @@
 
 package ru.marat.smarthome.scenario.edit;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.view.View;
+import android.view.View.DragShadowBuilder;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import java.util.List;
 import ru.marat.smarthome.R;
@@ -40,16 +44,13 @@ public class CmdInScnrArrayAdapter extends CustomArrayAdapter<Cmd> {
     super(context, viewResourceId, elemList);
   }
 
-  public View prepareAndGetView(int position, View convertView, ViewGroup parent) {
-    View rowView = super.prepareAndGetView(position, convertView, parent);
-    rowView.setOnDragListener(new ItemOnDragListener(getList().get(position), context));
-    return rowView;
-  }
-
   /**
    * Custom view for spinner
    */
-  public View getCustomView(Cmd cmd, View view, View convertView, ViewGroup parent) {
+  public View getCustomView(int position, Cmd cmd, View view, View convertView, ViewGroup parent) {
+    final View selectedView = view;
+    final Cmd selectedCmd = cmd;
+    final ListView scnrEditCmdListView = (ListView) parent;
     TextView cmdName = (TextView) view.findViewById(R.id.cmd_name);
     cmdName.setText(cmd.getName());
 
@@ -58,6 +59,21 @@ public class CmdInScnrArrayAdapter extends CustomArrayAdapter<Cmd> {
         .getIdentifier(cmd.getDevice().getDeviceType().getImage(), "drawable",
             this.context.getPackageName());
     cmdDeviceImage.setImageResource(imageResID);
+
+    ImageView cmdListItemDrag = (ImageView) view.findViewById(R.id.cmd_list_item_drag);
+    cmdListItemDrag.setOnLongClickListener(new OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        PassObject passObj = new PassObject(selectedView, selectedCmd, scnrEditCmdListView);
+
+        ClipData data = ClipData.newPlainText("", "");
+        DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(selectedView);
+        selectedView.startDrag(data, shadowBuilder, passObj, 0);
+        return true;
+      }
+    });
+
+    view.setOnDragListener(new ItemOnDragListener(getList().get(position), context));
 
     return view;
   }

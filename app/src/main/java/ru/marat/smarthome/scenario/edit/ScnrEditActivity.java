@@ -20,7 +20,6 @@
 
 package ru.marat.smarthome.scenario.edit;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -30,7 +29,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.DragShadowBuilder;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
@@ -207,13 +205,6 @@ public class ScnrEditActivity extends BaseActivity {
         onActionModeListener.onCreateActionMode(id);
         ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
 
-        Cmd selectedItem = (Cmd) (parent.getItemAtPosition(position));
-        PassObject passObj = new PassObject(view, selectedItem, scnrEditCmdListView);
-
-        ClipData data = ClipData.newPlainText("", "");
-        DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-        view.startDrag(data, shadowBuilder, passObj, 0);
-
         return true;
       }
     });
@@ -272,22 +263,6 @@ public class ScnrEditActivity extends BaseActivity {
         ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
       }
     };
-  }
-
-  /**
-   * Objects passed in Drag and Drop operation
-   */
-  class PassObject {
-
-    View view;
-    Cmd item;
-    ListView listView;
-
-    PassObject(View v, Cmd i, ListView listView) {
-      this.view = v;
-      this.item = i;
-      this.listView = listView;
-    }
   }
 
 }

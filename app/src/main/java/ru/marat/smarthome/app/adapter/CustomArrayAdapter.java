@@ -60,7 +60,7 @@ public abstract class CustomArrayAdapter<T> extends ArrayAdapter<T> implements
     LayoutInflater inflater = ((Activity) context).getLayoutInflater();
     View view = inflater.inflate(this.rowViewResourceId, parent, false);
     T value = elemList.get(position);
-    return this.getCustomView(value, view, convertView, parent);
+    return this.getCustomView(position, value, view, convertView, parent);
   }
 
   public List<T> getList() {
@@ -80,5 +80,6 @@ public abstract class CustomArrayAdapter<T> extends ArrayAdapter<T> implements
   /**
    * Custom view for spinner
    */
-  public abstract View getCustomView(T value, View view, View convertView, ViewGroup parent);
+  public abstract View getCustomView(int position, T value, View view, View convertView,
+      ViewGroup parent);
 }

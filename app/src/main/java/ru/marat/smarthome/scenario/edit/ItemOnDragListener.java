@@ -8,7 +8,6 @@ import android.widget.ListView;
 import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.model.Cmd;
-import ru.marat.smarthome.scenario.edit.ScnrEditActivity.PassObject;
 
 class ItemOnDragListener implements OnDragListener {
 
@@ -20,9 +19,7 @@ class ItemOnDragListener implements OnDragListener {
   ItemOnDragListener(Cmd cmd, Context context) {
 
     this.context = context;
-
     ListView scnrEditCmdListView;
-
     this.cmd = cmd;
 
     resumeColor = context.getResources().getColor(R.color.white);
@@ -40,24 +37,24 @@ class ItemOnDragListener implements OnDragListener {
         break;
       case DragEvent.ACTION_DROP:
 
-        PassObject passObj = (PassObject) event.getLocalState();
+        PassObject<Cmd> passObj = (PassObject) event.getLocalState();
         View view = passObj.view;
-        Cmd passedItem = passObj.item;
-        ListView listView = (ListView) passObj.listView;
-        CmdInScnrArrayAdapter srcAdapter = ((CmdInScnrArrayAdapter) listView.getAdapter());
+        Cmd passedCmd = passObj.item;
+        ListView listView = passObj.listView;
+        CmdInScnrArrayAdapter adapter = ((CmdInScnrArrayAdapter) listView.getAdapter());
 
-        List<Cmd> srcList = srcAdapter.getList();
+        List<Cmd> cmdList = adapter.getList();
 
-        int removeLocation = srcList.indexOf(passedItem);
-        int insertLocation = srcList.indexOf(cmd);
+        int removeLocation = cmdList.indexOf(passedCmd);
+        int insertLocation = cmdList.indexOf(cmd);
 
         if (removeLocation != insertLocation) {
-          if (removeItemToList(srcList, passedItem)) {
-            srcList.add(insertLocation, passedItem);
+          if (removeItemToList(cmdList, passedCmd)) {
+            cmdList.add(insertLocation, passedCmd);
           }
 
-          srcAdapter.notifyDataSetChanged();
-          listView.smoothScrollToPosition(srcAdapter.getCount() - 1);
+          adapter.notifyDataSetChanged();
+          listView.smoothScrollToPosition(adapter.getCount() - 1);
         }
 
         v.setBackgroundColor(resumeColor);
