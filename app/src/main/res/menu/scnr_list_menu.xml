@@ -27,9 +27,9 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
-    android:id="@+id/modify_cmd"
+    android:id="@+id/modify_scnr"
     android:title="@string/scnr_list_modify_item"></item>
   <item
-    android:id="@+id/delete_cmd"
+    android:id="@+id/delete_scnr"
     android:title="@string/scnr_list_delete_item"></item>
 </menu>

@@ -42,6 +42,7 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.cab.OnActionModeListener;
@@ -229,7 +230,9 @@ public class ScnrEditActivity extends BaseActivity {
 
         // Start the CAB using the ActionMode.Callback defined above
         actionMode = startSupportActionMode(actionModeCallback);
-        actionMode.setTag(id);
+        actionMode.setTag(
+            ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).getList().get((int) id)
+                .getId());
         view.setSelected(true);
         onActionModeListener.onCreateActionMode(id);
         ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
@@ -252,7 +255,7 @@ public class ScnrEditActivity extends BaseActivity {
       public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         // Inflate a menu resource providing context muenu items
         MenuInflater inflater = mode.getMenuInflater();
-        inflater.inflate(R.menu.cmd_list_menu, menu);
+        inflater.inflate(R.menu.cmd_in_scnr_edit_menu, menu);
         return true;
       }
 
@@ -266,17 +269,28 @@ public class ScnrEditActivity extends BaseActivity {
       // Called when the user selects a contextual menu item
       @Override
       public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        String cmdId = mode.getTag().toString();
+        long cmdId = (Long) mode.getTag();
         switch (item.getItemId()) {
-          case R.id.modify_cmd:
+          case R.id.cmd_in_scnr_edit_modify_action:
             Intent intent = new Intent(ScnrEditActivity.this, CmdEditActivity.class);
             intent.putExtra("item_id", cmdId);
             startActivity(intent);
             mode.finish(); // Action picked, so close the CAB
             return true;
-          case R.id.delete_cmd:
-            Cmd.delete(Cmd.class, Long.valueOf(cmdId));
-            //fillCmdListView();
+          case R.id.cmd_in_scnr_remove_action:
+            Iterator<Cmd> cmdListIterator = ((CmdInScnrArrayAdapter) scnrEditCmdListView
+                .getAdapter()).getList().iterator();
+            while (cmdListIterator.hasNext()) {
+              Cmd cmd = cmdListIterator.next();
+              if (cmd.getId() == cmdId) {
+                cmdListIterator.remove();
+                break;
+              }
+            }
+            Toast
+                .makeText(ScnrEditActivity.this, R.string.cmd_in_scnr_list_removed_cmd_successfully,
+                    Toast.LENGTH_SHORT)
+                .show();
             mode.finish(); // Action picked, so close the CAB
             return true;
           default:

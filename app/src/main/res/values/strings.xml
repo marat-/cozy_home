@@ -64,6 +64,8 @@
   <string name="scnr_edit_delete_from_db_error">There were some problems with deleting this command, please check your data and try again</string>
   <string name="scnr_list_modify_item">Modify</string>
   <string name="scnr_list_delete_item">Delete</string>
+  <string name="cmd_in_scnr_list_remove_cmd">Remove command</string>
+  <string name="cmd_in_scnr_list_removed_cmd_successfully">Command was removed successfully</string>
 
   <string name="title_activity_cmd_pick">Select required command.</string>
 </resources>

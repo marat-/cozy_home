@@ -137,13 +137,13 @@ public abstract class AbstractScnrListFragment extends Fragment {
       public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         long scnrId = Long.parseLong(mode.getTag().toString());
         switch (item.getItemId()) {
-          case R.id.modify_cmd:
+          case R.id.modify_scnr:
             Intent intent = new Intent(getActivity(), ScnrEditActivity.class);
             intent.putExtra("item_id", scnrId);
             startActivity(intent);
             mode.finish(); // Action picked, so close the CAB
             return true;
-          case R.id.delete_cmd:
+          case R.id.delete_scnr:
             ActiveAndroid.beginTransaction();
             try {
               Scnr.delete(Scnr.class, scnrId);
