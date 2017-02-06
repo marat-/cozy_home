@@ -33,13 +33,15 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.cab.OnActionModeListener;
-import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.Scnr;
+import ru.marat.smarthome.model.ScnrCmd;
 import ru.marat.smarthome.scenario.edit.ScnrEditActivity;
 
 public abstract class AbstractScnrListFragment extends Fragment {
@@ -142,9 +144,20 @@ public abstract class AbstractScnrListFragment extends Fragment {
             mode.finish(); // Action picked, so close the CAB
             return true;
           case R.id.delete_cmd:
-            Cmd.delete(Cmd.class, scnrId);
-            fillScnrListView();
-            mode.finish(); // Action picked, so close the CAB
+            ActiveAndroid.beginTransaction();
+            try {
+              Scnr.delete(Scnr.class, scnrId);
+              new Delete().from(ScnrCmd.class).where("scnr_id = ?", scnrId).execute();
+              fillScnrListView();
+              ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+              Toast.makeText(getActivity(), getString(R.string.scnr_edit_delete_from_db_error),
+                  Toast.LENGTH_SHORT)
+                  .show();
+            } finally {
+              ActiveAndroid.endTransaction();
+              mode.finish();
+            }
             return true;
           default:
             return false;

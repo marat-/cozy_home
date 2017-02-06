@@ -61,6 +61,7 @@
   <string name="scnr_edit_cancel_action">Cancel</string>
   <string name="scnr_edit_name_empty_error">Please enter scenario name</string>
   <string name="scnr_edit_save_to_db_error">There were some problems with saving this command, please check your data and try again</string>
+  <string name="scnr_edit_delete_from_db_error">There were some problems with deleting this command, please check your data and try again</string>
   <string name="scnr_list_modify_item">Modify</string>
   <string name="scnr_list_delete_item">Delete</string>
 

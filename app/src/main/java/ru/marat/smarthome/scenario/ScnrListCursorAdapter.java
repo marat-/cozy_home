@@ -35,7 +35,7 @@ public class ScnrListCursorAdapter extends CursorAdapter implements OnActionMode
   private Context context;
   private int layout;
   private final LayoutInflater inflater;
-  protected long selectedCmdId;
+  protected long selectedScnrId;
 
   public ScnrListCursorAdapter(Context context, int layout, Cursor c, int flags) {
     super(context, c, flags);
@@ -54,6 +54,7 @@ public class ScnrListCursorAdapter extends CursorAdapter implements OnActionMode
     TextView scnrName = (TextView) view.findViewById(R.id.scnr_name);
     TextView scnrDescription = (TextView) view.findViewById(R.id.scnr_description);
 
+    int cmdDeviceIdIndex = cursor.getColumnIndexOrThrow("_id");
     int scnrNameIndex = cursor.getColumnIndexOrThrow("scnr_name");
     int scnrDescriptionIndex = cursor.getColumnIndexOrThrow("scnr_description");
 
@@ -67,15 +68,21 @@ public class ScnrListCursorAdapter extends CursorAdapter implements OnActionMode
 //            .execute(String.format("http://%s/?%s", irSenderIp, ""));
 //      }
 //    });
+
+    if (cursor.getLong(cmdDeviceIdIndex) == selectedScnrId) {
+      view.setBackgroundResource(R.drawable.round_rect_shape_selected);
+    } else {
+      view.setBackgroundResource(R.drawable.round_rect_shape);
+    }
   }
 
   @Override
   public void onDestroyActionMode() {
-    this.selectedCmdId = 0;
+    this.selectedScnrId = 0;
   }
 
   @Override
   public void onCreateActionMode(Long selectedItemId) {
-    this.selectedCmdId = selectedItemId;
+    this.selectedScnrId = selectedItemId;
   }
 }
