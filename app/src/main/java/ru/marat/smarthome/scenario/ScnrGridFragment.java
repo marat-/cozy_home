@@ -20,11 +20,13 @@
 
 package ru.marat.smarthome.scenario;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -32,12 +34,21 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.command.edit.CmdEditActivity;
+import ru.marat.smarthome.scenario.edit.ScnrEditActivity;
 
 public class ScnrGridFragment extends AbstractScnrListFragment {
 
   @BindView(R.id.scnr_list_grid_view)
   GridView scnrListGridView;
+
+  @BindView(R.id.scnr_fab_menu_add_cmd)
+  FloatingActionButton addCmdFabButton;
+
+  @BindView(R.id.scnr_fab_menu_add_scnr)
+  FloatingActionButton addScnrFabButton;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +66,22 @@ public class ScnrGridFragment extends AbstractScnrListFragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
+    addCmdFabButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getActivity(), CmdEditActivity.class);
+        startActivity(intent);
+      }
+    });
+
+    addScnrFabButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getActivity(), ScnrEditActivity.class);
+        startActivity(intent);
+      }
+    });
   }
 
   @Override
