@@ -36,8 +36,8 @@ public class ScnrCmd extends Model {
   @Column(name = "wait_time")
   public int waitTime;
 
-  @Column(name = "order")
-  public int order;
+  @Column(name = "sort")
+  public int sort;
 
   public long getScnrId() {
     return scnrId;
@@ -63,11 +63,11 @@ public class ScnrCmd extends Model {
     this.waitTime = waitTime;
   }
 
-  public int getOrder() {
-    return order;
+  public int getSort() {
+    return sort;
   }
 
-  public void setOrder(int order) {
-    this.order = order;
+  public void setSort(int sort) {
+    this.sort = sort;
   }
 }

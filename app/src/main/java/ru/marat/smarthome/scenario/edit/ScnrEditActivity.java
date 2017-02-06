@@ -107,7 +107,7 @@ public class ScnrEditActivity extends BaseActivity {
           .innerJoin(ScnrCmd.class).as("scnr_cmd")
           .on("cmd._id = scnr_cmd.cmd_id")
           .where("scnr_cmd.scnr_id = ?", Long.toString(scnrId))
-          .orderBy("sort ASC").execute();
+          .orderBy("scnr_cmd.sort ASC").execute();
       cmdInScnr.addAll(cmdInScnrFromDB);
     }
 
@@ -133,7 +133,7 @@ public class ScnrEditActivity extends BaseActivity {
     long cmdId = data.getLongExtra("cmd_id", -1);
     Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(cmdId)})
         .executeSingle();
-    cmdInScnr.add(cmd);
+    ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).getList().add(cmd);
     ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
   }
 
@@ -190,11 +190,11 @@ public class ScnrEditActivity extends BaseActivity {
             }
 
             int order = 0;
-            for (Cmd cmd : cmdInScnr) {
+            for (Cmd cmd : ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).getList()) {
               ScnrCmd scnrCmd = new ScnrCmd();
               scnrCmd.setScnrId(scnrId);
               scnrCmd.setCmdId(cmd.getId());
-              scnrCmd.setOrder(order);
+              scnrCmd.setSort(order);
               scnrCmd.setWaitTime(0);
               scnrCmd.save();
               order++;
