@@ -28,7 +28,6 @@ import android.support.v7.widget.Toolbar;
 import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.core.BaseActivity;
-import ru.marat.smarthome.command.CmdListFragment;
 
 public class CmdPickActivity extends BaseActivity {
 
@@ -51,7 +50,7 @@ public class CmdPickActivity extends BaseActivity {
 
     fragmentManager = getSupportFragmentManager();
     fragmentTransaction = fragmentManager.beginTransaction();
-    fragmentTransaction.replace(R.id.activity_cmd_pick_container_view, new CmdListFragment())
+    fragmentTransaction.replace(R.id.activity_cmd_pick_container_view, new CmdPickFragment())
         .commit();
   }
 }

@@ -18,14 +18,16 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome.command;
+package ru.marat.smarthome.scenario.edit;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +35,14 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.activeandroid.query.Select;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.model.Cmd;
+import ru.marat.smarthome.command.AbstractCmdListFragment;
+import ru.marat.smarthome.command.CmdListCursorAdapter;
 
-public class CmdListFragment extends AbstractCmdListFragment {
+public class CmdPickFragment extends AbstractCmdListFragment {
 
   @BindView(R.id.commands_list_view)
   ListView commandsListView;
@@ -84,13 +87,43 @@ public class CmdListFragment extends AbstractCmdListFragment {
     commandsListView.setOnItemClickListener(new OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
-            .executeSingle();
-        Intent intent = new Intent();
-        intent.putExtra("cmd_id", cmd.getId());
-        getActivity().setResult(RESULT_OK, intent);
-        getActivity().finish();
+        showWaitTimeSelectDialog(id);
       }
     });
+  }
+
+  public void showWaitTimeSelectDialog(final long cmdId) {
+    final AlertDialog.Builder waitTimeSelectDialogBuilder = new AlertDialog.Builder(getActivity());
+    waitTimeSelectDialogBuilder.setTitle(R.string.cmd_wait_time_select_dialog_title);
+    View dialogView = getActivity().getLayoutInflater()
+        .inflate(R.layout.cmd_wait_time_select_dialog, null);
+    waitTimeSelectDialogBuilder.setView(dialogView);
+    final NumberPicker cmdWaitTimePicker = (NumberPicker) dialogView
+        .findViewById(R.id.cmd_wait_time_picker);
+    cmdWaitTimePicker.setMaxValue(100);
+    cmdWaitTimePicker.setMinValue(0);
+    cmdWaitTimePicker.setValue(3);
+    cmdWaitTimePicker.setWrapSelectorWheel(false);
+    waitTimeSelectDialogBuilder.setPositiveButton(R.string.cmd_wait_time_set,
+        new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            Intent intent = new Intent();
+            intent.putExtra("cmd_id", cmdId);
+            intent.putExtra("cmd_wait_time", cmdWaitTimePicker.getValue());
+
+            getActivity().setResult(RESULT_OK, intent);
+            getActivity().finish();
+          }
+        });
+    waitTimeSelectDialogBuilder.setNegativeButton(R.string.cmd_wait_time_cancel,
+        new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+
+          }
+        });
+
+    waitTimeSelectDialogBuilder.create().show();
   }
 }

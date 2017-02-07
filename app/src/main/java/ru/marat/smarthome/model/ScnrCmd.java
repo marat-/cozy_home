@@ -31,13 +31,23 @@ public class ScnrCmd extends Model {
   public long scnrId;
 
   @Column(name = "cmd_id")
-  public long cmdId;
+  public Cmd cmd;
 
   @Column(name = "wait_time")
   public int waitTime;
 
   @Column(name = "sort")
   public int sort;
+
+  public ScnrCmd(long scnrId, Cmd cmd, int waitTime, int sort) {
+    this.cmd = cmd;
+    this.scnrId = scnrId;
+    this.sort = sort;
+    this.waitTime = waitTime;
+  }
+
+  public ScnrCmd() {
+  }
 
   public long getScnrId() {
     return scnrId;
@@ -47,12 +57,12 @@ public class ScnrCmd extends Model {
     this.scnrId = scnrId;
   }
 
-  public long getCmdId() {
-    return cmdId;
+  public Cmd getCmd() {
+    return cmd;
   }
 
-  public void setCmdId(long cmdId) {
-    this.cmdId = cmdId;
+  public void setCmd(Cmd cmd) {
+    this.cmd = cmd;
   }
 
   public int getWaitTime() {

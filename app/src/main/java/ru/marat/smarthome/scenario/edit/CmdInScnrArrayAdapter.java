@@ -32,31 +32,33 @@ import android.widget.TextView;
 import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.adapter.CustomArrayAdapter;
-import ru.marat.smarthome.model.Cmd;
+import ru.marat.smarthome.model.ScnrCmd;
 
 /**
  * Custom ArrayAdapter for spinner in DeviceEditActivity
  */
-public class CmdInScnrArrayAdapter extends CustomArrayAdapter<Cmd> {
+public class CmdInScnrArrayAdapter extends CustomArrayAdapter<ScnrCmd> {
 
   public CmdInScnrArrayAdapter(Context context, int viewResourceId,
-      List<Cmd> elemList) {
+      List<ScnrCmd> elemList) {
     super(context, viewResourceId, elemList);
   }
 
   /**
    * Custom view for spinner
    */
-  public View getCustomView(int position, Cmd cmd, View view, View convertView, ViewGroup parent) {
+  @Override
+  public View getCustomView(int position, ScnrCmd scnrCmd, View view, View convertView,
+      ViewGroup parent) {
     final View selectedView = view;
-    final Cmd selectedCmd = cmd;
+    final ScnrCmd selectedScnrCmd = scnrCmd;
     final ListView scnrEditCmdListView = (ListView) parent;
     TextView cmdName = (TextView) view.findViewById(R.id.cmd_name);
-    cmdName.setText(cmd.getName());
+    cmdName.setText(scnrCmd.getCmd().getName());
 
     ImageView cmdDeviceImage = (ImageView) view.findViewById(R.id.cmd_device_image);
     int imageResID = this.context.getResources()
-        .getIdentifier(cmd.getDevice().getDeviceType().getImage(), "drawable",
+        .getIdentifier(scnrCmd.getCmd().getDevice().getDeviceType().getImage(), "drawable",
             this.context.getPackageName());
     cmdDeviceImage.setImageResource(imageResID);
 
@@ -64,7 +66,7 @@ public class CmdInScnrArrayAdapter extends CustomArrayAdapter<Cmd> {
     cmdListItemDrag.setOnLongClickListener(new OnLongClickListener() {
       @Override
       public boolean onLongClick(View v) {
-        PassObject passObj = new PassObject(selectedView, selectedCmd, scnrEditCmdListView);
+        PassObject passObj = new PassObject(selectedView, selectedScnrCmd, scnrEditCmdListView);
 
         ClipData data = ClipData.newPlainText("", "");
         DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(selectedView);

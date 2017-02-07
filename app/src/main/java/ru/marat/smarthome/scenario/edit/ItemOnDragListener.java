@@ -7,20 +7,20 @@ import android.view.View.OnDragListener;
 import android.widget.ListView;
 import java.util.List;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.model.Cmd;
+import ru.marat.smarthome.model.ScnrCmd;
 
 class ItemOnDragListener implements OnDragListener {
 
-  private Cmd cmd;
+  private ScnrCmd scnrCmd;
   private Context context;
   private int resumeColor;
   private int dragColor;
 
-  ItemOnDragListener(Cmd cmd, Context context) {
+  ItemOnDragListener(ScnrCmd scnrCmd, Context context) {
 
     this.context = context;
     ListView scnrEditCmdListView;
-    this.cmd = cmd;
+    this.scnrCmd = scnrCmd;
 
     resumeColor = context.getResources().getColor(R.color.white);
     dragColor = context.getResources().getColor(R.color.blue_pressed);
@@ -37,20 +37,20 @@ class ItemOnDragListener implements OnDragListener {
         break;
       case DragEvent.ACTION_DROP:
 
-        PassObject<Cmd> passObj = (PassObject) event.getLocalState();
+        PassObject<ScnrCmd> passObj = (PassObject) event.getLocalState();
         View view = passObj.view;
-        Cmd passedCmd = passObj.item;
+        ScnrCmd passedScnrCmd = passObj.item;
         ListView listView = passObj.listView;
         CmdInScnrArrayAdapter adapter = ((CmdInScnrArrayAdapter) listView.getAdapter());
 
-        List<Cmd> cmdList = adapter.getList();
+        List<ScnrCmd> cmdList = adapter.getList();
 
-        int removeLocation = cmdList.indexOf(passedCmd);
-        int insertLocation = cmdList.indexOf(cmd);
+        int removeLocation = cmdList.indexOf(passedScnrCmd);
+        int insertLocation = cmdList.indexOf(scnrCmd);
 
         if (removeLocation != insertLocation) {
-          if (removeItemToList(cmdList, passedCmd)) {
-            cmdList.add(insertLocation, passedCmd);
+          if (removeItemToList(cmdList, passedScnrCmd)) {
+            cmdList.add(insertLocation, passedScnrCmd);
           }
 
           adapter.notifyDataSetChanged();
@@ -69,7 +69,7 @@ class ItemOnDragListener implements OnDragListener {
     return true;
   }
 
-  private boolean removeItemToList(List<Cmd> l, Cmd it) {
+  private boolean removeItemToList(List<ScnrCmd> l, ScnrCmd it) {
     boolean result = l.remove(it);
     return result;
   }

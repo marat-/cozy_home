@@ -42,7 +42,6 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.cab.OnActionModeListener;
@@ -68,7 +67,7 @@ public class ScnrEditActivity extends BaseActivity {
   ListView scnrEditCmdListView;
 
   private long scnrId;
-  private List<Cmd> cmdInScnr = new ArrayList<>();
+  private List<ScnrCmd> cmdInScnr = new ArrayList<>();
   private ActionMode.Callback actionModeCallback;
   private ActionMode actionMode;
 
@@ -103,10 +102,8 @@ public class ScnrEditActivity extends BaseActivity {
       scnrEditName.setText(scnr.getName());
       scnrEditActive.setChecked(scnr.isActive());
 
-      List<Cmd> cmdInScnrFromDB = new Select()
-          .from(Cmd.class).as("cmd")
-          .innerJoin(ScnrCmd.class).as("scnr_cmd")
-          .on("cmd._id = scnr_cmd.cmd_id")
+      List<ScnrCmd> cmdInScnrFromDB = new Select()
+          .from(ScnrCmd.class).as("scnr_cmd")
           .where("scnr_cmd.scnr_id = ?", Long.toString(scnrId))
           .orderBy("scnr_cmd.sort ASC").execute();
       cmdInScnr.addAll(cmdInScnrFromDB);
@@ -132,9 +129,13 @@ public class ScnrEditActivity extends BaseActivity {
       return;
     }
     long cmdId = data.getLongExtra("cmd_id", -1);
+    int cmdWaitTime = data.getIntExtra("cmd_wait_time", -1);
     Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(cmdId)})
         .executeSingle();
-    ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).getList().add(cmd);
+    List<ScnrCmd> adapterList = ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter())
+        .getList();
+    ScnrCmd scnrCmd = new ScnrCmd(scnrId, cmd, cmdWaitTime, adapterList.size());
+    adapterList.add(scnrCmd);
     ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
   }
 
@@ -190,15 +191,10 @@ public class ScnrEditActivity extends BaseActivity {
               new Delete().from(ScnrCmd.class).where("scnr_id = ?", scnrId).execute();
             }
 
-            int order = 0;
-            for (Cmd cmd : ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).getList()) {
-              ScnrCmd scnrCmd = new ScnrCmd();
-              scnrCmd.setScnrId(scnrId);
-              scnrCmd.setCmdId(cmd.getId());
-              scnrCmd.setSort(order);
-              scnrCmd.setWaitTime(0);
-              scnrCmd.save();
-              order++;
+            for (ScnrCmd scnrCmd : ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter())
+                .getList()) {
+              new ScnrCmd(scnrId, scnrCmd.getCmd(), scnrCmd.getWaitTime(), scnrCmd.getSort())
+                  .save();
             }
             ActiveAndroid.setTransactionSuccessful();
           } catch (Exception e) {
@@ -230,9 +226,7 @@ public class ScnrEditActivity extends BaseActivity {
 
         // Start the CAB using the ActionMode.Callback defined above
         actionMode = startSupportActionMode(actionModeCallback);
-        actionMode.setTag(
-            ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).getList().get((int) id)
-                .getId());
+        actionMode.setTag(id);
         view.setSelected(true);
         onActionModeListener.onCreateActionMode(id);
         ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
@@ -269,24 +263,19 @@ public class ScnrEditActivity extends BaseActivity {
       // Called when the user selects a contextual menu item
       @Override
       public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        long cmdId = (Long) mode.getTag();
+        long scnrCmdOrder = (Long) mode.getTag();
         switch (item.getItemId()) {
           case R.id.cmd_in_scnr_edit_modify_action:
+            ScnrCmd scnrCmd = ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).getList()
+                .get((int) scnrCmdOrder);
             Intent intent = new Intent(ScnrEditActivity.this, CmdEditActivity.class);
-            intent.putExtra("item_id", cmdId);
+            intent.putExtra("item_id", scnrCmd.getCmd().getId());
             startActivity(intent);
             mode.finish(); // Action picked, so close the CAB
             return true;
           case R.id.cmd_in_scnr_remove_action:
-            Iterator<Cmd> cmdListIterator = ((CmdInScnrArrayAdapter) scnrEditCmdListView
-                .getAdapter()).getList().iterator();
-            while (cmdListIterator.hasNext()) {
-              Cmd cmd = cmdListIterator.next();
-              if (cmd.getId() == cmdId) {
-                cmdListIterator.remove();
-                break;
-              }
-            }
+            ((CmdInScnrArrayAdapter) scnrEditCmdListView
+                .getAdapter()).getList().remove((int) scnrCmdOrder);
             Toast
                 .makeText(ScnrEditActivity.this, R.string.cmd_in_scnr_list_removed_cmd_successfully,
                     Toast.LENGTH_SHORT)
