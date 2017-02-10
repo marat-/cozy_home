@@ -9,24 +9,38 @@
   android:descendantFocusability="blocksDescendants">
 
   <ImageView
-    android:id="@+id/cmd_device_image"
+    android:id="@+id/cmd_in_scnr_device_image"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
     android:layout_alignParentTop="true" />
 
   <TextView
-    android:id="@+id/cmd_name"
+    android:id="@+id/cmd_in_scnr_cmd_name"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
-    android:layout_toRightOf="@+id/cmd_device_image"
+    android:layout_toRightOf="@+id/cmd_in_scnr_device_image"
     android:layout_toLeftOf="@+id/cmd_list_item_drag"
     android:layout_marginLeft="10dp"
     android:ellipsize="marquee"
     android:gravity="bottom"
     android:marqueeRepeatLimit="marquee_forever"
     android:textAppearance="?android:attr/textAppearanceMedium"
-    android:textColor="#505050" />
+    android:textColor="@color/black_light" />
+
+  <TextView
+    android:id="@+id/cmd_in_scnr_after_cmd_timeout"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_toRightOf="@+id/cmd_in_scnr_device_image"
+    android:layout_toLeftOf="@+id/cmd_list_item_drag"
+    android:layout_below="@id/cmd_in_scnr_device_image"
+    android:layout_marginLeft="10dp"
+    android:ellipsize="marquee"
+    android:gravity="bottom"
+    android:marqueeRepeatLimit="marquee_forever"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textColor="@color/green_light" />
 
   <ImageView
     android:id="@+id/cmd_list_item_drag"

@@ -54,10 +54,14 @@ public class CmdInScnrArrayAdapter extends CustomArrayAdapter<ScnrCmd> {
     final View selectedView = view;
     final ScnrCmd selectedScnrCmd = scnrCmd;
     final ListView scnrEditCmdListView = (ListView) parent;
-    TextView cmdName = (TextView) view.findViewById(R.id.cmd_name);
+    TextView cmdName = (TextView) view.findViewById(R.id.cmd_in_scnr_cmd_name);
     cmdName.setText(scnrCmd.getCmd().getName());
 
-    ImageView cmdDeviceImage = (ImageView) view.findViewById(R.id.cmd_device_image);
+    TextView afterCmdTimeout = (TextView) view.findViewById(R.id.cmd_in_scnr_after_cmd_timeout);
+    afterCmdTimeout.setText(
+        context.getString(R.string.cmd_in_scnr_list_after_cmd_timeout, scnrCmd.getWaitTime()));
+
+    ImageView cmdDeviceImage = (ImageView) view.findViewById(R.id.cmd_in_scnr_device_image);
     int imageResID = this.context.getResources()
         .getIdentifier(scnrCmd.getCmd().getDevice().getDeviceType().getImage(), "drawable",
             this.context.getPackageName());

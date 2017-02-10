@@ -35,8 +35,8 @@ public class CmdListCursorAdapter extends AbstractCmdCursorAdapter {
 
   @Override
   public void bindCustomView(View view, Context context, Cursor cursor) {
-    TextView cmdName = (TextView) view.findViewById(R.id.cmd_name);
-    ImageView cmdDeviceImage = (ImageView) view.findViewById(R.id.cmd_device_image);
+    TextView cmdName = (TextView) view.findViewById(R.id.cmd_in_scnr_cmd_name);
+    ImageView cmdDeviceImage = (ImageView) view.findViewById(R.id.cmd_in_scnr_device_image);
 
     int cmdDeviceIdIndex = cursor.getColumnIndexOrThrow("_id");
     int deviceImageIndex = cursor.getColumnIndexOrThrow("image");

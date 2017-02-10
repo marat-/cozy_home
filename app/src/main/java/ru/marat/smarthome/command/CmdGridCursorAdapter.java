@@ -35,7 +35,7 @@ public class CmdGridCursorAdapter extends AbstractCmdCursorAdapter {
 
   @Override
   public void bindCustomView(View view, Context context, Cursor cursor) {
-    TextView cmdName = (TextView) view.findViewById(R.id.cmd_name);
+    TextView cmdName = (TextView) view.findViewById(R.id.cmd_in_scnr_cmd_name);
     TextView cmdDescription = (TextView) view.findViewById(R.id.cmd_description);
     ImageView deviceImage = (ImageView) view.findViewById(R.id.device_image);
 

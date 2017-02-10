@@ -71,6 +71,7 @@
   <string name="cmd_wait_time_select_dialog_title">Select wait time after command execution (sec)</string>
   <string name="cmd_wait_time_cancel">Cancel</string>
   <string name="cmd_wait_time_set">Set</string>
+  <string name="cmd_in_scnr_list_after_cmd_timeout">Timeout after: %d seconds</string>
 
   <string name="title_activity_cmd_pick">Select required command.</string>
 </resources>
