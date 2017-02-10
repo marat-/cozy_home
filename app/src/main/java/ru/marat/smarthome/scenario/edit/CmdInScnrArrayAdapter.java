@@ -32,6 +32,7 @@ import android.widget.TextView;
 import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.adapter.CustomArrayAdapter;
+import ru.marat.smarthome.app.core.PassObject;
 import ru.marat.smarthome.model.ScnrCmd;
 
 /**

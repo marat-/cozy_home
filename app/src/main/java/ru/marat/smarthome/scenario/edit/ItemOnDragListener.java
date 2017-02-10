@@ -7,6 +7,7 @@ import android.view.View.OnDragListener;
 import android.widget.ListView;
 import java.util.List;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.core.PassObject;
 import ru.marat.smarthome.model.ScnrCmd;
 
 class ItemOnDragListener implements OnDragListener {
@@ -19,7 +20,6 @@ class ItemOnDragListener implements OnDragListener {
   ItemOnDragListener(ScnrCmd scnrCmd, Context context) {
 
     this.context = context;
-    ListView scnrEditCmdListView;
     this.scnrCmd = scnrCmd;
 
     resumeColor = context.getResources().getColor(R.color.white);
@@ -38,9 +38,8 @@ class ItemOnDragListener implements OnDragListener {
       case DragEvent.ACTION_DROP:
 
         PassObject<ScnrCmd> passObj = (PassObject) event.getLocalState();
-        View view = passObj.view;
-        ScnrCmd passedScnrCmd = passObj.item;
-        ListView listView = passObj.listView;
+        ScnrCmd passedScnrCmd = passObj.getItem();
+        ListView listView = passObj.getListView();
         CmdInScnrArrayAdapter adapter = ((CmdInScnrArrayAdapter) listView.getAdapter());
 
         List<ScnrCmd> cmdList = adapter.getList();
@@ -49,7 +48,7 @@ class ItemOnDragListener implements OnDragListener {
         int insertLocation = cmdList.indexOf(scnrCmd);
 
         if (removeLocation != insertLocation) {
-          if (removeItemToList(cmdList, passedScnrCmd)) {
+          if (cmdList.remove(passedScnrCmd)) {
             cmdList.add(insertLocation, passedScnrCmd);
           }
 
@@ -67,10 +66,5 @@ class ItemOnDragListener implements OnDragListener {
     }
 
     return true;
-  }
-
-  private boolean removeItemToList(List<ScnrCmd> l, ScnrCmd it) {
-    boolean result = l.remove(it);
-    return result;
   }
 }
