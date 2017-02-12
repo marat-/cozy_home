@@ -20,6 +20,7 @@
 
 package ru.marat.smarthome.scenario.edit;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -282,6 +283,11 @@ public class ScnrEditActivity extends BaseActivity {
                 .show();
             mode.finish(); // Action picked, so close the CAB
             return true;
+          case R.id.cmd_in_scnr_list_change_after_cmd_timeout:
+            scnrCmd = ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).getList()
+                .get((int) scnrCmdOrder);
+            showWaitTimeSelectDialog(scnrCmd, mode);
+            return true;
           default:
             return false;
         }
@@ -295,6 +301,29 @@ public class ScnrEditActivity extends BaseActivity {
         ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
       }
     };
+  }
+
+  public void showWaitTimeSelectDialog(final ScnrCmd scnrCmd, final ActionMode mode) {
+    final TimeoutAfterCmdDialog timeoutAfterCmdDialog = new TimeoutAfterCmdDialog();
+    timeoutAfterCmdDialog.setupDialogBuilder(this);
+    timeoutAfterCmdDialog.setPositiveButton(R.string.cmd_wait_time_set,
+        new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            scnrCmd.setWaitTime(timeoutAfterCmdDialog.getCmdWaitTimePickerValue());
+            ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
+            mode.finish();
+          }
+        });
+    timeoutAfterCmdDialog.setNegativeButton(R.string.cmd_wait_time_cancel,
+        new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+
+          }
+        });
+
+    timeoutAfterCmdDialog.show();
   }
 
 }

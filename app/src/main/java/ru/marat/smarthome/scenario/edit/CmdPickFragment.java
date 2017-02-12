@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
@@ -93,30 +91,21 @@ public class CmdPickFragment extends AbstractCmdListFragment {
   }
 
   public void showWaitTimeSelectDialog(final long cmdId) {
-    final AlertDialog.Builder waitTimeSelectDialogBuilder = new AlertDialog.Builder(getActivity());
-    waitTimeSelectDialogBuilder.setTitle(R.string.cmd_wait_time_select_dialog_title);
-    View dialogView = getActivity().getLayoutInflater()
-        .inflate(R.layout.cmd_wait_time_select_dialog, null);
-    waitTimeSelectDialogBuilder.setView(dialogView);
-    final NumberPicker cmdWaitTimePicker = (NumberPicker) dialogView
-        .findViewById(R.id.cmd_wait_time_picker);
-    cmdWaitTimePicker.setMaxValue(100);
-    cmdWaitTimePicker.setMinValue(0);
-    cmdWaitTimePicker.setValue(3);
-    cmdWaitTimePicker.setWrapSelectorWheel(false);
-    waitTimeSelectDialogBuilder.setPositiveButton(R.string.cmd_wait_time_set,
+    final TimeoutAfterCmdDialog timeoutAfterCmdDialog = new TimeoutAfterCmdDialog();
+    timeoutAfterCmdDialog.setupDialogBuilder(getActivity());
+    timeoutAfterCmdDialog.setPositiveButton(R.string.cmd_wait_time_set,
         new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
             Intent intent = new Intent();
             intent.putExtra("cmd_id", cmdId);
-            intent.putExtra("cmd_wait_time", cmdWaitTimePicker.getValue());
+            intent.putExtra("cmd_wait_time", timeoutAfterCmdDialog.getCmdWaitTimePickerValue());
 
             getActivity().setResult(RESULT_OK, intent);
             getActivity().finish();
           }
         });
-    waitTimeSelectDialogBuilder.setNegativeButton(R.string.cmd_wait_time_cancel,
+    timeoutAfterCmdDialog.setNegativeButton(R.string.cmd_wait_time_cancel,
         new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
@@ -124,6 +113,6 @@ public class CmdPickFragment extends AbstractCmdListFragment {
           }
         });
 
-    waitTimeSelectDialogBuilder.create().show();
+    timeoutAfterCmdDialog.show();
   }
 }

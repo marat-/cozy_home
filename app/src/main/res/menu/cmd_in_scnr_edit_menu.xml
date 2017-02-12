@@ -10,4 +10,8 @@
     android:id="@+id/cmd_in_scnr_remove_action"
     android:title="@string/cmd_in_scnr_list_remove_cmd"
     smarthome:showAsAction="ifRoom"></item>
+  <item
+    android:id="@+id/cmd_in_scnr_list_change_after_cmd_timeout"
+    android:title="@string/cmd_in_scnr_list_change_after_cmd_timeout"
+    smarthome:showAsAction="ifRoom"></item>
 </menu>

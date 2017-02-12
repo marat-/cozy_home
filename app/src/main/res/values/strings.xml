@@ -67,6 +67,7 @@
   <string name="scnr_list_modify_item">Modify</string>
   <string name="scnr_list_delete_item">Delete</string>
   <string name="cmd_in_scnr_list_remove_cmd">Remove</string>
+  <string name="cmd_in_scnr_list_change_after_cmd_timeout">Timeout</string>
   <string name="cmd_in_scnr_list_removed_cmd_successfully">Command was removed successfully</string>
   <string name="cmd_wait_time_select_dialog_title">Select wait time after command execution (sec)</string>
   <string name="cmd_wait_time_cancel">Cancel</string>
