@@ -37,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.activeandroid.query.Select;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import java.util.Arrays;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.task.AsyncTaskManager;
 import ru.marat.smarthome.app.task.OnTaskCompleteListener;
@@ -126,8 +127,8 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
             .executeSingle();
-        asyncTaskManager.setupTask(new IrSenderTask(getActivity()),
-            String.format("http://%s/%s", irSenderIp, cmd.getValue()));
+        asyncTaskManager.executeTask(new IrSenderTask(getActivity(),
+            Arrays.asList(String.format("http://%s/%s", irSenderIp, cmd.getValue()))));
       }
     });
   }

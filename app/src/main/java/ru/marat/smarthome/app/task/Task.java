@@ -3,6 +3,7 @@ package ru.marat.smarthome.app.task;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import java.util.List;
 
 public abstract class Task<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
@@ -11,11 +12,16 @@ public abstract class Task<Params, Progress, Result> extends AsyncTask<Params, P
   private Result result;
   private Progress progressMessage;
   private TaskProgressTracker taskProgressTracker;
+  private List<Params> params;
 
-  /* UI Thread */
-  public Task(Context context) {
+  public Task(Context context, List<Params> params) {
     // Keep reference to resources
     this.resources = context.getResources();
+    this.params = params;
+  }
+
+  public List<Params> getParams() {
+    return params;
   }
 
   /* UI Thread */
@@ -62,29 +68,4 @@ public abstract class Task<Params, Progress, Result> extends AsyncTask<Params, P
     // Detach from progress tracker
     taskProgressTracker = null;
   }
-//
-//  /* Separate Thread */
-//  @Override
-//  protected Boolean doInBackground(Void... arg0) {
-//    // Working in separate thread
-//    for (int i = 10; i > 0; --i) {
-//      // Check if task is cancelled
-//      if (isCancelled()) {
-//        // This return causes onPostExecute call on UI thread
-//        return false;
-//      }
-//
-//      try {
-//        // This call causes onProgressUpdate call on UI thread
-//        publishProgress(resources.getString(R.string.task_working, i));
-//        Thread.sleep(1000);
-//      } catch (InterruptedException e) {
-//        e.printStackTrace();
-//        // This return causes onPostExecute call on UI thread
-//        return false;
-//      }
-//    }
-//    // This return causes onPostExecute call on UI thread
-//    return true;
-//  }
 }

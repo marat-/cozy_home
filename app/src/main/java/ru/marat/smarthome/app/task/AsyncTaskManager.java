@@ -4,12 +4,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import java.util.PriorityQueue;
 
-public final class AsyncTaskManager<T> implements TaskProgressTracker, OnCancelListener {
+public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCancelListener {
 
   private final OnTaskCompleteListener taskCompleteListener;
   private final ProgressDialog progressDialog;
   private Task asyncTask;
+  private PriorityQueue<Task> taskQueue = new PriorityQueue();
 
   public AsyncTaskManager(Context context, OnTaskCompleteListener taskCompleteListener) {
     // Save reference to complete listener (activity)
@@ -28,13 +30,17 @@ public final class AsyncTaskManager<T> implements TaskProgressTracker, OnCancelL
         });
   }
 
-  public void setupTask(Task asyncTask, T... params) {
+  public void submitTask(Task asyncTask) {
+
+  }
+
+  public void executeTask(Task asyncTask) {
     // Keep task
     this.asyncTask = asyncTask;
     // Wire task to tracker (this)
     this.asyncTask.setTaskProgressTracker(this);
     // Start task
-    this.asyncTask.execute(params);
+    this.asyncTask.execute(asyncTask.getParams().toArray());
   }
 
   @Override

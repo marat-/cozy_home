@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.task.Task;
 import ru.marat.smarthome.app.task.TaskStatus;
@@ -36,8 +37,8 @@ public class IrSenderTask extends Task<String, String, TaskStatus> {
 
   private Context context;
 
-  public IrSenderTask(Context context) {
-    super(context);
+  public IrSenderTask(Context context, List<String> params) {
+    super(context, params);
     this.context = context;
   }
 

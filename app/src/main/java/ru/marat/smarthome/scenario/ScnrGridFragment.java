@@ -108,7 +108,7 @@ public class ScnrGridFragment extends AbstractScnrListFragment {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //        Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
 //            .executeSingle();
-//        asyncTaskManager.setupTask(new IrSenderTask(getActivity()),
+//        asyncTaskManager.executeTask(new IrSenderTask(getActivity()),
 //            String.format("http://%s/%s", irSenderIp, cmd.getValue()));
       }
     });
