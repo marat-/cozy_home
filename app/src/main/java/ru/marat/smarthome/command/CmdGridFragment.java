@@ -37,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.activeandroid.query.Select;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import java.util.Arrays;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.task.AsyncTaskManager;
@@ -58,6 +59,9 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
 
   @BindView(R.id.commands_grid_view)
   GridView commandsGridView;
+
+  @BindView(R.id.cmd_list_fab_menu)
+  FloatingActionsMenu menuFabButton;
 
   private AsyncTaskManager<String> asyncTaskManager;
 
@@ -89,6 +93,7 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
     addCmdFabButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        menuFabButton.collapse();
         Intent intent = new Intent(getActivity(), CmdEditActivity.class);
         startActivity(intent);
       }
@@ -97,6 +102,7 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
     addScnrFabButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        menuFabButton.collapse();
         Intent intent = new Intent(getActivity(), ScnrEditActivity.class);
         startActivity(intent);
       }
