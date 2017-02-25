@@ -1,30 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item>
-        <shape  android:shape="rectangle">
+  <item>
+    <shape android:shape="rectangle">
 
-            <solid android:color="#d8d8d8" />
-            <corners android:radius="3dp" />
+      <solid android:color="#d8d8d8" />
+      <corners android:radius="3dp" />
 
+    </shape>
+  </item>
+
+  <item
+    android:bottom="2px"
+    android:left="2px"
+    android:right="2px"
+    android:top="2px">
+
+    <shape xmlns:android="http://schemas.android.com/apk/res/android"
+      android:shape="rectangle">
+
+      <solid android:color="#fcfcfc" />
+
+      <corners
+        android:bottomLeftRadius="3dp"
+        android:bottomRightRadius="3dp"
+        android:topLeftRadius="3dp"
+        android:topRightRadius="3dp" />
+    </shape>
+
+  </item>
+  <item>
+    <ripple xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:color="#67bc84"
+      tools:targetApi="lollipop">
+      <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+          <solid android:color="#499c47" />
         </shape>
-    </item>
-
-    <item android:bottom="10px" android:right="8px">
-
-        <shape xmlns:android="http://schemas.android.com/apk/res/android"
-            android:shape="rectangle" >
-
-            <solid android:color="#24B245" />
-
-            <corners
-                android:bottomLeftRadius="3dp"
-                android:bottomRightRadius="3dp"
-                android:topLeftRadius="3dp"
-                android:topRightRadius="3dp" />
-        </shape>
-
-    </item>
-
-
+      </item>
+    </ripple>
+  </item>
 </layer-list>

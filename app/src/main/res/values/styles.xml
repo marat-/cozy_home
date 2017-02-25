@@ -29,4 +29,9 @@
     <item name="android:tint">@color/white</item>
   </style>
 
+  <style name="BoldGridTextAppearance" parent="@android:style/TextAppearance.Small">
+    <item name="android:textStyle">bold</item>
+    <item name="android:textColor">@color/grey_strong</item>
+  </style>
+
 </resources>
