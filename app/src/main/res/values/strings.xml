@@ -49,8 +49,12 @@
   <string name="task_connecting">Connecting to the IR device...</string>
   <string name="task_sent_command">Command sent...</string>
   <string name="task_starting">Starting...</string>
-  <string name="task_cancelled">Task is cancelled by user</string>
+  <string name="task_cancelled">Task was cancelled by user</string>
   <string name="task_completed">Command execution was completed</string>
+  <string name="task_queue_empty_exception">Task queue is empty</string>
+  <string name="scenario_execution_interrupted_exception">Scenario execution was interrupted</string>
+  <string name="scenario_cancelled">Scenario was cancelled by user</string>
+  <string name="scenario_completed">Scenario execution was completed</string>
 
   <string name="scnr_fab_action_add_cmd">Create command</string>
   <string name="scnr_fab_action_add_scnr">Create scenario</string>
@@ -69,9 +73,9 @@
   <string name="cmd_in_scnr_list_remove_cmd">Remove</string>
   <string name="cmd_in_scnr_list_change_after_cmd_timeout">Timeout</string>
   <string name="cmd_in_scnr_list_removed_cmd_successfully">Command was removed successfully</string>
-  <string name="cmd_wait_time_select_dialog_title">Select wait time after command execution (sec)</string>
-  <string name="cmd_wait_time_cancel">Cancel</string>
-  <string name="cmd_wait_time_set">Set</string>
+  <string name="timeout_after_cmd_dialog_title">Select wait time after command execution (sec)</string>
+  <string name="timeout_after_cmd_cancel">Cancel</string>
+  <string name="timeout_after_cmd_set">Set</string>
   <string name="cmd_in_scnr_list_after_cmd_timeout">Timeout after: %d seconds</string>
 
   <string name="title_activity_cmd_pick">Select required command.</string>

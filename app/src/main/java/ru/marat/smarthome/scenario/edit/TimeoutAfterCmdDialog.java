@@ -14,37 +14,37 @@ import ru.marat.smarthome.R;
 
 public class TimeoutAfterCmdDialog {
 
-  private NumberPicker cmdWaitTimePicker;
+  private NumberPicker timeoutAfterCmdTimePicker;
 
-  private AlertDialog.Builder waitTimeSelectDialogBuilder;
+  private AlertDialog.Builder timeoutAfterCmdDialogBuilder;
 
   public void setupDialogBuilder(Activity activity) {
-    waitTimeSelectDialogBuilder = new AlertDialog.Builder(activity);
-    waitTimeSelectDialogBuilder.setTitle(R.string.cmd_wait_time_select_dialog_title);
+    timeoutAfterCmdDialogBuilder = new AlertDialog.Builder(activity);
+    timeoutAfterCmdDialogBuilder.setTitle(R.string.timeout_after_cmd_dialog_title);
     View dialogView = activity.getLayoutInflater()
-        .inflate(R.layout.cmd_wait_time_select_dialog, null);
-    waitTimeSelectDialogBuilder.setView(dialogView);
-    cmdWaitTimePicker = (NumberPicker) dialogView
-        .findViewById(R.id.cmd_wait_time_picker);
-    cmdWaitTimePicker.setMaxValue(100);
-    cmdWaitTimePicker.setMinValue(0);
-    cmdWaitTimePicker.setValue(3);
-    cmdWaitTimePicker.setWrapSelectorWheel(false);
+        .inflate(R.layout.timeout_after_cmd_select_dialog, null);
+    timeoutAfterCmdDialogBuilder.setView(dialogView);
+    timeoutAfterCmdTimePicker = (NumberPicker) dialogView
+        .findViewById(R.id.timeout_after_cmd_time_picker);
+    timeoutAfterCmdTimePicker.setMaxValue(100);
+    timeoutAfterCmdTimePicker.setMinValue(0);
+    timeoutAfterCmdTimePicker.setValue(3);
+    timeoutAfterCmdTimePicker.setWrapSelectorWheel(false);
   }
 
-  public int getCmdWaitTimePickerValue() {
-    return cmdWaitTimePicker.getValue();
+  public int getTimeoutAfterCmdTimePickerValue() {
+    return timeoutAfterCmdTimePicker.getValue();
   }
 
   public Builder setPositiveButton(int textId, final OnClickListener listener) {
-    return waitTimeSelectDialogBuilder.setPositiveButton(textId, listener);
+    return timeoutAfterCmdDialogBuilder.setPositiveButton(textId, listener);
   }
 
   public Builder setNegativeButton(int textId, final OnClickListener listener) {
-    return waitTimeSelectDialogBuilder.setNegativeButton(textId, listener);
+    return timeoutAfterCmdDialogBuilder.setNegativeButton(textId, listener);
   }
 
   public void show() {
-    waitTimeSelectDialogBuilder.create().show();
+    timeoutAfterCmdDialogBuilder.create().show();
   }
 }

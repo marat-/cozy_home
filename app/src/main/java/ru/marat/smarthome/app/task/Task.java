@@ -13,11 +13,23 @@ public abstract class Task<Params, Progress, Result> extends AsyncTask<Params, P
   private Progress progressMessage;
   private TaskProgressTracker taskProgressTracker;
   private List<Params> params;
+  private long timeoutAfter;
 
   public Task(Context context, List<Params> params) {
     // Keep reference to resources
     this.resources = context.getResources();
     this.params = params;
+  }
+
+  public Task(Context context, List<Params> params, long timeoutAfter) {
+    // Keep reference to resources
+    this.resources = context.getResources();
+    this.params = params;
+    this.timeoutAfter = timeoutAfter;
+  }
+
+  public long getTimeoutAfter() {
+    return timeoutAfter;
   }
 
   public List<Params> getParams() {

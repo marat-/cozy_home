@@ -32,14 +32,29 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.activeandroid.query.Select;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.log4j.Logger;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.logger.ALogger;
+import ru.marat.smarthome.app.task.AsyncTaskManager;
+import ru.marat.smarthome.app.task.OnTaskCompleteListener;
+import ru.marat.smarthome.app.task.Task;
+import ru.marat.smarthome.app.task.TaskStatus;
+import ru.marat.smarthome.app.task.exception.EmptyTaskQueueException;
+import ru.marat.smarthome.app.task.impl.IrSenderTask;
 import ru.marat.smarthome.command.edit.CmdEditActivity;
+import ru.marat.smarthome.model.ScnrCmd;
 import ru.marat.smarthome.scenario.edit.ScnrEditActivity;
 
-public class ScnrGridFragment extends AbstractScnrListFragment {
+public class ScnrGridFragment extends AbstractScnrListFragment implements OnTaskCompleteListener {
+
+  private Logger logger = ALogger.getLogger(ScnrGridFragment.class);
 
   @BindView(R.id.scnr_list_grid_view)
   GridView scnrListGridView;
@@ -50,11 +65,16 @@ public class ScnrGridFragment extends AbstractScnrListFragment {
   @BindView(R.id.scnr_fab_menu_add_scnr)
   FloatingActionButton addScnrFabButton;
 
+  public static final String irSenderIp = "192.168.1.204:7474";
+
+  private AsyncTaskManager<String> asyncTaskManager;
+
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_scenario_grid, null);
     ButterKnife.bind(this, view);
+    asyncTaskManager = new AsyncTaskManager<>(getActivity(), this);
     return view;
   }
 
@@ -106,11 +126,45 @@ public class ScnrGridFragment extends AbstractScnrListFragment {
     scnrListGridView.setOnItemClickListener(new OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
-//            .executeSingle();
-//        asyncTaskManager.executeTask(new IrSenderTask(getActivity()),
-//            String.format("http://%s/%s", irSenderIp, cmd.getValue()));
+        List<ScnrCmd> cmdInScnrFromDB = new Select()
+            .from(ScnrCmd.class).as("scnr_cmd")
+            .where("scnr_cmd.scnr_id = ?", Long.toString(id))
+            .orderBy("scnr_cmd.sort ASC").execute();
+        for (ScnrCmd scnrCmd : cmdInScnrFromDB) {
+          Task asyncTask = new IrSenderTask(getActivity(),
+              Arrays
+                  .asList(String.format("http://%s/%s", irSenderIp, scnrCmd.getCmd().getValue())),
+              scnrCmd.getTimeoutAfter());
+          asyncTaskManager.submitTask(asyncTask);
+        }
+        try {
+          asyncTaskManager.executeScenario();
+        } catch (EmptyTaskQueueException e) {
+          logger.warn(e);
+        }
       }
     });
+  }
+
+  @Override
+  public void onTaskComplete(Task task) {
+    IrSenderTask irSenderTask = (IrSenderTask) task;
+    if (irSenderTask.isCancelled()) {
+      // Report about cancel
+      Toast.makeText(getActivity(), R.string.scenario_cancelled, Toast.LENGTH_LONG)
+          .show();
+    } else {
+      // Get result
+      TaskStatus result = null;
+      try {
+        result = irSenderTask.get();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      // Report about result
+      Toast.makeText(getActivity(),
+          getString(R.string.scenario_completed),
+          Toast.LENGTH_LONG).show();
+    }
   }
 }

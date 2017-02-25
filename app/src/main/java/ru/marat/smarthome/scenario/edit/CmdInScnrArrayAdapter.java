@@ -59,7 +59,7 @@ public class CmdInScnrArrayAdapter extends CustomArrayAdapter<ScnrCmd> {
 
     TextView afterCmdTimeout = (TextView) view.findViewById(R.id.cmd_in_scnr_after_cmd_timeout);
     afterCmdTimeout.setText(
-        context.getString(R.string.cmd_in_scnr_list_after_cmd_timeout, scnrCmd.getWaitTime()));
+        context.getString(R.string.cmd_in_scnr_list_after_cmd_timeout, scnrCmd.getTimeoutAfter()));
 
     ImageView cmdDeviceImage = (ImageView) view.findViewById(R.id.cmd_in_scnr_device_image);
     int imageResID = this.context.getResources()

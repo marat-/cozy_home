@@ -130,12 +130,12 @@ public class ScnrEditActivity extends BaseActivity {
       return;
     }
     long cmdId = data.getLongExtra("cmd_id", -1);
-    int cmdWaitTime = data.getIntExtra("cmd_wait_time", -1);
+    int timeoutAfterCmd = data.getIntExtra("timeout_after_cmd", -1);
     Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(cmdId)})
         .executeSingle();
     List<ScnrCmd> adapterList = ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter())
         .getList();
-    ScnrCmd scnrCmd = new ScnrCmd(scnrId, cmd, cmdWaitTime, adapterList.size());
+    ScnrCmd scnrCmd = new ScnrCmd(scnrId, cmd, timeoutAfterCmd, adapterList.size());
     adapterList.add(scnrCmd);
     ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
   }
@@ -194,7 +194,7 @@ public class ScnrEditActivity extends BaseActivity {
 
             for (ScnrCmd scnrCmd : ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter())
                 .getList()) {
-              new ScnrCmd(scnrId, scnrCmd.getCmd(), scnrCmd.getWaitTime(), scnrCmd.getSort())
+              new ScnrCmd(scnrId, scnrCmd.getCmd(), scnrCmd.getTimeoutAfter(), scnrCmd.getSort())
                   .save();
             }
             ActiveAndroid.setTransactionSuccessful();
@@ -306,16 +306,16 @@ public class ScnrEditActivity extends BaseActivity {
   public void showWaitTimeSelectDialog(final ScnrCmd scnrCmd, final ActionMode mode) {
     final TimeoutAfterCmdDialog timeoutAfterCmdDialog = new TimeoutAfterCmdDialog();
     timeoutAfterCmdDialog.setupDialogBuilder(this);
-    timeoutAfterCmdDialog.setPositiveButton(R.string.cmd_wait_time_set,
+    timeoutAfterCmdDialog.setPositiveButton(R.string.timeout_after_cmd_set,
         new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            scnrCmd.setWaitTime(timeoutAfterCmdDialog.getCmdWaitTimePickerValue());
+            scnrCmd.setTimeoutAfter(timeoutAfterCmdDialog.getTimeoutAfterCmdTimePickerValue());
             ((CmdInScnrArrayAdapter) scnrEditCmdListView.getAdapter()).notifyDataSetChanged();
             mode.finish();
           }
         });
-    timeoutAfterCmdDialog.setNegativeButton(R.string.cmd_wait_time_cancel,
+    timeoutAfterCmdDialog.setNegativeButton(R.string.timeout_after_cmd_cancel,
         new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {

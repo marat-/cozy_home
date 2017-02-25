@@ -3,7 +3,7 @@
   android:layout_height="fill_parent">
 
   <NumberPicker
-    android:id="@+id/cmd_wait_time_picker"
+    android:id="@+id/timeout_after_cmd_time_picker"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="64dp"

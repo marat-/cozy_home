@@ -85,27 +85,28 @@ public class CmdPickFragment extends AbstractCmdListFragment {
     commandsListView.setOnItemClickListener(new OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        showWaitTimeSelectDialog(id);
+        showTimeoutafterCmdDialog(id);
       }
     });
   }
 
-  public void showWaitTimeSelectDialog(final long cmdId) {
+  public void showTimeoutafterCmdDialog(final long cmdId) {
     final TimeoutAfterCmdDialog timeoutAfterCmdDialog = new TimeoutAfterCmdDialog();
     timeoutAfterCmdDialog.setupDialogBuilder(getActivity());
-    timeoutAfterCmdDialog.setPositiveButton(R.string.cmd_wait_time_set,
+    timeoutAfterCmdDialog.setPositiveButton(R.string.timeout_after_cmd_set,
         new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
             Intent intent = new Intent();
             intent.putExtra("cmd_id", cmdId);
-            intent.putExtra("cmd_wait_time", timeoutAfterCmdDialog.getCmdWaitTimePickerValue());
+            intent.putExtra("timeout_after_cmd",
+                timeoutAfterCmdDialog.getTimeoutAfterCmdTimePickerValue());
 
             getActivity().setResult(RESULT_OK, intent);
             getActivity().finish();
           }
         });
-    timeoutAfterCmdDialog.setNegativeButton(R.string.cmd_wait_time_cancel,
+    timeoutAfterCmdDialog.setNegativeButton(R.string.timeout_after_cmd_cancel,
         new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {

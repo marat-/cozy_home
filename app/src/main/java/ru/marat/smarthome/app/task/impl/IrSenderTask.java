@@ -42,6 +42,11 @@ public class IrSenderTask extends Task<String, String, TaskStatus> {
     this.context = context;
   }
 
+  public IrSenderTask(Context context, List<String> params, long timeoutAfter) {
+    super(context, params, timeoutAfter);
+    this.context = context;
+  }
+
   @Override
   protected void onPreExecute() {
     super.onPreExecute();
