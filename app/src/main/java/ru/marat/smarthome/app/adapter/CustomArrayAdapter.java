@@ -27,12 +27,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import java.util.List;
+import ru.marat.smarthome.app.cab.OnActionModeListener;
 
-public abstract class CustomArrayAdapter<T> extends ArrayAdapter<T> {
+public abstract class CustomArrayAdapter<T> extends ArrayAdapter<T> implements
+    OnActionModeListener<Long> {
 
   protected Context context;
   protected List<T> elemList;
   protected int rowViewResourceId;
+  protected long selectedCmdId;
 
   public CustomArrayAdapter(Context context, int viewResourceId,
       List<T> elemList) {
@@ -57,11 +60,26 @@ public abstract class CustomArrayAdapter<T> extends ArrayAdapter<T> {
     LayoutInflater inflater = ((Activity) context).getLayoutInflater();
     View view = inflater.inflate(this.rowViewResourceId, parent, false);
     T value = elemList.get(position);
-    return this.getCustomView(value, view, convertView, parent);
+    return this.getCustomView(position, value, view, convertView, parent);
+  }
+
+  public List<T> getList() {
+    return elemList;
+  }
+
+  @Override
+  public void onDestroyActionMode() {
+    this.selectedCmdId = 0;
+  }
+
+  @Override
+  public void onCreateActionMode(Long selectedItemId) {
+    this.selectedCmdId = selectedItemId;
   }
 
   /**
    * Custom view for spinner
    */
-  public abstract View getCustomView(T value, View view, View convertView, ViewGroup parent);
+  public abstract View getCustomView(int position, T value, View view, View convertView,
+      ViewGroup parent);
 }

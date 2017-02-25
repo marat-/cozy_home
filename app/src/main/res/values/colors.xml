@@ -4,6 +4,7 @@
     <color name="primary_dark">#303F9F</color>
     <color name="accent">#FF4081</color>
     <color name="black">#000</color>
+    <color name="black_light">#505050</color>
     <color name="orange">#FA0</color>
     <color name="half_black">#808080</color>
     <color name="white">#fafafa</color>
@@ -12,4 +13,5 @@
     <color name="black_semi_transparent">#B2000000</color>
     <color name="blue">#029acc</color>
     <color name="blue_pressed">#0cafe4</color>
+    <color name="green_light">#89d68d</color>
 </resources>

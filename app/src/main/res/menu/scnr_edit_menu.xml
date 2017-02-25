@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:smarthome="http://schemas.android.com/apk/res-auto">
+
+  <item
+    android:id="@+id/scnr_edit_save_action"
+    android:title="@string/scnr_edit_save_action"
+    smarthome:showAsAction="ifRoom"></item>
+  <item
+    android:id="@+id/scnr_edit_cancel_action"
+    android:title="@string/scnr_edit_cancel_action"
+    smarthome:showAsAction="ifRoom"></item>
+</menu>

@@ -43,7 +43,8 @@ public class DeviceArrayAdapter extends CustomArrayAdapter<Device> {
   /**
    * Custom view for spinner
    */
-  public View getCustomView(Device device, View view, View convertView, ViewGroup parent) {
+  public View getCustomView(int position, Device device, View view, View convertView,
+      ViewGroup parent) {
     TextView deviceName = (TextView) view.findViewById(R.id.device_name);
     deviceName.setText(device.getName());
 

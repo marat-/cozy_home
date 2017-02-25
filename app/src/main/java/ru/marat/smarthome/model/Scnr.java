@@ -37,10 +37,10 @@ public class Scnr extends Model {
   public int sort;
 
   @Column(name = "active")
-  public int active;
+  public boolean active;
 
   @Column(name = "date_create")
-  public String date_create;
+  public long date_create;
 
   public String getName() {
     return name;
@@ -66,19 +66,19 @@ public class Scnr extends Model {
     this.sort = sort;
   }
 
-  public int getActive() {
+  public boolean isActive() {
     return active;
   }
 
-  public void setActive(int active) {
+  public void setActive(boolean active) {
     this.active = active;
   }
 
-  public String getDate_create() {
+  public long getDate_create() {
     return date_create;
   }
 
-  public void setDate_create(String date_create) {
+  public void setDateCreate(long date_create) {
     this.date_create = date_create;
   }
 }

@@ -18,90 +18,46 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome.command;
+package ru.marat.smarthome.scenario;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.GridView;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.cab.OnActionModeListener;
-import ru.marat.smarthome.app.task.AsyncTaskManager;
-import ru.marat.smarthome.app.task.OnTaskCompleteListener;
-import ru.marat.smarthome.app.task.Task;
-import ru.marat.smarthome.app.task.TaskStatus;
-import ru.marat.smarthome.app.task.impl.IrSenderTask;
-import ru.marat.smarthome.command.edit.CmdEditActivity;
-import ru.marat.smarthome.model.Cmd;
-import ru.marat.smarthome.model.CmdType;
-import ru.marat.smarthome.model.Device;
-import ru.marat.smarthome.model.DeviceType;
+import ru.marat.smarthome.model.Scnr;
+import ru.marat.smarthome.model.ScnrCmd;
+import ru.marat.smarthome.scenario.edit.ScnrEditActivity;
 
-public class CmdListFragment extends Fragment implements OnTaskCompleteListener {
-
-  @BindView(R.id.cmd_fab_menu_add_cmd)
-  FloatingActionButton addCmdFabButton;
-
-  @BindView(R.id.commands_grid_view)
-  GridView commandsGridView;
+public abstract class AbstractScnrListFragment extends Fragment {
 
   private ActionMode.Callback actionModeCallback;
   private ActionMode actionMode;
 
-  private AsyncTaskManager<String> asyncTaskManager;
-
   private OnActionModeListener<Long> onActionModeListener;
 
-  public static final String irSenderIp = "192.168.1.204:7474";
-
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_cmd_list, null);
-    ButterKnife.bind(this, view);
-
-    // Create manager and set this activity as context and listener
-    asyncTaskManager = new AsyncTaskManager<>(getActivity(), this);
-    // Handle task that can be retained before
-    //asyncTaskManager.handleRetainedTask(getActivity().getLastNonConfigurationInstance());
-
-    return view;
-  }
+  public abstract AbsListView getListView();
 
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    addCmdFabButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        Intent intent = new Intent(getActivity(), CmdEditActivity.class);
-        startActivity(intent);
-      }
-    });
-
-    fillCmdGridView();
+    fillScnrListView();
 
     initCallbackActionMode();
 
@@ -111,37 +67,28 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
   @Override
   public void onResume() {
     super.onResume();
-    fillCmdGridView();
+    fillScnrListView();
   }
 
-  protected void fillCmdGridView() {
+  protected void fillScnrListView() {
     From query = new Select(
-        "cmd._id, cmd.name AS cmd_name, device.name AS device_name, cmd.value, device_type.image")
-        .from(Cmd.class).as("cmd")
-        .innerJoin(CmdType.class).as("cmd_type")
-        .on("cmd.type_id=cmd_type._id")
-        .innerJoin(Device.class).as("device")
-        .on("cmd.device_id=device._id")
-        .innerJoin(DeviceType.class).as("device_type")
-        .on("device.type_id = device_type._id");
+        "scnr._id, scnr.name AS scnr_name, scnr.description AS scnr_description")
+        .from(Scnr.class).as("scnr");
 
     Cursor cursor = ActiveAndroid.getDatabase().rawQuery(query.toSql(), query.getArguments());
 
-    CmdListCursorAdapter cmdListCursorAdapter = new CmdListCursorAdapter(
-        this.getActivity(),
-        R.layout.cmd_grid_row,
-        cursor,
-        CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+    ScnrListCursorAdapter cmdCursorAdapter = getCustomAdapter(cursor);
 
-    commandsGridView.setAdapter(cmdListCursorAdapter);
-    onActionModeListener = cmdListCursorAdapter;
+    onActionModeListener = cmdCursorAdapter;
   }
+
+  public abstract ScnrListCursorAdapter getCustomAdapter(Cursor cursor);
 
   /**
    * Binds contextual action toolbar on listview's long click
    */
   protected void setUpContextualActionToolbar() {
-    commandsGridView.setOnItemLongClickListener(new OnItemLongClickListener() {
+    getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
       @Override
       public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         if (actionMode != null) {
@@ -153,21 +100,15 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
         actionMode.setTag(id);
         view.setSelected(true);
         onActionModeListener.onCreateActionMode(id);
-        ((CmdListCursorAdapter) commandsGridView.getAdapter()).notifyDataSetChanged();
+        getCustomAdapter(null).notifyDataSetChanged();
         return true;
       }
     });
 
-    commandsGridView.setOnItemClickListener(new OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
-            .executeSingle();
-        asyncTaskManager.setupTask(new IrSenderTask(getActivity()),
-            String.format("http://%s/%s", irSenderIp, cmd.getValue()));
-      }
-    });
+    setUpOnItemClickListener();
   }
+
+  public abstract void setUpOnItemClickListener();
 
   /**
    * Initialize callback action mode
@@ -180,7 +121,7 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
       public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         // Inflate a menu resource providing context muenu items
         MenuInflater inflater = mode.getMenuInflater();
-        inflater.inflate(R.menu.cmd_list_menu, menu);
+        inflater.inflate(R.menu.scnr_list_menu, menu);
         return true;
       }
 
@@ -194,18 +135,29 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
       // Called when the user selects a contextual menu item
       @Override
       public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        String cmdId = mode.getTag().toString();
+        long scnrId = Long.parseLong(mode.getTag().toString());
         switch (item.getItemId()) {
-          case R.id.modify_cmd:
-            Intent intent = new Intent(getActivity(), CmdEditActivity.class);
-            intent.putExtra("item_id", cmdId);
+          case R.id.modify_scnr:
+            Intent intent = new Intent(getActivity(), ScnrEditActivity.class);
+            intent.putExtra("item_id", scnrId);
             startActivity(intent);
             mode.finish(); // Action picked, so close the CAB
             return true;
-          case R.id.delete_cmd:
-            Cmd.delete(Cmd.class, Long.valueOf(cmdId));
-            fillCmdGridView();
-            mode.finish(); // Action picked, so close the CAB
+          case R.id.delete_scnr:
+            ActiveAndroid.beginTransaction();
+            try {
+              Scnr.delete(Scnr.class, scnrId);
+              new Delete().from(ScnrCmd.class).where("scnr_id = ?", scnrId).execute();
+              fillScnrListView();
+              ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+              Toast.makeText(getActivity(), getString(R.string.scnr_edit_delete_from_db_error),
+                  Toast.LENGTH_SHORT)
+                  .show();
+            } finally {
+              ActiveAndroid.endTransaction();
+              mode.finish();
+            }
             return true;
           default:
             return false;
@@ -217,30 +169,8 @@ public class CmdListFragment extends Fragment implements OnTaskCompleteListener 
       public void onDestroyActionMode(ActionMode mode) {
         actionMode = null;
         onActionModeListener.onDestroyActionMode();
-        ((CmdListCursorAdapter) commandsGridView.getAdapter()).notifyDataSetChanged();
+        getCustomAdapter(null).notifyDataSetChanged();
       }
     };
-  }
-
-  @Override
-  public void onTaskComplete(Task task) {
-    IrSenderTask irSenderTask = (IrSenderTask) task;
-    if (irSenderTask.isCancelled()) {
-      // Report about cancel
-      Toast.makeText(getActivity(), R.string.task_cancelled, Toast.LENGTH_LONG)
-          .show();
-    } else {
-      // Get result
-      TaskStatus result = null;
-      try {
-        result = irSenderTask.get();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      // Report about result
-      Toast.makeText(getActivity(),
-          getString(R.string.task_completed),
-          Toast.LENGTH_LONG).show();
-    }
   }
 }

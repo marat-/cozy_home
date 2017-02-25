@@ -18,37 +18,69 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome.command.edit;
+package ru.marat.smarthome.scenario.edit;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.view.View;
+import android.view.View.DragShadowBuilder;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.adapter.CustomArrayAdapter;
-import ru.marat.smarthome.model.CmdType;
+import ru.marat.smarthome.app.core.PassObject;
+import ru.marat.smarthome.model.ScnrCmd;
 
 /**
  * Custom ArrayAdapter for spinner in DeviceEditActivity
  */
-public class CmdTypeArrayAdapter extends CustomArrayAdapter<CmdType> {
+public class CmdInScnrArrayAdapter extends CustomArrayAdapter<ScnrCmd> {
 
-  public CmdTypeArrayAdapter(Context context, int viewResourceId,
-      List<CmdType> elemList) {
+  public CmdInScnrArrayAdapter(Context context, int viewResourceId,
+      List<ScnrCmd> elemList) {
     super(context, viewResourceId, elemList);
   }
 
   /**
    * Custom view for spinner
    */
-  public View getCustomView(int position, CmdType cmdType, View view, View convertView,
+  @Override
+  public View getCustomView(int position, ScnrCmd scnrCmd, View view, View convertView,
       ViewGroup parent) {
-    TextView cmdTypeName = (TextView) view.findViewById(R.id.cmd_type_name);
-    cmdTypeName.setText(cmdType.getName());
+    final View selectedView = view;
+    final ScnrCmd selectedScnrCmd = scnrCmd;
+    final ListView scnrEditCmdListView = (ListView) parent;
+    TextView cmdName = (TextView) view.findViewById(R.id.cmd_in_scnr_cmd_name);
+    cmdName.setText(scnrCmd.getCmd().getName());
 
-    TextView cmdTypeActive = (TextView) view.findViewById(R.id.cmd_type_active);
-    cmdTypeActive.setText(cmdType.isActive() ? "Active" : "Inactive");
+    TextView afterCmdTimeout = (TextView) view.findViewById(R.id.cmd_in_scnr_after_cmd_timeout);
+    afterCmdTimeout.setText(
+        context.getString(R.string.cmd_in_scnr_list_after_cmd_timeout, scnrCmd.getTimeoutAfter()));
+
+    ImageView cmdDeviceImage = (ImageView) view.findViewById(R.id.cmd_in_scnr_device_image);
+    int imageResID = this.context.getResources()
+        .getIdentifier(scnrCmd.getCmd().getDevice().getDeviceType().getImage(), "drawable",
+            this.context.getPackageName());
+    cmdDeviceImage.setImageResource(imageResID);
+
+    ImageView cmdListItemDrag = (ImageView) view.findViewById(R.id.cmd_list_item_drag);
+    cmdListItemDrag.setOnLongClickListener(new OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        PassObject passObj = new PassObject(selectedView, selectedScnrCmd, scnrEditCmdListView);
+
+        ClipData data = ClipData.newPlainText("", "");
+        DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(selectedView);
+        selectedView.startDrag(data, shadowBuilder, passObj, 0);
+        return true;
+      }
+    });
+
+    view.setOnDragListener(new ItemOnDragListener(getList().get(position), context));
 
     return view;
   }

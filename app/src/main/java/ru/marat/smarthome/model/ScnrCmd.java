@@ -24,50 +24,60 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name = "scnr_cmd")
+@Table(name = "scnr_cmd", id = "_id")
 public class ScnrCmd extends Model {
 
   @Column(name = "scnr_id")
-  public int scnrId;
+  public long scnrId;
 
   @Column(name = "cmd_id")
-  public int cmdId;
+  public Cmd cmd;
 
-  @Column(name = "wait_time")
-  public int waitTime;
+  @Column(name = "timeout_after")
+  public int timeoutAfter;
 
-  @Column(name = "order")
-  public int order;
+  @Column(name = "sort")
+  public int sort;
 
-  public int getScnrId() {
+  public ScnrCmd(long scnrId, Cmd cmd, int timeoutAfter, int sort) {
+    this.cmd = cmd;
+    this.scnrId = scnrId;
+    this.sort = sort;
+    this.timeoutAfter = timeoutAfter;
+  }
+
+  public ScnrCmd() {
+  }
+
+  public long getScnrId() {
     return scnrId;
   }
 
-  public void setScnrId(int scnrId) {
+  public void setScnrId(long scnrId) {
     this.scnrId = scnrId;
   }
 
-  public int getCmdId() {
-    return cmdId;
+  public Cmd getCmd() {
+    return cmd;
   }
 
-  public void setCmdId(int cmdId) {
-    this.cmdId = cmdId;
+  public void setCmd(Cmd cmd) {
+    this.cmd = cmd;
   }
 
-  public int getWaitTime() {
-    return waitTime;
+  public int getTimeoutAfter() {
+    return timeoutAfter;
   }
 
-  public void setWaitTime(int waitTime) {
-    this.waitTime = waitTime;
+  public void setTimeoutAfter(int waitTime) {
+    this.timeoutAfter = waitTime;
   }
 
-  public int getOrder() {
-    return order;
+  public int getSort() {
+    return sort;
   }
 
-  public void setOrder(int order) {
-    this.order = order;
+  public void setSort(int sort) {
+    this.sort = sort;
   }
 }

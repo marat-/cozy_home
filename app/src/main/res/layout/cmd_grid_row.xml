@@ -32,7 +32,7 @@
     android:textColor="#ffffff" />
 
   <TextView
-    android:id="@+id/cmd_name"
+    android:id="@+id/cmd_in_scnr_cmd_name"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="10dp"

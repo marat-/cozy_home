@@ -18,38 +18,39 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome.command.edit;
+package ru.marat.smarthome.scenario.edit;
 
-import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import java.util.List;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.view.ActionMode;
+import android.support.v7.widget.Toolbar;
+import butterknife.ButterKnife;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.app.adapter.CustomArrayAdapter;
-import ru.marat.smarthome.model.CmdType;
+import ru.marat.smarthome.app.core.BaseActivity;
 
-/**
- * Custom ArrayAdapter for spinner in DeviceEditActivity
- */
-public class CmdTypeArrayAdapter extends CustomArrayAdapter<CmdType> {
+public class CmdPickActivity extends BaseActivity {
 
-  public CmdTypeArrayAdapter(Context context, int viewResourceId,
-      List<CmdType> elemList) {
-    super(context, viewResourceId, elemList);
-  }
+  private ActionMode.Callback actionModeCallback;
+  private ActionMode actionMode;
 
-  /**
-   * Custom view for spinner
-   */
-  public View getCustomView(int position, CmdType cmdType, View view, View convertView,
-      ViewGroup parent) {
-    TextView cmdTypeName = (TextView) view.findViewById(R.id.cmd_type_name);
-    cmdTypeName.setText(cmdType.getName());
+  private FragmentManager fragmentManager;
+  private FragmentTransaction fragmentTransaction;
 
-    TextView cmdTypeActive = (TextView) view.findViewById(R.id.cmd_type_active);
-    cmdTypeActive.setText(cmdType.isActive() ? "Active" : "Inactive");
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_cmd_pick);
+    ButterKnife.bind(this);
 
-    return view;
+    Toolbar toolbar = (Toolbar) findViewById(R.id.cmd_list_toolbar);
+    setSupportActionBar(toolbar);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+    fragmentManager = getSupportFragmentManager();
+    fragmentTransaction = fragmentManager.beginTransaction();
+    fragmentTransaction.replace(R.id.activity_cmd_pick_container_view, new CmdPickFragment())
+        .commit();
   }
 }

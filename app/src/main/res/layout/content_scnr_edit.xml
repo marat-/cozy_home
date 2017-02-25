@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/content_scnr_edit"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingTop="@dimen/activity_vertical_margin"
+  android:paddingBottom="@dimen/activity_vertical_margin"
+  android:paddingLeft="@dimen/activity_horizontal_margin"
+  android:paddingRight="@dimen/activity_horizontal_margin"
+  app:layout_behavior="@string/appbar_scrolling_view_behavior"
+  tools:context="ru.marat.smarthome.scenario.edit.ScnrEditActivity"
+  tools:showIn="@layout/activity_scnr_edit">
+
+  <TextView
+    android:id="@+id/scnr_edit_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:text="@string/scnr_edit_title" />
+
+  <TextView
+    android:id="@+id/scnr_edit_name_label"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/scnr_edit_title"
+    android:text="@string/scnr_edit_name" />
+
+  <EditText
+    android:id="@+id/scnr_edit_name"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/scnr_edit_name_label" />
+
+  <TextView
+    android:id="@+id/scnr_edit_active_label"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/scnr_edit_name"
+    android:text="@string/scnr_edit_active" />
+
+  <CheckBox
+    android:id="@+id/scnr_edit_active"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/scnr_edit_active_label"
+    android:checked="true" />
+
+  <TextView
+    android:id="@+id/scnr_edit_cmd_list_view_label"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/scnr_edit_active"
+    android:text="@string/scnr_edit_cmd_list_view" />
+
+  <ListView
+    android:id="@+id/scnr_edit_cmd_list_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/scnr_edit_cmd_list_view_label"></ListView>
+</RelativeLayout>

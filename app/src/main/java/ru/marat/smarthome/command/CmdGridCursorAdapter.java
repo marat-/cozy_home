@@ -18,38 +18,44 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome.command.edit;
+package ru.marat.smarthome.command;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import java.util.List;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.app.adapter.CustomArrayAdapter;
-import ru.marat.smarthome.model.CmdType;
 
-/**
- * Custom ArrayAdapter for spinner in DeviceEditActivity
- */
-public class CmdTypeArrayAdapter extends CustomArrayAdapter<CmdType> {
+public class CmdGridCursorAdapter extends AbstractCmdCursorAdapter {
 
-  public CmdTypeArrayAdapter(Context context, int viewResourceId,
-      List<CmdType> elemList) {
-    super(context, viewResourceId, elemList);
+  public CmdGridCursorAdapter(Context context, int layout, Cursor c, int flags) {
+    super(context, layout, c, flags);
   }
 
-  /**
-   * Custom view for spinner
-   */
-  public View getCustomView(int position, CmdType cmdType, View view, View convertView,
-      ViewGroup parent) {
-    TextView cmdTypeName = (TextView) view.findViewById(R.id.cmd_type_name);
-    cmdTypeName.setText(cmdType.getName());
+  @Override
+  public void bindCustomView(View view, Context context, Cursor cursor) {
+    TextView cmdName = (TextView) view.findViewById(R.id.cmd_in_scnr_cmd_name);
+    TextView cmdDescription = (TextView) view.findViewById(R.id.cmd_description);
+    ImageView deviceImage = (ImageView) view.findViewById(R.id.device_image);
 
-    TextView cmdTypeActive = (TextView) view.findViewById(R.id.cmd_type_active);
-    cmdTypeActive.setText(cmdType.isActive() ? "Active" : "Inactive");
+    int cmdDeviceIdIndex = cursor.getColumnIndexOrThrow("_id");
+    int cmdDeviceNameIndex = cursor.getColumnIndexOrThrow("device_name");
+    int deviceImageIndex = cursor.getColumnIndexOrThrow("image");
+    int commandIndex = cursor.getColumnIndexOrThrow("value");
+    int commandDescription = cursor.getColumnIndexOrThrow("cmd_name");
 
-    return view;
+    cmdName.setText(cursor.getString(cmdDeviceNameIndex));
+    cmdDescription.setText(cursor.getString(commandDescription));
+    int imageResID = this.context.getResources()
+        .getIdentifier(cursor.getString(deviceImageIndex), "drawable",
+            this.context.getPackageName());
+    deviceImage.setImageResource(imageResID);
+
+    if (cursor.getLong(cmdDeviceIdIndex) == selectedCmdId) {
+      view.setBackgroundResource(R.drawable.round_rect_shape_selected);
+    } else {
+      view.setBackgroundResource(R.drawable.round_rect_shape);
+    }
   }
 }

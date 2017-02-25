@@ -4,14 +4,24 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
+import org.apache.log4j.Logger;
+import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.logger.ALogger;
+import ru.marat.smarthome.app.task.exception.EmptyTaskQueueException;
 
-public final class AsyncTaskManager<T> implements TaskProgressTracker, OnCancelListener {
+public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCancelListener {
 
+  private Logger logger = ALogger.getLogger(AsyncTaskManager.class);
   private final OnTaskCompleteListener taskCompleteListener;
   private final ProgressDialog progressDialog;
   private Task asyncTask;
+  private LinkedList<Task> taskQueue = new LinkedList<>();
+  private Context context;
 
   public AsyncTaskManager(Context context, OnTaskCompleteListener taskCompleteListener) {
+    this.context = context;
     // Save reference to complete listener (activity)
     this.taskCompleteListener = taskCompleteListener;
     // Setup progress dialog
@@ -28,13 +38,43 @@ public final class AsyncTaskManager<T> implements TaskProgressTracker, OnCancelL
         });
   }
 
-  public void setupTask(Task asyncTask, T... params) {
+  /**
+   * Accumulates tasks in scenario
+   */
+  public void submitTask(Task asyncTask) {
+    taskQueue.add(asyncTask);
+  }
+
+  /**
+   * Execute commands in scenario one by one with specified timeout
+   */
+  public void executeScenario() throws EmptyTaskQueueException {
+    if (taskQueue.isEmpty()) {
+      throw new EmptyTaskQueueException(context.getString(R.string.task_queue_empty_exception));
+    }
+    while (!taskQueue.isEmpty()) {
+      Task asyncTask = taskQueue.poll();
+      this.executeTask(asyncTask);
+      try {
+        Thread.sleep(TimeUnit.SECONDS.toMillis(asyncTask.getTimeoutAfter()));
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        logger.warn(context.getString(R.string.scenario_execution_interrupted_exception), e);
+      }
+    }
+  }
+
+  /**
+   * Executes one task
+   * @param asyncTask
+   */
+  public void executeTask(Task asyncTask) {
     // Keep task
     this.asyncTask = asyncTask;
     // Wire task to tracker (this)
     this.asyncTask.setTaskProgressTracker(this);
     // Start task
-    this.asyncTask.execute(params);
+    this.asyncTask.execute(asyncTask.getParams().toArray());
   }
 
   @Override

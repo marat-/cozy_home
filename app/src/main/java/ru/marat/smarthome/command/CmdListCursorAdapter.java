@@ -22,69 +22,36 @@ package ru.marat.smarthome.command;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.widget.CursorAdapter;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.app.cab.OnActionModeListener;
 
-public class CmdListCursorAdapter extends CursorAdapter implements OnActionModeListener<Long> {
-
-  private Context context;
-  private int layout;
-  private final LayoutInflater inflater;
-  public static final String irSenderIp = "192.168.1.120";
-
-  private long selectedCmdId;
+public class CmdListCursorAdapter extends AbstractCmdCursorAdapter {
 
   public CmdListCursorAdapter(Context context, int layout, Cursor c, int flags) {
-    super(context, c, flags);
-    this.layout = layout;
-    this.context = context;
-    this.inflater = LayoutInflater.from(context);
+    super(context, layout, c, flags);
   }
 
   @Override
-  public View newView(Context context, Cursor cursor, ViewGroup parent) {
-    return inflater.inflate(layout, null);
-  }
-
-  @Override
-  public void bindView(View view, Context context, Cursor cursor) {
-    TextView cmdName = (TextView) view.findViewById(R.id.cmd_name);
-    TextView cmdDescription = (TextView) view.findViewById(R.id.cmd_description);
-    ImageView deviceImage = (ImageView) view.findViewById(R.id.device_image);
+  public void bindCustomView(View view, Context context, Cursor cursor) {
+    TextView cmdName = (TextView) view.findViewById(R.id.cmd_in_scnr_cmd_name);
+    ImageView cmdDeviceImage = (ImageView) view.findViewById(R.id.cmd_in_scnr_device_image);
 
     int cmdDeviceIdIndex = cursor.getColumnIndexOrThrow("_id");
-    int cmdDeviceNameIndex = cursor.getColumnIndexOrThrow("device_name");
     int deviceImageIndex = cursor.getColumnIndexOrThrow("image");
-    int commandIndex = cursor.getColumnIndexOrThrow("value");
-    int commandDescription = cursor.getColumnIndexOrThrow("cmd_name");
+    int cmdNameIndex = cursor.getColumnIndexOrThrow("cmd_name");
 
-    cmdName.setText(cursor.getString(cmdDeviceNameIndex));
-    cmdDescription.setText(cursor.getString(commandDescription));
+    cmdName.setText(cursor.getString(cmdNameIndex));
     int imageResID = this.context.getResources()
         .getIdentifier(cursor.getString(deviceImageIndex), "drawable",
             this.context.getPackageName());
-    deviceImage.setImageResource(imageResID);
+    cmdDeviceImage.setImageResource(imageResID);
 
     if (cursor.getLong(cmdDeviceIdIndex) == selectedCmdId) {
-      view.setBackgroundResource(R.drawable.round_rect_shape_selected);
+      view.setBackgroundResource(R.drawable.round_grey_shape_selected);
     } else {
-      view.setBackgroundResource(R.drawable.round_rect_shape);
+      view.setBackgroundResource(R.drawable.round_grey_shape);
     }
-  }
-
-  @Override
-  public void onDestroyActionMode() {
-    this.selectedCmdId = 0;
-  }
-
-  @Override
-  public void onCreateActionMode(Long selectedItemId) {
-    this.selectedCmdId = selectedItemId;
   }
 }
