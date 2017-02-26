@@ -22,6 +22,10 @@ package ru.marat.smarthome.command;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,19 +42,30 @@ public class CmdGridCursorAdapter extends AbstractCmdCursorAdapter {
     TextView cmdName = (TextView) view.findViewById(R.id.cmd_in_scnr_cmd_name);
     TextView cmdDescription = (TextView) view.findViewById(R.id.cmd_description);
     ImageView deviceImage = (ImageView) view.findViewById(R.id.device_image);
+    ImageView cmdImage = (ImageView) view.findViewById(R.id.cmd_image);
 
     int cmdDeviceIdIndex = cursor.getColumnIndexOrThrow("_id");
     int cmdDeviceNameIndex = cursor.getColumnIndexOrThrow("device_name");
     int deviceImageIndex = cursor.getColumnIndexOrThrow("image");
-    int commandIndex = cursor.getColumnIndexOrThrow("value");
-    int commandDescription = cursor.getColumnIndexOrThrow("cmd_name");
+    int commandDescriptionIndex = cursor.getColumnIndexOrThrow("cmd_name");
+    int cmdColorIndex = cursor.getColumnIndexOrThrow("color");
 
     cmdName.setText(cursor.getString(cmdDeviceNameIndex));
-    cmdDescription.setText(cursor.getString(commandDescription));
+    cmdDescription.setText(cursor.getString(commandDescriptionIndex));
     int imageResID = this.context.getResources()
         .getIdentifier(cursor.getString(deviceImageIndex), "drawable",
             this.context.getPackageName());
     deviceImage.setImageResource(imageResID);
+
+    if (cursor.getString(cmdColorIndex) != null) {
+      LayerDrawable cmdDrawable = (LayerDrawable) ContextCompat
+          .getDrawable(context, R.drawable.round_rect_shape_cmd_image);
+      GradientDrawable cmdDrawableShape = (GradientDrawable) cmdDrawable
+          .findDrawableByLayerId(R.id.cmd_image_shape);
+      int color = Color.parseColor(cursor.getString(cmdColorIndex));
+      cmdDrawableShape.setColor(color);
+      cmdImage.setBackground(cmdDrawable);
+    }
 
     if (cursor.getLong(cmdDeviceIdIndex) == selectedCmdId) {
       view.setBackgroundResource(R.drawable.round_rect_shape_selected);

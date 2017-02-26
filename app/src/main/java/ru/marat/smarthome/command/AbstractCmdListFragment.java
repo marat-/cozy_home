@@ -72,7 +72,7 @@ public abstract class AbstractCmdListFragment extends Fragment {
 
   protected void fillCmdListView() {
     From query = new Select(
-        "cmd._id, cmd.name AS cmd_name, device.name AS device_name, cmd.value, device_type.image")
+        "cmd._id, cmd.name AS cmd_name, device.name AS device_name, cmd.value, device_type.image, cmd.color")
         .from(Cmd.class).as("cmd")
         .innerJoin(CmdType.class).as("cmd_type")
         .on("cmd.type_id=cmd_type._id")

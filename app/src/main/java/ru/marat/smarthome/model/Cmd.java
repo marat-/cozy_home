@@ -48,6 +48,9 @@ public class Cmd extends Model {
   @Column(name = "value")
   public String value;
 
+  @Column(name = "color")
+  public String color;
+
   public String getName() {
     return name;
   }
@@ -102,5 +105,13 @@ public class Cmd extends Model {
 
   public void setValue(String value) {
     this.value = value;
+  }
+
+  public String getColor() {
+    return color;
+  }
+
+  public void setColor(String color) {
+    this.color = color;
   }
 }

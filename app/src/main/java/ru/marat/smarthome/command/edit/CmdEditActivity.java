@@ -36,6 +36,7 @@ import com.activeandroid.query.Select;
 import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.core.BaseActivity;
+import ru.marat.smarthome.app.utils.ColorUtils;
 import ru.marat.smarthome.app.validator.TextValidator;
 import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.CmdType;
@@ -153,6 +154,7 @@ public class CmdEditActivity extends BaseActivity {
                 .executeSingle();
           } else {
             cmd = new Cmd();
+            cmd.setColor(ColorUtils.generateRandomColor());
           }
           cmd.setName(cmdEditName.getText().toString());
           cmd.setActive(cmdEditActive.isChecked());
