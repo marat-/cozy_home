@@ -22,13 +22,23 @@ package ru.marat.smarthome.scenario;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.activeandroid.query.Select;
+import com.google.android.flexbox.FlexboxLayout;
+import java.util.List;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.cab.OnActionModeListener;
+import ru.marat.smarthome.model.ScnrCmd;
 
 public class ScnrListCursorAdapter extends CursorAdapter implements OnActionModeListener<Long> {
 
@@ -54,22 +64,36 @@ public class ScnrListCursorAdapter extends CursorAdapter implements OnActionMode
     TextView scnrName = (TextView) view.findViewById(R.id.scnr_name);
     TextView scnrDescription = (TextView) view.findViewById(R.id.scnr_description);
 
-    int cmdDeviceIdIndex = cursor.getColumnIndexOrThrow("_id");
+    int scnrIdIndex = cursor.getColumnIndexOrThrow("_id");
     int scnrNameIndex = cursor.getColumnIndexOrThrow("scnr_name");
     int scnrDescriptionIndex = cursor.getColumnIndexOrThrow("scnr_description");
 
     scnrName.setText(cursor.getString(scnrNameIndex));
     scnrDescription.setText(cursor.getString(scnrDescriptionIndex));
 
-//    view.setOnClickListener(new View.OnClickListener() {
-//      @Override
-//      public void onClick(View view) {
-//        new IrSenderTask(ScnrListCursorAdapter.this.context)
-//            .execute(String.format("http://%s/?%s", irSenderIp, ""));
-//      }
-//    });
+    List<ScnrCmd> cmdInScnrFromDB = new Select()
+        .from(ScnrCmd.class).as("scnr_cmd")
+        .where("scnr_cmd.scnr_id = ?", cursor.getString(scnrIdIndex))
+        .orderBy("scnr_cmd.sort ASC").execute();
+    FlexboxLayout scnrImageLinearLayout = (FlexboxLayout) view.findViewById(R.id.scnr_image_frame);
+    scnrImageLinearLayout.removeAllViews();
+    final float scale = context.getResources().getDisplayMetrics().density;
+    int dpInPx = (int) (13 * scale);
+    for (ScnrCmd scnrCmd : cmdInScnrFromDB) {
+      ImageView cmdImage = new ImageView(context);
+      LayoutParams layoutParams = new LayoutParams(dpInPx, dpInPx);
+      cmdImage.setLayoutParams(layoutParams);
+      LayerDrawable cmdDrawable = (LayerDrawable) ContextCompat
+          .getDrawable(context, R.drawable.round_rect_shape_small_cmd_image);
+      GradientDrawable cmdDrawableShape = (GradientDrawable) cmdDrawable
+          .findDrawableByLayerId(R.id.cmd_image_shape);
+      int color = Color.parseColor(scnrCmd.getCmd().getColor());
+      cmdDrawableShape.setColor(color);
+      cmdImage.setBackground(cmdDrawable);
+      scnrImageLinearLayout.addView(cmdImage);
+    }
 
-    if (cursor.getLong(cmdDeviceIdIndex) == selectedScnrId) {
+    if (cursor.getLong(scnrIdIndex) == selectedScnrId) {
       view.setBackgroundResource(R.drawable.round_rect_shape_selected);
     } else {
       view.setBackgroundResource(R.drawable.round_rect_shape);

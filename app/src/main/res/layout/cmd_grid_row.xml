@@ -50,8 +50,7 @@
     android:ellipsize="marquee"
     android:gravity="top"
     android:lines="3"
-    android:textAppearance="@style/BoldGridTextAppearance"
-    android:textColor="@color/grey_strong" />
+    android:textAppearance="@style/BoldGridTextAppearance" />
 
   <TextView
     android:id="@+id/cmd_description"
