@@ -39,19 +39,21 @@ public class CmdGridCursorAdapter extends AbstractCmdCursorAdapter {
 
   @Override
   public void bindCustomView(View view, Context context, Cursor cursor) {
-    TextView cmdName = (TextView) view.findViewById(R.id.cmd_in_scnr_cmd_name);
+    TextView cmdName = (TextView) view.findViewById(R.id.cmd_name);
     TextView cmdDescription = (TextView) view.findViewById(R.id.cmd_description);
     ImageView deviceImage = (ImageView) view.findViewById(R.id.device_image);
     ImageView cmdImage = (ImageView) view.findViewById(R.id.cmd_image);
+    TextView cmdImageSign = (TextView) view.findViewById(R.id.cmd_image_sign);
 
     int cmdDeviceIdIndex = cursor.getColumnIndexOrThrow("_id");
     int cmdDeviceNameIndex = cursor.getColumnIndexOrThrow("device_name");
     int deviceImageIndex = cursor.getColumnIndexOrThrow("image");
-    int commandDescriptionIndex = cursor.getColumnIndexOrThrow("cmd_name");
+    int commandNameIndex = cursor.getColumnIndexOrThrow("cmd_name");
     int cmdColorIndex = cursor.getColumnIndexOrThrow("color");
 
-    cmdName.setText(cursor.getString(cmdDeviceNameIndex));
-    cmdDescription.setText(cursor.getString(commandDescriptionIndex));
+    String cmdNameText = cursor.getString(commandNameIndex);
+    cmdName.setText(cmdNameText);
+    cmdDescription.setText(cursor.getString(cmdDeviceNameIndex));
     int imageResID = this.context.getResources()
         .getIdentifier(cursor.getString(deviceImageIndex), "drawable",
             this.context.getPackageName());
@@ -65,6 +67,7 @@ public class CmdGridCursorAdapter extends AbstractCmdCursorAdapter {
       int color = Color.parseColor(cursor.getString(cmdColorIndex));
       cmdDrawableShape.setColor(color);
       cmdImage.setBackground(cmdDrawable);
+      cmdImageSign.setText(cmdNameText.substring(0, 1).toUpperCase());
     }
 
     if (cursor.getLong(cmdDeviceIdIndex) == selectedCmdId) {

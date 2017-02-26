@@ -13,42 +13,56 @@
     android:id="@+id/device_image"
     android:layout_width="40dp"
     android:layout_height="40dp"
-    android:layout_alignParentLeft="true"
     android:layout_alignParentTop="true"
     android:focusable="false"
     android:focusableInTouchMode="false" />
 
-  <ImageView
-    android:id="@+id/cmd_image"
+  <FrameLayout
     android:layout_width="40dp"
     android:layout_height="40dp"
     android:layout_alignParentRight="true"
-    android:layout_alignParentTop="true"
-    android:focusable="false"
-    android:focusableInTouchMode="false" />
+    android:layout_alignParentTop="true">
+
+    <ImageView
+      android:id="@+id/cmd_image"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_gravity="center"
+      android:focusable="false"
+      android:focusableInTouchMode="false" />
+
+    <TextView
+      android:id="@+id/cmd_image_sign"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:textAppearance="@style/BoldSignTextAppearance" />
+  </FrameLayout>
 
   <TextView
-    android:id="@+id/cmd_description"
+    android:id="@+id/cmd_name"
     android:layout_width="wrap_content"
-    android:layout_height="70dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
     android:layout_marginLeft="3dp"
     android:layout_alignParentLeft="true"
     android:layout_below="@+id/device_image"
     android:ellipsize="marquee"
-    android:gravity="bottom"
-    android:marqueeRepeatLimit="marquee_forever"
-    android:textAppearance="@style/BoldGridTextAppearance" />
+    android:gravity="top"
+    android:lines="3"
+    android:textAppearance="@style/BoldGridTextAppearance"
+    android:textColor="@color/grey_strong" />
 
   <TextView
-    android:id="@+id/cmd_in_scnr_cmd_name"
+    android:id="@+id/cmd_description"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_marginLeft="3dp"
     android:layout_alignParentBottom="true"
     android:layout_alignParentLeft="true"
-    android:layout_below="@+id/cmd_description"
-    android:gravity="bottom"
-    android:textAppearance="?android:attr/textAppearanceSmall"
-    android:textColor="@color/grey_strong" />
+    android:layout_below="@+id/cmd_name"
+    android:ellipsize="marquee"
+    android:marqueeRepeatLimit="marquee_forever"
+    android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>
