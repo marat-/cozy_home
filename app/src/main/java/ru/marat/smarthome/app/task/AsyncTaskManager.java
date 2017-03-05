@@ -1,15 +1,16 @@
 package ru.marat.smarthome.app.task;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.logger.ALogger;
 import ru.marat.smarthome.app.task.exception.EmptyTaskQueueException;
+import ru.marat.smarthome.app.task.impl.TimeoutTask;
 
 public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCancelListener {
 
@@ -18,9 +19,9 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
   private final ProgressDialog progressDialog;
   private Task asyncTask;
   private LinkedList<Task> taskQueue = new LinkedList<>();
-  private Context context;
+  private Activity context;
 
-  public AsyncTaskManager(Context context, OnTaskCompleteListener taskCompleteListener) {
+  public AsyncTaskManager(Activity context, OnTaskCompleteListener taskCompleteListener) {
     this.context = context;
     // Save reference to complete listener (activity)
     this.taskCompleteListener = taskCompleteListener;
@@ -41,8 +42,11 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
   /**
    * Accumulates tasks in scenario
    */
-  public void submitTask(Task asyncTask) {
+  public void submitTask(Task asyncTask, long timeoutAfter) {
     taskQueue.add(asyncTask);
+    Task timeoutAfterTask = new TimeoutTask(context, Arrays
+        .asList(timeoutAfter));
+    taskQueue.add(timeoutAfterTask);
   }
 
   /**
@@ -52,21 +56,11 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
     if (taskQueue.isEmpty()) {
       throw new EmptyTaskQueueException(context.getString(R.string.task_queue_empty_exception));
     }
-    while (!taskQueue.isEmpty()) {
-      Task asyncTask = taskQueue.poll();
-      this.executeTask(asyncTask);
-      try {
-        Thread.sleep(TimeUnit.SECONDS.toMillis(asyncTask.getTimeoutAfter()));
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        logger.warn(context.getString(R.string.scenario_execution_interrupted_exception), e);
-      }
-    }
+    executeTask(taskQueue.poll());
   }
 
   /**
    * Executes one task
-   * @param asyncTask
    */
   public void executeTask(Task asyncTask) {
     // Keep task
@@ -101,12 +95,17 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
 
   @Override
   public void onComplete() {
-    // Close progress dialog
-    progressDialog.dismiss();
-    // Notify activity about completion
-    taskCompleteListener.onTaskComplete(asyncTask);
-    // Reset task
-    asyncTask = null;
+    if (!taskQueue.isEmpty()) {
+      Task asyncTask = taskQueue.poll();
+      executeTask(asyncTask);
+    } else {
+      // Close progress dialog
+      progressDialog.dismiss();
+      // Notify activity about completion
+      taskCompleteListener.onTaskComplete(asyncTask);
+      // Reset task
+      asyncTask = null;
+    }
   }
 
   public Object retainTask() {

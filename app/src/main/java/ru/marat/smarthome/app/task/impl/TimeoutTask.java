@@ -21,22 +21,20 @@
 package ru.marat.smarthome.app.task.impl;
 
 import android.content.Context;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.apache.log4j.Logger;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.logger.ALogger;
 import ru.marat.smarthome.app.task.Task;
 import ru.marat.smarthome.app.task.TaskStatus;
 
-public class IrSenderTask extends Task<String, String, TaskStatus> {
+public class TimeoutTask extends Task<Long, String, TaskStatus> {
 
   private Context context;
+  private Logger logger = ALogger.getLogger(TimeoutTask.class);
 
-  public IrSenderTask(Context context, List<String> params) {
+  public TimeoutTask(Context context, List<Long> params) {
     super(context, params);
     this.context = context;
   }
@@ -47,48 +45,20 @@ public class IrSenderTask extends Task<String, String, TaskStatus> {
   }
 
   @Override
-  protected TaskStatus doInBackground(String... command) {
-    publishProgress(resources.getString(R.string.task_connecting));
-    BufferedReader reader = null;
-    HttpURLConnection urlConnection = null;
-    StringBuilder response = new StringBuilder();
+  protected TaskStatus doInBackground(Long... timeout) {
+    publishProgress(resources.getString(R.string.task_timeout_after));
     try {
-      URL url = new URL(command[0]);
-      urlConnection = (HttpURLConnection) url.openConnection();
-      reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-      String line = null;
-      while ((line = reader.readLine()) != null) {
-        if (isCancelled()) {
-          // This return causes onPostExecute call on UI thread
-          return TaskStatus.ERROR;
-        }
-        response.append(line + "\n");
-      }
-      publishProgress(resources.getString(R.string.task_sent_command));
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
-      if (urlConnection != null) {
-        urlConnection.disconnect();
-      }
+      Thread.sleep(TimeUnit.SECONDS.toMillis(timeout[0]));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      logger.warn(context.getString(R.string.scenario_execution_interrupted_exception), e);
     }
+    publishProgress(resources.getString(R.string.task_ready_for_the_next_task));
     return TaskStatus.DONE;
   }
 
   @Override
   protected void onPostExecute(TaskStatus taskStatus) {
     super.onPostExecute(taskStatus);
-//    Toast.makeText(context, resources.getString(R.string.task_completed),
-//        Toast.LENGTH_SHORT).show();
-
   }
 }

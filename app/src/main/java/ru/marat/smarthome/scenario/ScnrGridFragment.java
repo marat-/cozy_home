@@ -45,7 +45,6 @@ import ru.marat.smarthome.app.logger.ALogger;
 import ru.marat.smarthome.app.task.AsyncTaskManager;
 import ru.marat.smarthome.app.task.OnTaskCompleteListener;
 import ru.marat.smarthome.app.task.Task;
-import ru.marat.smarthome.app.task.TaskStatus;
 import ru.marat.smarthome.app.task.exception.EmptyTaskQueueException;
 import ru.marat.smarthome.app.task.impl.IrSenderTask;
 import ru.marat.smarthome.command.edit.CmdEditActivity;
@@ -133,9 +132,8 @@ public class ScnrGridFragment extends AbstractScnrListFragment implements OnTask
         for (ScnrCmd scnrCmd : cmdInScnrFromDB) {
           Task asyncTask = new IrSenderTask(getActivity(),
               Arrays
-                  .asList(String.format("http://%s/%s", irSenderIp, scnrCmd.getCmd().getValue())),
-              scnrCmd.getTimeoutAfter());
-          asyncTaskManager.submitTask(asyncTask);
+                  .asList(String.format("http://%s/%s", irSenderIp, scnrCmd.getCmd().getValue())));
+          asyncTaskManager.submitTask(asyncTask, scnrCmd.getTimeoutAfter());
         }
         try {
           asyncTaskManager.executeScenario();
@@ -148,19 +146,11 @@ public class ScnrGridFragment extends AbstractScnrListFragment implements OnTask
 
   @Override
   public void onTaskComplete(Task task) {
-    IrSenderTask irSenderTask = (IrSenderTask) task;
-    if (irSenderTask.isCancelled()) {
+    if (task.isCancelled()) {
       // Report about cancel
       Toast.makeText(getActivity(), R.string.scenario_cancelled, Toast.LENGTH_LONG)
           .show();
     } else {
-      // Get result
-      TaskStatus result = null;
-      try {
-        result = irSenderTask.get();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
       // Report about result
       Toast.makeText(getActivity(),
           getString(R.string.scenario_completed),

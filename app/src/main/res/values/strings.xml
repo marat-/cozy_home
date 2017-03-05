@@ -52,6 +52,8 @@
   <string name="task_cancelled">Task was cancelled by user</string>
   <string name="task_completed">Command execution was completed</string>
   <string name="task_queue_empty_exception">Task queue is empty</string>
+  <string name="task_timeout_after">Waiting for the next command</string>
+  <string name="task_ready_for_the_next_task">Ready for the next command execution</string>
   <string name="scenario_execution_interrupted_exception">Scenario execution was interrupted</string>
   <string name="scenario_cancelled">Scenario was cancelled by user</string>
   <string name="scenario_completed">Scenario execution was completed</string>
