@@ -57,6 +57,7 @@
   <string name="scenario_execution_interrupted_exception">Scenario execution was interrupted</string>
   <string name="scenario_cancelled">Scenario was cancelled by user</string>
   <string name="scenario_completed">Scenario execution was completed</string>
+  <string name="scenario_execution">Scenario execution</string>
 
   <string name="scnr_fab_action_add_cmd">Create command</string>
   <string name="scnr_fab_action_add_scnr">Create scenario</string>
