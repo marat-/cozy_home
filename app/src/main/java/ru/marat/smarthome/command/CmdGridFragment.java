@@ -63,7 +63,7 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
   @BindView(R.id.cmd_list_fab_menu)
   FloatingActionsMenu menuFabButton;
 
-  private AsyncTaskManager<String> asyncTaskManager;
+  private AsyncTaskManager asyncTaskManager;
 
   public static final String irSenderIp = "192.168.1.204:7474";
 
@@ -74,7 +74,7 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
     ButterKnife.bind(this, view);
 
     // Create manager and set this activity as context and listener
-    asyncTaskManager = new AsyncTaskManager<>(getActivity(), this);
+    asyncTaskManager = new AsyncTaskManager(getActivity(), this);
     // Handle task that can be retained before
     //asyncTaskManager.handleRetainedTask(getActivity().getLastNonConfigurationInstance());
 

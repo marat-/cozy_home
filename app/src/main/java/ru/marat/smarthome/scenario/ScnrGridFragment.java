@@ -66,14 +66,14 @@ public class ScnrGridFragment extends AbstractScnrListFragment implements OnTask
 
   public static final String irSenderIp = "192.168.1.204:7474";
 
-  private AsyncTaskManager<String> asyncTaskManager;
+  private AsyncTaskManager asyncTaskManager;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_scenario_grid, null);
     ButterKnife.bind(this, view);
-    asyncTaskManager = new AsyncTaskManager<>(getActivity(), this);
+    asyncTaskManager = new AsyncTaskManager(getActivity(), this);
     return view;
   }
 

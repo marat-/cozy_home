@@ -20,7 +20,7 @@ import ru.marat.smarthome.app.logger.ALogger;
 import ru.marat.smarthome.app.task.exception.EmptyTaskQueueException;
 import ru.marat.smarthome.app.task.impl.TimeoutTask;
 
-public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCancelListener {
+public final class AsyncTaskManager implements TaskProgressTracker, OnCancelListener {
 
   private Logger logger = ALogger.getLogger(AsyncTaskManager.class);
   private final OnTaskCompleteListener taskCompleteListener;
@@ -77,6 +77,10 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
     executeTask(taskQueue.poll());
   }
 
+  public void terminateScenarioExec() {
+    taskQueue.clear();
+  }
+
   /**
    * Executes one task
    */
@@ -90,7 +94,7 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
   }
 
   @Override
-  public void onProgress(Object message) {
+  public void onProgress(Object progressUpdateData) {
     // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
     if (!progressDialog.isShowing()) {
       progressDialog.show();
@@ -103,12 +107,15 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
       progressMessage.setMovementMethod(new ScrollingMovementMethod());
     }
     // Show current message in progress dialog
-    if (message instanceof String) {
-      progressDialog.setProgress(progressDialog.getProgress() + 1);
+    if (progressUpdateData != null && progressUpdateData instanceof ProgressUpdateDataWrraper) {
+      if (((ProgressUpdateDataWrraper) progressUpdateData).isUpdateProgressBar()) {
+        progressDialog.setProgress(progressDialog.getProgress() + 1);
+      }
       TextView progressMessage = (TextView) progressDialog
           .findViewById(R.id.scnr_exec_dialog_message);
       progressMessage
-          .append((progressMessage.getText().length() == 0 ? "" : "\n") + message.toString());
+          .append((progressMessage.getText().length() == 0 ? "" : "\n\n")
+              + ((ProgressUpdateDataWrraper) progressUpdateData).getMessage().toString());
     }
   }
 
@@ -124,16 +131,20 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
 
   @Override
   public void onComplete() {
-    if (!taskQueue.isEmpty()) {
-      Task asyncTask = taskQueue.poll();
-      executeTask(asyncTask);
+    if (asyncTask.getResult().equals(TaskStatus.ERROR)) {
+      terminateScenarioExec();
     } else {
-      // Close progress dialog
-      progressDialog.dismiss();
-      // Notify activity about completion
-      taskCompleteListener.onTaskComplete(asyncTask);
-      // Reset task
-      asyncTask = null;
+      if (!taskQueue.isEmpty()) {
+        Task asyncTask = taskQueue.poll();
+        executeTask(asyncTask);
+      } else {
+        // Close progress dialog
+        progressDialog.dismiss();
+        // Notify activity about completion
+        taskCompleteListener.onTaskComplete(asyncTask);
+        // Reset task
+        asyncTask = null;
+      }
     }
   }
 

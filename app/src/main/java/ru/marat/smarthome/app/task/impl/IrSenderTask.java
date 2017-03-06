@@ -28,12 +28,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import org.apache.log4j.Logger;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.logger.ALogger;
+import ru.marat.smarthome.app.task.ProgressUpdateDataWrraper;
 import ru.marat.smarthome.app.task.Task;
 import ru.marat.smarthome.app.task.TaskStatus;
 
-public class IrSenderTask extends Task<String, String, TaskStatus> {
+public class IrSenderTask extends Task<String, ProgressUpdateDataWrraper, TaskStatus> {
 
+  private Logger logger = ALogger.getLogger(IrSenderTask.class);
   private Context context;
 
   public IrSenderTask(Context context, List<String> params) {
@@ -48,7 +52,8 @@ public class IrSenderTask extends Task<String, String, TaskStatus> {
 
   @Override
   protected TaskStatus doInBackground(String... command) {
-    publishProgress(resources.getString(R.string.task_connecting));
+    TaskStatus taskStatus = TaskStatus.DONE;
+    publishProgress(new ProgressUpdateDataWrraper(resources.getString(R.string.task_connecting)));
     BufferedReader reader = null;
     HttpURLConnection urlConnection = null;
     StringBuilder response = new StringBuilder();
@@ -64,24 +69,34 @@ public class IrSenderTask extends Task<String, String, TaskStatus> {
         }
         response.append(line + "\n");
       }
-      publishProgress(resources.getString(R.string.task_sent_command));
+      publishProgress(
+          new ProgressUpdateDataWrraper(resources.getString(R.string.task_sent_command)));
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      logger.error(R.string.task_malformed_url_exception, e);
+      publishProgress(new ProgressUpdateDataWrraper(
+          resources.getString(R.string.task_malformed_url_exception)));
+      taskStatus = TaskStatus.ERROR;
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(R.string.task_io_exception, e);
+      publishProgress(
+          new ProgressUpdateDataWrraper(resources.getString(R.string.task_io_exception)));
+      taskStatus = TaskStatus.ERROR;
     } finally {
       if (reader != null) {
         try {
           reader.close();
         } catch (IOException e) {
-          e.printStackTrace();
+          logger.error(R.string.general_io_exception, e);
+          taskStatus = TaskStatus.ERROR;
         }
       }
       if (urlConnection != null) {
         urlConnection.disconnect();
       }
     }
-    return TaskStatus.DONE;
+    publishProgress(
+        new ProgressUpdateDataWrraper(resources.getString(R.string.task_completed), true));
+    return taskStatus;
   }
 
   @Override

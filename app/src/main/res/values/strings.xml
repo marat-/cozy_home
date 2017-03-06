@@ -18,6 +18,8 @@
   <string name="navigation_drawer_close">Close</string>
   <string name="title_activity_device_manager">Device Manager</string>
 
+  <string name="general_io_exception">I/O exception occured</string>
+
   <string name="device_manager_modify_item">Modify</string>
   <string name="device_manager_delete_item">Delete</string>
   <string name="title_activity_device_edit">Edit device</string>
@@ -51,9 +53,13 @@
   <string name="task_starting">Starting...</string>
   <string name="task_cancelled">Task was cancelled by user</string>
   <string name="task_completed">Command execution was completed</string>
-  <string name="task_queue_empty_exception">Task queue is empty</string>
   <string name="task_timeout_after">Waiting for the next command</string>
   <string name="task_ready_for_the_next_task">Ready for the next command execution</string>
+
+  <string name="task_queue_empty_exception">Task queue is empty</string>
+  <string name="task_malformed_url_exception">The incorrect url detected. Please correct the url and execute command/scenario again.</string>
+  <string name="task_io_exception">The URL specified in command is unreachable or you don\'t have access to it.</string>
+
   <string name="scenario_execution_interrupted_exception">Scenario execution was interrupted</string>
   <string name="scenario_cancelled">Scenario was cancelled by user</string>
   <string name="scenario_completed">Scenario execution was completed</string>

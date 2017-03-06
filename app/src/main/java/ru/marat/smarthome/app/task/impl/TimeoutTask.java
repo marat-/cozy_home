@@ -26,10 +26,11 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.logger.ALogger;
+import ru.marat.smarthome.app.task.ProgressUpdateDataWrraper;
 import ru.marat.smarthome.app.task.Task;
 import ru.marat.smarthome.app.task.TaskStatus;
 
-public class TimeoutTask extends Task<Long, String, TaskStatus> {
+public class TimeoutTask extends Task<Long, ProgressUpdateDataWrraper, TaskStatus> {
 
   private Context context;
   private Logger logger = ALogger.getLogger(TimeoutTask.class);
@@ -46,14 +47,17 @@ public class TimeoutTask extends Task<Long, String, TaskStatus> {
 
   @Override
   protected TaskStatus doInBackground(Long... timeout) {
-    publishProgress(resources.getString(R.string.task_timeout_after));
+    publishProgress(
+        new ProgressUpdateDataWrraper(resources.getString(R.string.task_timeout_after)));
     try {
       Thread.sleep(TimeUnit.SECONDS.toMillis(timeout[0]));
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       logger.warn(context.getString(R.string.scenario_execution_interrupted_exception), e);
     }
-    publishProgress(resources.getString(R.string.task_ready_for_the_next_task));
+    publishProgress(
+        new ProgressUpdateDataWrraper(resources.getString(R.string.task_ready_for_the_next_task),
+            true));
     return TaskStatus.DONE;
   }
 
