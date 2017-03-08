@@ -95,15 +95,9 @@ public class IrSenderTask extends Task<String, ProgressUpdateDataWrraper, TaskSt
       }
     }
     publishProgress(
-        new ProgressUpdateDataWrraper(resources.getString(R.string.task_completed), true));
+        new ProgressUpdateDataWrraper(
+            taskStatus.equals(TaskStatus.DONE) ? resources.getString(R.string.task_completed)
+                : resources.getString(R.string.task_completed_with_errors), true));
     return taskStatus;
-  }
-
-  @Override
-  protected void onPostExecute(TaskStatus taskStatus) {
-    super.onPostExecute(taskStatus);
-//    Toast.makeText(context, resources.getString(R.string.task_completed),
-//        Toast.LENGTH_SHORT).show();
-
   }
 }

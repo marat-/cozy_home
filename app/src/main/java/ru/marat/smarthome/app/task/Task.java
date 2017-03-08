@@ -24,6 +24,10 @@ public abstract class Task<Params, Progress, Result> extends AsyncTask<Params, P
     return result;
   }
 
+  public void setResult(Result result) {
+    this.result = result;
+  }
+
   public List<Params> getParams() {
     return params;
   }

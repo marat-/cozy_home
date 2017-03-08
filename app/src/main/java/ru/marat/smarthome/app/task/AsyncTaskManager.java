@@ -51,7 +51,7 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
         new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
+            dialog.cancel();
           }
         });
   }
@@ -79,6 +79,9 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
 
   public void terminateScenarioExec() {
     taskQueue.clear();
+    if (asyncTask != null) {
+      asyncTask.setResult(TaskStatus.CANCELLED);
+    }
   }
 
   /**
@@ -104,6 +107,8 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
           new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
       TextView progressMessage = (TextView) progressDialog
           .findViewById(R.id.scnr_exec_dialog_message);
+      progressMessage.setText("");
+      progressDialog.setProgress(0);
       progressMessage.setMovementMethod(new ScrollingMovementMethod());
     }
     // Show current message in progress dialog
@@ -119,10 +124,15 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
     }
   }
 
+  /**
+   * On Cancel listener for Dialog
+   */
   @Override
   public void onCancel(DialogInterface dialog) {
     // Cancel task
     asyncTask.cancel(true);
+    // Cancel scenario execution
+    terminateScenarioExec();
     // Notify activity about completion
     taskCompleteListener.onTaskComplete(asyncTask);
     // Reset task

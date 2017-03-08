@@ -53,6 +53,7 @@
   <string name="task_starting">Starting...</string>
   <string name="task_cancelled">Task was cancelled by user</string>
   <string name="task_completed">Command execution was completed</string>
+  <string name="task_completed_with_errors">Command execution was completed with errors</string>
   <string name="task_timeout_after">Waiting for the next command</string>
   <string name="task_ready_for_the_next_task">Ready for the next command execution</string>
 

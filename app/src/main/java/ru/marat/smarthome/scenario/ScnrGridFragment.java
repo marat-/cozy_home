@@ -51,7 +51,8 @@ import ru.marat.smarthome.command.edit.CmdEditActivity;
 import ru.marat.smarthome.model.ScnrCmd;
 import ru.marat.smarthome.scenario.edit.ScnrEditActivity;
 
-public class ScnrGridFragment extends AbstractScnrListFragment implements OnTaskCompleteListener {
+public class ScnrGridFragment extends AbstractScnrListFragment implements
+    OnTaskCompleteListener {
 
   private Logger logger = ALogger.getLogger(ScnrGridFragment.class);
 
