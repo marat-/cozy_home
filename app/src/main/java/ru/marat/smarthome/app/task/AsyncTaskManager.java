@@ -1,17 +1,8 @@
 package ru.marat.smarthome.app.task;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.text.method.ScrollingMovementMethod;
-import android.view.LayoutInflater;
-import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
-import android.widget.TextView;
+import android.support.v4.app.FragmentActivity;
 import java.util.Arrays;
 import java.util.LinkedList;
 import org.apache.log4j.Logger;
@@ -24,36 +15,29 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
 
   private Logger logger = ALogger.getLogger(AsyncTaskManager.class);
   private final OnTaskCompleteListener taskCompleteListener;
-  private ProgressDialog progressDialog;
   private Task asyncTask;
   private LinkedList<Task> taskQueue = new LinkedList<>();
-  private Activity context;
+  private FragmentActivity context;
+  private String progressDialogTag = "progressDialogTag";
 
-  public AsyncTaskManager(Activity context, OnTaskCompleteListener taskCompleteListener) {
+  public AsyncTaskManager(FragmentActivity context, OnTaskCompleteListener taskCompleteListener) {
     this.context = context;
     // Save reference to complete listener (activity)
     this.taskCompleteListener = taskCompleteListener;
-    // Setup progress dialog
-    initProgressDialog();
   }
 
   /**
    * Initial setup of ProgressDialog
    */
-  private void initProgressDialog() {
-    progressDialog = new ProgressDialog(context);
-    progressDialog.setIndeterminate(false);
-    progressDialog.setTitle(R.string.scenario_execution);
-    progressDialog.setCancelable(true);
-    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-    progressDialog.setOnCancelListener(this);
-    progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
-        new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.cancel();
-          }
-        });
+  private void initProgressDialog(int queueSize) {
+    TaskExecutionDialogFragment progressDialogFragment = (TaskExecutionDialogFragment) context
+        .getSupportFragmentManager().findFragmentByTag(progressDialogTag);
+    if (progressDialogFragment == null) {
+      TaskExecutionDialogFragment.newInstance(queueSize)
+          .show(context.getSupportFragmentManager(), progressDialogTag);
+    } else {
+      progressDialogFragment.clearDialog();
+    }
   }
 
   /**
@@ -73,7 +57,7 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
     if (taskQueue.isEmpty()) {
       throw new EmptyTaskQueueException(context.getString(R.string.task_queue_empty_exception));
     }
-    progressDialog.setMax(taskQueue.size());
+    initProgressDialog(taskQueue.size());
     executeTask(taskQueue.poll());
   }
 
@@ -82,6 +66,14 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
     if (asyncTask != null) {
       asyncTask.setResult(TaskStatus.CANCELLED);
     }
+  }
+
+  /**
+   * Setup dialog and execute task
+   */
+  public void setupTask(Task asyncTask) {
+    initProgressDialog(0);
+    executeTask(asyncTask);
   }
 
   /**
@@ -98,29 +90,15 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
 
   @Override
   public void onProgress(Object progressUpdateData) {
-    // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
-    if (!progressDialog.isShowing()) {
-      progressDialog.show();
-      LayoutInflater inflater = context.getLayoutInflater();
-      FrameLayout fl = (FrameLayout) progressDialog.findViewById(android.R.id.custom);
-      fl.addView(inflater.inflate(R.layout.scnr_exec_dialog_view, null),
-          new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-      TextView progressMessage = (TextView) progressDialog
-          .findViewById(R.id.scnr_exec_dialog_message);
-      progressMessage.setText("");
-      progressDialog.setProgress(0);
-      progressMessage.setMovementMethod(new ScrollingMovementMethod());
-    }
     // Show current message in progress dialog
     if (progressUpdateData != null && progressUpdateData instanceof ProgressUpdateDataWrraper) {
+      TaskExecutionDialogFragment progressDialogFragment = (TaskExecutionDialogFragment) context
+          .getSupportFragmentManager().findFragmentByTag(progressDialogTag);
       if (((ProgressUpdateDataWrraper) progressUpdateData).isUpdateProgressBar()) {
-        progressDialog.setProgress(progressDialog.getProgress() + 1);
+        progressDialogFragment.updateProgress(progressDialogFragment.getProgress() + 1);
       }
-      TextView progressMessage = (TextView) progressDialog
-          .findViewById(R.id.scnr_exec_dialog_message);
-      progressMessage
-          .append((progressMessage.getText().length() == 0 ? "" : "\n\n")
-              + ((ProgressUpdateDataWrraper) progressUpdateData).getMessage().toString());
+      progressDialogFragment.updateProgressMessage(
+          ((ProgressUpdateDataWrraper) progressUpdateData).getMessage().toString());
     }
   }
 
@@ -149,7 +127,12 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
         executeTask(asyncTask);
       } else {
         // Close progress dialog
-        progressDialog.dismiss();
+        TaskExecutionDialogFragment progressDialogFragment = (TaskExecutionDialogFragment) context
+            .getSupportFragmentManager().findFragmentByTag(progressDialogTag);
+        if (progressDialogFragment != null) {
+          context.getSupportFragmentManager().beginTransaction().remove(progressDialogFragment)
+              .commitAllowingStateLoss();
+        }
         // Notify activity about completion
         taskCompleteListener.onTaskComplete(asyncTask);
         // Reset task

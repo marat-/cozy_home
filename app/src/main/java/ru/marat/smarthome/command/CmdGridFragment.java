@@ -133,7 +133,7 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
             .executeSingle();
-        asyncTaskManager.executeTask(new IrSenderTask(getActivity(),
+        asyncTaskManager.setupTask(new IrSenderTask(getActivity(),
             Arrays.asList(String.format("http://%s/%s", irSenderIp, cmd.getValue()))));
       }
     });
