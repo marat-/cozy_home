@@ -73,9 +73,12 @@ public class MainActivity extends BaseActivity implements
     drawerLayout.setDrawerListener(toggle);
     toggle.syncState();
 
-    fragmentManager = getSupportFragmentManager();
-    fragmentTransaction = fragmentManager.beginTransaction();
-    fragmentTransaction.replace(R.id.main_activity_container_view, new WidgetsFragment()).commit();
+    if (savedInstanceState == null) {
+      fragmentManager = getSupportFragmentManager();
+      fragmentTransaction = fragmentManager.beginTransaction();
+      fragmentTransaction.replace(R.id.main_activity_container_view, new WidgetsFragment())
+          .commit();
+    }
 
     navigationView.setNavigationItemSelectedListener(this);
 

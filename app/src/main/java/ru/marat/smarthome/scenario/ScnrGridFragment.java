@@ -20,9 +20,11 @@
 
 package ru.marat.smarthome.scenario;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,12 +72,28 @@ public class ScnrGridFragment extends AbstractScnrListFragment implements
   private AsyncTaskManager asyncTaskManager;
 
   @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setRetainInstance(true);
+    if (asyncTaskManager == null) {
+      asyncTaskManager = new AsyncTaskManager(getActivity(), this);
+    }
+  }
+
+  @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_scenario_grid, null);
     ButterKnife.bind(this, view);
-    asyncTaskManager = new AsyncTaskManager(getActivity(), this);
     return view;
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    if (asyncTaskManager != null) {
+      asyncTaskManager.setContext((FragmentActivity) context);
+    }
   }
 
   @Override

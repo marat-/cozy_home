@@ -41,6 +41,12 @@ public class WidgetsFragment extends Fragment {
   public static ViewPager widgetsViewPager;
   public static int widgetsAmount = 2;
 
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setRetainInstance(true);
+  }
+
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,9 +60,9 @@ public class WidgetsFragment extends Fragment {
     widgetsViewPager = (ViewPager) widgetsFamilyView.findViewById(R.id.widget_viewpager);
 
     /**
-     *Set an Apater for the View Pager
+     *Set an Adapter for the View Pager
      */
-    widgetsViewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
+    widgetsViewPager.setAdapter(new CustomFragmentPagerAdapter(getChildFragmentManager()));
 
     /**
      * Now , this is a workaround ,
@@ -74,9 +80,9 @@ public class WidgetsFragment extends Fragment {
     return widgetsFamilyView;
   }
 
-  class MyAdapter extends FragmentPagerAdapter {
+  class CustomFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    public MyAdapter(FragmentManager fm) {
+    public CustomFragmentPagerAdapter(FragmentManager fm) {
       super(fm);
     }
 

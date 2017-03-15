@@ -14,7 +14,7 @@ import ru.marat.smarthome.app.task.impl.TimeoutTask;
 public final class AsyncTaskManager implements TaskProgressTracker, OnCancelListener {
 
   private Logger logger = ALogger.getLogger(AsyncTaskManager.class);
-  private final OnTaskCompleteListener taskCompleteListener;
+  private OnTaskCompleteListener taskCompleteListener;
   private Task asyncTask;
   private LinkedList<Task> taskQueue = new LinkedList<>();
   private FragmentActivity context;
@@ -22,8 +22,15 @@ public final class AsyncTaskManager implements TaskProgressTracker, OnCancelList
 
   public AsyncTaskManager(FragmentActivity context, OnTaskCompleteListener taskCompleteListener) {
     this.context = context;
-    // Save reference to complete listener (activity)
+    // Save reference to complete listener (fragment)
     this.taskCompleteListener = taskCompleteListener;
+    if (asyncTask != null) {
+      this.asyncTask.setTaskProgressTracker(this);
+    }
+  }
+
+  public void setContext(FragmentActivity context) {
+    this.context = context;
   }
 
   /**
