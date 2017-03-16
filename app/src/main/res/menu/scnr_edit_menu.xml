@@ -4,10 +4,12 @@
 
   <item
     android:id="@+id/scnr_edit_save_action"
+    android:icon="@drawable/ic_done_white_24dp"
     android:title="@string/scnr_edit_save_action"
     smarthome:showAsAction="ifRoom"></item>
   <item
     android:id="@+id/scnr_edit_cancel_action"
+    android:icon="@drawable/ic_cancel_white_24dp"
     android:title="@string/scnr_edit_cancel_action"
     smarthome:showAsAction="ifRoom"></item>
 </menu>

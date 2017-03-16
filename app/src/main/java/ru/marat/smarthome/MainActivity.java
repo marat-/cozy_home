@@ -21,7 +21,6 @@
 package ru.marat.smarthome;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -32,7 +31,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import org.slf4j.Logger;
@@ -55,9 +53,6 @@ public class MainActivity extends BaseActivity implements
   @BindView(R.id.main_activity_navigation_view)
   NavigationView navigationView;
 
-  @BindDrawable(R.drawable.ic_menu)
-  Drawable ic_menu;
-
   private FragmentManager fragmentManager;
   private FragmentTransaction fragmentTransaction;
 
@@ -72,6 +67,9 @@ public class MainActivity extends BaseActivity implements
         R.string.navigation_drawer_close);
     drawerLayout.setDrawerListener(toggle);
     toggle.syncState();
+
+    Toolbar toolbar = (Toolbar) findViewById(R.id.main_activity_toolbar);
+    setSupportActionBar(toolbar);
 
     if (savedInstanceState == null) {
       fragmentManager = getSupportFragmentManager();
@@ -91,7 +89,7 @@ public class MainActivity extends BaseActivity implements
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_main, menu);
-    return true;
+    return super.onCreateOptionsMenu(menu);
   }
 
   @Override
@@ -103,7 +101,11 @@ public class MainActivity extends BaseActivity implements
 
     switch (id) {
       case android.R.id.home:
-        drawerLayout.openDrawer(GravityCompat.START);
+        if (!drawerLayout.isDrawerOpen(navigationView)) {
+          drawerLayout.openDrawer(GravityCompat.START);
+        } else {
+          drawerLayout.closeDrawer(GravityCompat.START);
+        }
         return true;
       case R.id.action_settings:
         return true;
@@ -121,11 +123,6 @@ public class MainActivity extends BaseActivity implements
       Intent intent = new Intent(this, DeviceManagerActivity.class);
       startActivity(intent);
     }
-//
-//        if (menuItem.getItemId() == R.id.navigation_item_settings) {
-//            FragmentTransaction xfragmentTransaction = fragmentManager.beginTransaction();
-//            xfragmentTransaction.replace(R.id.containerView,new CmdGridFragment()).commit();
-//        }
 
     return false;
   }

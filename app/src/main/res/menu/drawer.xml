@@ -5,16 +5,8 @@
         <item
             android:id="@+id/navigation_item_device_manager"
             android:checked="true"
-            android:icon="@drawable/ic_attachment"
+          android:icon="@drawable/ic_devices_grey_600_24dp"
             android:title="@string/nav_item_devices" />
-        <item
-            android:id="@+id/navigation_item_settings"
-            android:icon="@drawable/ic_image"
-            android:title="@string/nav_item_images" />
-        <item
-            android:id="@+id/navigation_item_location"
-            android:icon="@drawable/ic_place"
-            android:title="@string/nav_item_location" />
     </group>
 
     <item android:title="@string/nav_sub_menu">
