@@ -81,18 +81,6 @@ public class MainActivity extends BaseActivity implements
     }
 
     navigationView.setNavigationItemSelectedListener(this);
-
-        /*fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(findViewById(R.id.coordinator), "I'm a Snackbar", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MainActivity.this, "Snackbar Action", Toast.LENGTH_LONG).show();
-                    }
-                }).show();
-            }
-        });*/
   }
 
   @Override

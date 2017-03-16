@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         fab:fab_colorNormal="@color/blue"
         fab:fab_colorPressed="@color/blue_pressed"
+        fab:fab_icon="@drawable/ic_settings_remote_white_24dp"
         fab:fab_title="@string/cmd_fab_action_add_cmd" />
 
       <com.getbase.floatingactionbutton.FloatingActionButton
@@ -58,6 +59,7 @@
         android:layout_height="wrap_content"
         fab:fab_colorNormal="@color/blue"
         fab:fab_colorPressed="@color/blue_pressed"
+        fab:fab_icon="@drawable/ic_dashboard_white_24dp"
         fab:fab_title="@string/cmd_fab_action_add_scnr" />
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
