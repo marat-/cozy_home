@@ -55,6 +55,7 @@
   <string name="cmd_edit_name">Name</string>
   <string name="cmd_edit_active">Active</string>
   <string name="cmd_edit_type">Command type</string>
+  <string name="cmd_edit_controller">Controller</string>
   <string name="cmd_edit_device">Device</string>
   <string name="cmd_edit_value">Command value</string>
   <string name="cmd_edit_save_action">Save</string>\

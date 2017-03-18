@@ -67,8 +67,6 @@ public class ScnrGridFragment extends AbstractScnrListFragment implements
   @BindView(R.id.scnr_fab_menu_add_scnr)
   FloatingActionButton addScnrFabButton;
 
-  public static final String irSenderIp = "192.168.1.204:7474";
-
   private AsyncTaskManager asyncTaskManager;
 
   @Override
@@ -151,7 +149,9 @@ public class ScnrGridFragment extends AbstractScnrListFragment implements
         for (ScnrCmd scnrCmd : cmdInScnrFromDB) {
           Task asyncTask = new IrSenderTask(getActivity(),
               Arrays
-                  .asList(String.format("http://%s/%s", irSenderIp, scnrCmd.getCmd().getValue())));
+                  .asList(String
+                      .format("http://%s/%s", scnrCmd.getCmd().getController().getIpAddress(),
+                          scnrCmd.getCmd().getValue())));
           asyncTaskManager.submitTask(asyncTask, scnrCmd.getTimeoutAfter());
         }
         try {

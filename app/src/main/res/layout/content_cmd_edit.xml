@@ -57,10 +57,23 @@
       android:layout_below="@+id/cmd_edit_type_text" />
 
     <TextView
-      android:id="@+id/cmd_edit_device_text"
+      android:id="@+id/cmd_edit_controller_text"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@+id/cmd_edit_type"
+      android:text="@string/cmd_edit_controller" />
+
+    <Spinner
+      android:id="@+id/cmd_edit_controller"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/cmd_edit_controller_text" />
+
+    <TextView
+      android:id="@+id/cmd_edit_device_text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/cmd_edit_controller"
       android:text="@string/cmd_edit_device" />
 
     <Spinner

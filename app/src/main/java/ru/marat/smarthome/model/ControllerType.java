@@ -24,8 +24,8 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name = "cmd", id = "_id")
-public class Cmd extends Model {
+@Table(name = "controller_type", id = "_id")
+public class ControllerType extends Model {
 
   @Column(name = "name")
   public String name;
@@ -33,58 +33,11 @@ public class Cmd extends Model {
   @Column(name = "active")
   public boolean active;
 
-  @Column(name = "type_id")
-  public CmdType type;
-
-  @Column(name = "popular")
-  public int popular;
+  @Column(name = "image")
+  public String image;
 
   @Column(name = "sort")
   public int sort;
-
-  @Column(name = "device_id")
-  public Device device;
-
-  @Column(name = "controller_id")
-  public Controller controller;
-
-  @Column(name = "value")
-  public String value;
-
-  @Column(name = "color")
-  public String color;
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public CmdType getType() {
-    return type;
-  }
-
-  public void setType(CmdType type) {
-    this.type = type;
-  }
-
-  public int getPopular() {
-    return popular;
-  }
-
-  public void setPopular(int popular) {
-    this.popular = popular;
-  }
-
-  public int getSort() {
-    return sort;
-  }
-
-  public void setSort(int sort) {
-    this.sort = sort;
-  }
 
   public boolean isActive() {
     return active;
@@ -94,35 +47,27 @@ public class Cmd extends Model {
     this.active = active;
   }
 
-  public Device getDevice() {
-    return device;
+  public String getName() {
+    return name;
   }
 
-  public void setDevice(Device device) {
-    this.device = device;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public String getValue() {
-    return value;
+  public String getImage() {
+    return image;
   }
 
-  public void setValue(String value) {
-    this.value = value;
+  public void setImage(String image) {
+    this.image = image;
   }
 
-  public String getColor() {
-    return color;
+  public int getSort() {
+    return sort;
   }
 
-  public void setColor(String color) {
-    this.color = color;
-  }
-
-  public Controller getController() {
-    return controller;
-  }
-
-  public void setController(Controller controller) {
-    this.controller = controller;
+  public void setSort(int sort) {
+    this.sort = sort;
   }
 }

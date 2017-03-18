@@ -67,8 +67,6 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
 
   private AsyncTaskManager asyncTaskManager;
 
-  public static final String irSenderIp = "192.168.1.204:7474";
-
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -148,7 +146,8 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
         Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
             .executeSingle();
         asyncTaskManager.setupTask(new IrSenderTask(getActivity(),
-            Arrays.asList(String.format("http://%s/%s", irSenderIp, cmd.getValue()))));
+            Arrays.asList(String
+                .format("http://%s/%s", cmd.getController().getIpAddress(), cmd.getValue()))));
       }
     });
   }

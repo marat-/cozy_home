@@ -24,8 +24,8 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name = "cmd", id = "_id")
-public class Cmd extends Model {
+@Table(name = "controller", id = "_id")
+public class Controller extends Model {
 
   @Column(name = "name")
   public String name;
@@ -33,58 +33,17 @@ public class Cmd extends Model {
   @Column(name = "active")
   public boolean active;
 
-  @Column(name = "type_id")
-  public CmdType type;
+  @Column(name = "ip_address")
+  public String ipAddress;
 
-  @Column(name = "popular")
-  public int popular;
+  @Column(name = "description")
+  public boolean description;
 
   @Column(name = "sort")
-  public int sort;
+  public boolean sort;
 
-  @Column(name = "device_id")
-  public Device device;
-
-  @Column(name = "controller_id")
-  public Controller controller;
-
-  @Column(name = "value")
-  public String value;
-
-  @Column(name = "color")
-  public String color;
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public CmdType getType() {
-    return type;
-  }
-
-  public void setType(CmdType type) {
-    this.type = type;
-  }
-
-  public int getPopular() {
-    return popular;
-  }
-
-  public void setPopular(int popular) {
-    this.popular = popular;
-  }
-
-  public int getSort() {
-    return sort;
-  }
-
-  public void setSort(int sort) {
-    this.sort = sort;
-  }
+  @Column(name = "type_id")
+  public ControllerType controllerType;
 
   public boolean isActive() {
     return active;
@@ -94,35 +53,43 @@ public class Cmd extends Model {
     this.active = active;
   }
 
-  public Device getDevice() {
-    return device;
+  public String getName() {
+    return name;
   }
 
-  public void setDevice(Device device) {
-    this.device = device;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public String getValue() {
-    return value;
+  public ControllerType getControllerType() {
+    return controllerType;
   }
 
-  public void setValue(String value) {
-    this.value = value;
+  public void setControllerType(ControllerType controllerType) {
+    this.controllerType = controllerType;
   }
 
-  public String getColor() {
-    return color;
+  public boolean isDescription() {
+    return description;
   }
 
-  public void setColor(String color) {
-    this.color = color;
+  public void setDescription(boolean description) {
+    this.description = description;
   }
 
-  public Controller getController() {
-    return controller;
+  public boolean isSort() {
+    return sort;
   }
 
-  public void setController(Controller controller) {
-    this.controller = controller;
+  public void setSort(boolean sort) {
+    this.sort = sort;
+  }
+
+  public String getIpAddress() {
+    return ipAddress;
+  }
+
+  public void setIpAddress(String ipAddress) {
+    this.ipAddress = ipAddress;
   }
 }

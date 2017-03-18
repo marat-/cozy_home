@@ -40,6 +40,7 @@ import ru.marat.smarthome.app.utils.ColorUtils;
 import ru.marat.smarthome.app.validator.TextValidator;
 import ru.marat.smarthome.model.Cmd;
 import ru.marat.smarthome.model.CmdType;
+import ru.marat.smarthome.model.Controller;
 import ru.marat.smarthome.model.Device;
 
 public class CmdEditActivity extends BaseActivity {
@@ -53,6 +54,9 @@ public class CmdEditActivity extends BaseActivity {
   @BindView(R.id.cmd_edit_type)
   Spinner cmdEditType;
 
+  @BindView(R.id.cmd_edit_controller)
+  Spinner cmdEditController;
+
   @BindView(R.id.cmd_edit_device)
   Spinner cmdEditDevice;
 
@@ -62,6 +66,7 @@ public class CmdEditActivity extends BaseActivity {
   private String cmdId;
 
   protected List<CmdType> cmdTypeList;
+  protected List<Controller> controllerList;
   protected List<Device> deviceList;
 
   @Override
@@ -83,6 +88,12 @@ public class CmdEditActivity extends BaseActivity {
         cmdTypeList);
     cmdEditType.setAdapter(cmdTypeAdapter);
 
+    controllerList = new Select().from(Controller.class).orderBy("active DESC").execute();
+    ArrayAdapter controllerAdapter = new ControllerArrayAdapter(CmdEditActivity.this,
+        R.layout.cmd_controller_edit_spinner_row,
+        controllerList);
+    cmdEditController.setAdapter(controllerAdapter);
+
     deviceList = new Select()
         .from(Device.class).as("device")
         .orderBy("active DESC")
@@ -102,6 +113,11 @@ public class CmdEditActivity extends BaseActivity {
       for (int i = 0; i < cmdEditType.getCount(); i++) {
         if (cmdTypeList.get(i).getId() == Long.valueOf(cmd.getType().getId())) {
           cmdEditType.setSelection(i);
+        }
+      }
+      for (int i = 0; i < cmdEditController.getCount(); i++) {
+        if (controllerList.get(i).getId() == Long.valueOf(cmd.getController().getId())) {
+          cmdEditController.setSelection(i);
         }
       }
       for (int i = 0; i < cmdEditDevice.getCount(); i++) {
@@ -160,6 +176,7 @@ public class CmdEditActivity extends BaseActivity {
           cmd.setActive(cmdEditActive.isChecked());
           cmd.setType(cmdTypeList.get(cmdEditType.getSelectedItemPosition()));
           cmd.setDevice(deviceList.get(cmdEditDevice.getSelectedItemPosition()));
+          cmd.setController(controllerList.get(cmdEditController.getSelectedItemPosition()));
           cmd.setValue(cmdEditValue.getText().toString());
           cmd.save();
           CmdEditActivity.this.finish();
