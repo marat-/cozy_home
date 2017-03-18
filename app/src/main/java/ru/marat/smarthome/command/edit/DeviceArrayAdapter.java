@@ -31,7 +31,7 @@ import ru.marat.smarthome.app.adapter.CustomArrayAdapter;
 import ru.marat.smarthome.model.Device;
 
 /**
- * Custom ArrayAdapter for spinner in DeviceEditActivity
+ * Custom ArrayAdapter for spinner in ControllerEditActivity
  */
 public class DeviceArrayAdapter extends CustomArrayAdapter<Device> {
 

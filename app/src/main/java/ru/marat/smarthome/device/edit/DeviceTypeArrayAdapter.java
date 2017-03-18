@@ -33,7 +33,7 @@ import ru.marat.smarthome.R;
 import ru.marat.smarthome.model.DeviceType;
 
 /**
- * Custom ArrayAdapter for spinner in DeviceEditActivity
+ * Custom ArrayAdapter for spinner in ControllerEditActivity
  */
 public class DeviceTypeArrayAdapter extends ArrayAdapter<DeviceType> {
 

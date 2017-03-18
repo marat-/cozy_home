@@ -1,91 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ru.marat.smarthome">
+  package="ru.marat.smarthome">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <!--
- The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but are recommended.
-    -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+  <!--
+The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+       Google Maps Android API v2, but are recommended.
+  -->
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <application
-        android:name=".app.core.BaseApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        >
-        <meta-data
-            android:name="AA_DB_NAME"
-            android:value="sh_db.sqlite" />
-        <meta-data
-            android:name="AA_DB_VERSION"
-            android:value="1" />
-        <meta-data
-            android:name="AA_MODELS"
-            android:value="ru.marat.smarthome.model.Cmd, ru.marat.smarthome.model.CmdType, ru.marat.smarthome.model.Device, ru.marat.smarthome.model.DeviceType, ru.marat.smarthome.model.CmdAttr, ru.marat.smarthome.model.CmdAttrValue, ru.marat.smarthome.model.Scnr, ru.marat.smarthome.model.ScnrCmd" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_maps_key" />
+  <application
+    android:allowBackup="true"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:name=".app.core.BaseApplication"
+    android:theme="@style/AppTheme">
+    >
+    <meta-data
+      android:name="AA_DB_NAME"
+      android:value="sh_db.sqlite" />
+    <meta-data
+      android:name="AA_DB_VERSION"
+      android:value="1" />
+    <meta-data
+      android:name="AA_MODELS"
+      android:value="ru.marat.smarthome.model.Cmd, ru.marat.smarthome.model.CmdType,
+      ru.marat.smarthome.model.Device, ru.marat.smarthome.model.DeviceType,
+      ru.marat.smarthome.model.CmdAttr, ru.marat.smarthome.model.CmdAttrValue,
+      ru.marat.smarthome.model.Scnr, ru.marat.smarthome.model.ScnrCmd,
+      ru.marat.smarthome.model.Controller, ru.marat.smarthome.model.ControllerType" />
+    <meta-data
+      android:name="com.google.android.gms.version"
+      android:value="@integer/google_play_services_version" />
+    <meta-data
+      android:name="com.google.android.maps.v2.API_KEY"
+      android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+    <activity
+      android:label="@string/title_activity_main"
+      android:name=".MainActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".device.DeviceManagerActivity"
-            android:label="@string/title_activity_device_manager"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".device.edit.DeviceEditActivity"
-            android:label="@string/title_activity_device_edit"
-            android:parentActivityName=".device.DeviceManagerActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.core.BaseActivity" />
-        </activity>
-        <activity
-          android:name=".command.edit.CmdEditActivity"
-          android:label="@string/title_activity_cmd_edit"
-          android:parentActivityName=".MainActivity"
-          android:theme="@style/AppTheme">
-            <meta-data
-              android:name="android.support.PARENT_ACTIVITY"
-              android:value=".app.core.BaseActivity" />
-        </activity>
-        <activity
-          android:name=".scenario.edit.ScnrEditActivity"
-          android:label="@string/title_activity_scnr_edit"
-          android:parentActivityName=".MainActivity"
-          android:theme="@style/AppTheme">
-            <meta-data
-              android:name="android.support.PARENT_ACTIVITY"
-              android:value=".app.core.BaseActivity" />
-        </activity>
-        <activity
-          android:name=".scenario.edit.CmdPickActivity"
-          android:label="@string/title_activity_cmd_pick"
-          android:parentActivityName=".scenario.edit.ScnrEditActivity"
-          android:theme="@style/AppTheme">
-            <meta-data
-              android:name="android.support.PARENT_ACTIVITY"
-              android:value=".app.core.BaseActivity" />
-        </activity>
-    </application>
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+    <activity
+      android:label="@string/title_activity_device_manager"
+      android:name=".device.DeviceManagerActivity"
+      android:parentActivityName=".MainActivity"
+      android:theme="@style/AppTheme" />
+    <activity
+      android:label="@string/title_activity_controller_manager"
+      android:name=".controller.ControllerManagerActivity"
+      android:parentActivityName=".MainActivity"
+      android:theme="@style/AppTheme" />
+    <activity
+      android:label="@string/title_activity_device_edit"
+      android:name=".device.edit.DeviceEditActivity"
+      android:parentActivityName=".device.DeviceManagerActivity"
+      android:theme="@style/AppTheme">
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".app.core.BaseActivity" />
+    </activity>
+    <activity
+      android:label="@string/controller_activity_device_edit"
+      android:name=".controller.edit.ControllerEditActivity"
+      android:parentActivityName=".controller.ControllerManagerActivity"
+      android:theme="@style/AppTheme">
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".app.core.BaseActivity" />
+    </activity>
+    <activity
+      android:label="@string/title_activity_cmd_edit"
+      android:name=".command.edit.CmdEditActivity"
+      android:parentActivityName=".MainActivity"
+      android:theme="@style/AppTheme">
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".app.core.BaseActivity" />
+    </activity>
+    <activity
+      android:label="@string/title_activity_scnr_edit"
+      android:name=".scenario.edit.ScnrEditActivity"
+      android:parentActivityName=".MainActivity"
+      android:theme="@style/AppTheme">
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".app.core.BaseActivity" />
+    </activity>
+    <activity
+      android:label="@string/title_activity_cmd_pick"
+      android:name=".scenario.edit.CmdPickActivity"
+      android:parentActivityName=".scenario.edit.ScnrEditActivity"
+      android:theme="@style/AppTheme">
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".app.core.BaseActivity" />
+    </activity>
+  </application>
 
 </manifest>

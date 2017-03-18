@@ -18,38 +18,67 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-package ru.marat.smarthome.command.edit;
+package ru.marat.smarthome.controller.edit;
 
+import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.List;
 import ru.marat.smarthome.R;
-import ru.marat.smarthome.app.adapter.CustomArrayAdapter;
-import ru.marat.smarthome.model.CmdType;
+import ru.marat.smarthome.model.ControllerType;
 
 /**
  * Custom ArrayAdapter for spinner in ControllerEditActivity
  */
-public class CmdTypeArrayAdapter extends CustomArrayAdapter<CmdType> {
+public class ControllerTypeArrayAdapter extends ArrayAdapter<ControllerType> {
 
-  public CmdTypeArrayAdapter(Context context, int viewResourceId,
-      List<CmdType> elemList) {
-    super(context, viewResourceId, elemList);
+  private Context context;
+  private List<ControllerType> controllerTypeList;
+
+  public ControllerTypeArrayAdapter(Context context, int viewResourceId,
+      List<ControllerType> controllerTypeList) {
+    super(context, viewResourceId, controllerTypeList);
+    this.context = context;
+    this.controllerTypeList = controllerTypeList;
+  }
+
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    return this.getCustomView(position, convertView, parent);
+  }
+
+  @Override
+  public View getDropDownView(int position, View convertView,
+      ViewGroup parent) {
+    return this.getCustomView(position, convertView, parent);
   }
 
   /**
    * Custom view for spinner
    */
-  public View getCustomView(int position, CmdType cmdType, View view, View convertView,
-      ViewGroup parent) {
-    TextView cmdTypeName = (TextView) view.findViewById(R.id.cmd_type_name);
-    cmdTypeName.setText(cmdType.getName());
+  public View getCustomView(int position, View convertView, ViewGroup parent) {
+    ControllerType controllerType = controllerTypeList.get(position);
+    LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+    View view = inflater.inflate(R.layout.controller_edit_spinner_row, parent, false);
 
-    TextView cmdTypeActive = (TextView) view.findViewById(R.id.cmd_type_active);
-    cmdTypeActive.setText(cmdType.isActive() ? "Active" : "Inactive");
+    TextView controllerTypeName = (TextView) view.findViewById(R.id.controller_type_name);
+    controllerTypeName.setText(controllerType.getName());
 
+    TextView controllerTypeActive = (TextView) view.findViewById(R.id.controller_type_active);
+    controllerTypeActive.setText(controllerType.isActive() ? "Active" : "Inactive");
+
+    ImageView controllerImage = (ImageView) view.findViewById(R.id.controller_type_icon);
+    String controllerImageValue = controllerType.getImage();
+    if (controllerImageValue != null) {
+      int imageResID = this.context.getResources()
+          .getIdentifier(controllerImageValue, "drawable", this.context.getPackageName());
+      controllerImage.setImageResource(imageResID);
+    }
     return view;
   }
 }

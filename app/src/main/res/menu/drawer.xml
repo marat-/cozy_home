@@ -7,6 +7,11 @@
             android:checked="true"
           android:icon="@drawable/ic_devices_grey_600_24dp"
             android:title="@string/nav_item_devices" />
+        <item
+          android:id="@+id/navigation_item_controller_manager"
+          android:checked="true"
+          android:icon="@drawable/ic_wb_iridescent_grey_600_24dp"
+          android:title="@string/nav_item_controllers" />
     </group>
 
     <item android:title="@string/nav_sub_menu">

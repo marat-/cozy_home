@@ -36,7 +36,7 @@ import ru.marat.smarthome.app.core.PassObject;
 import ru.marat.smarthome.model.ScnrCmd;
 
 /**
- * Custom ArrayAdapter for spinner in DeviceEditActivity
+ * Custom ArrayAdapter for spinner in ControllerEditActivity
  */
 public class CmdInScnrArrayAdapter extends CustomArrayAdapter<ScnrCmd> {
 
