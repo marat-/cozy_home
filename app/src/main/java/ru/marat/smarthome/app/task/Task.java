@@ -10,10 +10,9 @@ public abstract class Task<Params, Progress, Result> extends AsyncTask<Params, P
   protected final Resources resources;
 
   private Result result;
-  private Progress progressMessage;
+  private Progress progressUpdateData;
   private TaskProgressTracker taskProgressTracker;
   private List<Params> params;
-  private long timeoutAfter;
 
   public Task(Context context, List<Params> params) {
     // Keep reference to resources
@@ -21,15 +20,12 @@ public abstract class Task<Params, Progress, Result> extends AsyncTask<Params, P
     this.params = params;
   }
 
-  public Task(Context context, List<Params> params, long timeoutAfter) {
-    // Keep reference to resources
-    this.resources = context.getResources();
-    this.params = params;
-    this.timeoutAfter = timeoutAfter;
+  public Result getResult() {
+    return result;
   }
 
-  public long getTimeoutAfter() {
-    return timeoutAfter;
+  public void setResult(Result result) {
+    this.result = result;
   }
 
   public List<Params> getParams() {
@@ -42,7 +38,7 @@ public abstract class Task<Params, Progress, Result> extends AsyncTask<Params, P
     this.taskProgressTracker = taskProgressTracker;
     // Initialise progress tracker with current task state
     if (this.taskProgressTracker != null) {
-      this.taskProgressTracker.onProgress(progressMessage);
+      this.taskProgressTracker.onProgress(progressUpdateData);
       if (result != null) {
         this.taskProgressTracker.onComplete();
       }
@@ -60,10 +56,10 @@ public abstract class Task<Params, Progress, Result> extends AsyncTask<Params, P
   @Override
   protected void onProgressUpdate(Progress... values) {
     // Update progress message
-    progressMessage = values[0];
+    progressUpdateData = values[0];
     // And send it to progress tracker
     if (taskProgressTracker != null) {
-      taskProgressTracker.onProgress(progressMessage);
+      taskProgressTracker.onProgress(progressUpdateData);
     }
   }
 

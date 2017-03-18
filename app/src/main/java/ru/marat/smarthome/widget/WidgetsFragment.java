@@ -37,9 +37,15 @@ import ru.marat.smarthome.scenario.ScnrGridFragment;
 
 public class WidgetsFragment extends Fragment {
 
-  public static TabLayout tabLayout;
-  public static ViewPager viewPager;
-  public static int int_items = 3;
+  public static TabLayout widgetsTabLayout;
+  public static ViewPager widgetsViewPager;
+  public static int widgetsAmount = 2;
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setRetainInstance(true);
+  }
 
   @Nullable
   @Override
@@ -50,13 +56,13 @@ public class WidgetsFragment extends Fragment {
      */
     View widgetsFamilyView = inflater.inflate(R.layout.widget_tab_layout, null);
     ButterKnife.bind(this, widgetsFamilyView);
-    tabLayout = (TabLayout) widgetsFamilyView.findViewById(R.id.tabs);
-    viewPager = (ViewPager) widgetsFamilyView.findViewById(R.id.viewpager);
+    widgetsTabLayout = (TabLayout) widgetsFamilyView.findViewById(R.id.widget_tabs);
+    widgetsViewPager = (ViewPager) widgetsFamilyView.findViewById(R.id.widget_viewpager);
 
     /**
-     *Set an Apater for the View Pager
+     *Set an Adapter for the View Pager
      */
-    viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
+    widgetsViewPager.setAdapter(new CustomFragmentPagerAdapter(getChildFragmentManager()));
 
     /**
      * Now , this is a workaround ,
@@ -64,27 +70,25 @@ public class WidgetsFragment extends Fragment {
      * Maybe a Support Library Bug .
      */
 
-    tabLayout.post(new Runnable() {
+    widgetsTabLayout.post(new Runnable() {
       @Override
       public void run() {
-        tabLayout.setupWithViewPager(viewPager);
+        widgetsTabLayout.setupWithViewPager(widgetsViewPager);
       }
     });
 
     return widgetsFamilyView;
-
   }
 
-  class MyAdapter extends FragmentPagerAdapter {
+  class CustomFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    public MyAdapter(FragmentManager fm) {
+    public CustomFragmentPagerAdapter(FragmentManager fm) {
       super(fm);
     }
 
     /**
      * Return fragment with respect to Position .
      */
-
     @Override
     public Fragment getItem(int position) {
       switch (position) {
@@ -94,15 +98,12 @@ public class WidgetsFragment extends Fragment {
           return new ScnrGridFragment();
         default:
           return new ScnrGridFragment();
-
       }
     }
 
     @Override
     public int getCount() {
-
-      return int_items;
-
+      return widgetsAmount;
     }
 
     /**
@@ -110,7 +111,6 @@ public class WidgetsFragment extends Fragment {
      */
     @Override
     public CharSequence getPageTitle(int position) {
-
       switch (position) {
         case 0:
           return getString(R.string.cmd_fragment_title);

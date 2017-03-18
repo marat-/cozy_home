@@ -21,7 +21,6 @@
 package ru.marat.smarthome.app.task.impl;
 
 import android.content.Context;
-import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,21 +28,20 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import org.apache.log4j.Logger;
 import ru.marat.smarthome.R;
+import ru.marat.smarthome.app.logger.ALogger;
+import ru.marat.smarthome.app.task.ProgressUpdateDataWrraper;
 import ru.marat.smarthome.app.task.Task;
 import ru.marat.smarthome.app.task.TaskStatus;
 
-public class IrSenderTask extends Task<String, String, TaskStatus> {
+public class IrSenderTask extends Task<String, ProgressUpdateDataWrraper, TaskStatus> {
 
+  private Logger logger = ALogger.getLogger(IrSenderTask.class);
   private Context context;
 
   public IrSenderTask(Context context, List<String> params) {
     super(context, params);
-    this.context = context;
-  }
-
-  public IrSenderTask(Context context, List<String> params, long timeoutAfter) {
-    super(context, params, timeoutAfter);
     this.context = context;
   }
 
@@ -54,7 +52,8 @@ public class IrSenderTask extends Task<String, String, TaskStatus> {
 
   @Override
   protected TaskStatus doInBackground(String... command) {
-    publishProgress(resources.getString(R.string.task_connecting));
+    TaskStatus taskStatus = TaskStatus.DONE;
+    publishProgress(new ProgressUpdateDataWrraper(resources.getString(R.string.task_connecting)));
     BufferedReader reader = null;
     HttpURLConnection urlConnection = null;
     StringBuilder response = new StringBuilder();
@@ -70,30 +69,35 @@ public class IrSenderTask extends Task<String, String, TaskStatus> {
         }
         response.append(line + "\n");
       }
-      publishProgress(resources.getString(R.string.task_sent_command));
+      publishProgress(
+          new ProgressUpdateDataWrraper(resources.getString(R.string.task_sent_command)));
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      logger.error(R.string.task_malformed_url_exception, e);
+      publishProgress(new ProgressUpdateDataWrraper(
+          resources.getString(R.string.task_malformed_url_exception)));
+      taskStatus = TaskStatus.ERROR;
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(R.string.task_io_exception, e);
+      publishProgress(
+          new ProgressUpdateDataWrraper(resources.getString(R.string.task_io_exception)));
+      taskStatus = TaskStatus.ERROR;
     } finally {
       if (reader != null) {
         try {
           reader.close();
         } catch (IOException e) {
-          e.printStackTrace();
+          logger.error(R.string.general_io_exception, e);
+          taskStatus = TaskStatus.ERROR;
         }
       }
       if (urlConnection != null) {
         urlConnection.disconnect();
       }
     }
-    return TaskStatus.DONE;
-  }
-
-  @Override
-  protected void onPostExecute(TaskStatus taskStatus) {
-    super.onPostExecute(taskStatus);
-    Toast.makeText(context, resources.getString(R.string.task_completed),
-        Toast.LENGTH_SHORT).show();
+    publishProgress(
+        new ProgressUpdateDataWrraper(
+            taskStatus.equals(TaskStatus.DONE) ? resources.getString(R.string.task_completed)
+                : resources.getString(R.string.task_completed_with_errors), true));
+    return taskStatus;
   }
 }

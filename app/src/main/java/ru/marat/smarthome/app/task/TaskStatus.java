@@ -6,8 +6,9 @@ package ru.marat.smarthome.app.task;
 public enum TaskStatus {
   READY(0),
   INPROGRESS(1),
-  DONE(-1),
-  ERROR(5);
+  DONE(2),
+  ERROR(-1),
+  CANCELLED(3),;
 
   private int code;
 

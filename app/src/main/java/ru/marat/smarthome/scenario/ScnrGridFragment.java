@@ -20,9 +20,11 @@
 
 package ru.marat.smarthome.scenario;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,14 +47,14 @@ import ru.marat.smarthome.app.logger.ALogger;
 import ru.marat.smarthome.app.task.AsyncTaskManager;
 import ru.marat.smarthome.app.task.OnTaskCompleteListener;
 import ru.marat.smarthome.app.task.Task;
-import ru.marat.smarthome.app.task.TaskStatus;
 import ru.marat.smarthome.app.task.exception.EmptyTaskQueueException;
 import ru.marat.smarthome.app.task.impl.IrSenderTask;
 import ru.marat.smarthome.command.edit.CmdEditActivity;
 import ru.marat.smarthome.model.ScnrCmd;
 import ru.marat.smarthome.scenario.edit.ScnrEditActivity;
 
-public class ScnrGridFragment extends AbstractScnrListFragment implements OnTaskCompleteListener {
+public class ScnrGridFragment extends AbstractScnrListFragment implements
+    OnTaskCompleteListener {
 
   private Logger logger = ALogger.getLogger(ScnrGridFragment.class);
 
@@ -67,15 +69,31 @@ public class ScnrGridFragment extends AbstractScnrListFragment implements OnTask
 
   public static final String irSenderIp = "192.168.1.204:7474";
 
-  private AsyncTaskManager<String> asyncTaskManager;
+  private AsyncTaskManager asyncTaskManager;
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setRetainInstance(true);
+    if (asyncTaskManager == null) {
+      asyncTaskManager = new AsyncTaskManager(getActivity(), this);
+    }
+  }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_scenario_grid, null);
     ButterKnife.bind(this, view);
-    asyncTaskManager = new AsyncTaskManager<>(getActivity(), this);
     return view;
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    if (asyncTaskManager != null) {
+      asyncTaskManager.setContext((FragmentActivity) context);
+    }
   }
 
   @Override
@@ -133,9 +151,8 @@ public class ScnrGridFragment extends AbstractScnrListFragment implements OnTask
         for (ScnrCmd scnrCmd : cmdInScnrFromDB) {
           Task asyncTask = new IrSenderTask(getActivity(),
               Arrays
-                  .asList(String.format("http://%s/%s", irSenderIp, scnrCmd.getCmd().getValue())),
-              scnrCmd.getTimeoutAfter());
-          asyncTaskManager.submitTask(asyncTask);
+                  .asList(String.format("http://%s/%s", irSenderIp, scnrCmd.getCmd().getValue())));
+          asyncTaskManager.submitTask(asyncTask, scnrCmd.getTimeoutAfter());
         }
         try {
           asyncTaskManager.executeScenario();
@@ -148,19 +165,11 @@ public class ScnrGridFragment extends AbstractScnrListFragment implements OnTask
 
   @Override
   public void onTaskComplete(Task task) {
-    IrSenderTask irSenderTask = (IrSenderTask) task;
-    if (irSenderTask.isCancelled()) {
+    if (task.isCancelled()) {
       // Report about cancel
       Toast.makeText(getActivity(), R.string.scenario_cancelled, Toast.LENGTH_LONG)
           .show();
     } else {
-      // Get result
-      TaskStatus result = null;
-      try {
-        result = irSenderTask.get();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
       // Report about result
       Toast.makeText(getActivity(),
           getString(R.string.scenario_completed),

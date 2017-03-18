@@ -20,9 +20,11 @@
 
 package ru.marat.smarthome.command;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.activeandroid.query.Select;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import java.util.Arrays;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.task.AsyncTaskManager;
@@ -59,21 +62,36 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
   @BindView(R.id.commands_grid_view)
   GridView commandsGridView;
 
-  private AsyncTaskManager<String> asyncTaskManager;
+  @BindView(R.id.cmd_list_fab_menu)
+  FloatingActionsMenu menuFabButton;
+
+  private AsyncTaskManager asyncTaskManager;
 
   public static final String irSenderIp = "192.168.1.204:7474";
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setRetainInstance(true);
+    if (asyncTaskManager == null) {
+      // Create manager and set this activity as context and listener
+      asyncTaskManager = new AsyncTaskManager(getActivity(), this);
+    }
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    if (asyncTaskManager != null) {
+      asyncTaskManager.setContext((FragmentActivity) context);
+    }
+  }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_cmd_grid, null);
     ButterKnife.bind(this, view);
-
-    // Create manager and set this activity as context and listener
-    asyncTaskManager = new AsyncTaskManager<>(getActivity(), this);
-    // Handle task that can be retained before
-    //asyncTaskManager.handleRetainedTask(getActivity().getLastNonConfigurationInstance());
-
     return view;
   }
 
@@ -89,6 +107,7 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
     addCmdFabButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        menuFabButton.collapse();
         Intent intent = new Intent(getActivity(), CmdEditActivity.class);
         startActivity(intent);
       }
@@ -97,6 +116,7 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
     addScnrFabButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        menuFabButton.collapse();
         Intent intent = new Intent(getActivity(), ScnrEditActivity.class);
         startActivity(intent);
       }
@@ -127,7 +147,7 @@ public class CmdGridFragment extends AbstractCmdListFragment implements OnTaskCo
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cmd cmd = new Select().from(Cmd.class).where("_id = ?", new String[]{String.valueOf(id)})
             .executeSingle();
-        asyncTaskManager.executeTask(new IrSenderTask(getActivity(),
+        asyncTaskManager.setupTask(new IrSenderTask(getActivity(),
             Arrays.asList(String.format("http://%s/%s", irSenderIp, cmd.getValue()))));
       }
     });

@@ -1,48 +1,60 @@
 package ru.marat.smarthome.app.task;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.support.v4.app.FragmentActivity;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import ru.marat.smarthome.R;
 import ru.marat.smarthome.app.logger.ALogger;
 import ru.marat.smarthome.app.task.exception.EmptyTaskQueueException;
+import ru.marat.smarthome.app.task.impl.TimeoutTask;
 
-public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCancelListener {
+public final class AsyncTaskManager implements TaskProgressTracker, OnCancelListener {
 
   private Logger logger = ALogger.getLogger(AsyncTaskManager.class);
-  private final OnTaskCompleteListener taskCompleteListener;
-  private final ProgressDialog progressDialog;
+  private OnTaskCompleteListener taskCompleteListener;
   private Task asyncTask;
   private LinkedList<Task> taskQueue = new LinkedList<>();
-  private Context context;
+  private FragmentActivity context;
+  private String progressDialogTag = "progressDialogTag";
 
-  public AsyncTaskManager(Context context, OnTaskCompleteListener taskCompleteListener) {
+  public AsyncTaskManager(FragmentActivity context, OnTaskCompleteListener taskCompleteListener) {
     this.context = context;
-    // Save reference to complete listener (activity)
+    // Save reference to complete listener (fragment)
     this.taskCompleteListener = taskCompleteListener;
-    // Setup progress dialog
-    progressDialog = new ProgressDialog(context);
-    progressDialog.setIndeterminate(true);
-    progressDialog.setCancelable(true);
-    progressDialog.setOnCancelListener(this);
-    progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
-        new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-          }
-        });
+    if (asyncTask != null) {
+      this.asyncTask.setTaskProgressTracker(this);
+    }
+  }
+
+  public void setContext(FragmentActivity context) {
+    this.context = context;
+  }
+
+  /**
+   * Initial setup of ProgressDialog
+   */
+  private void initProgressDialog(int queueSize) {
+    TaskExecutionDialogFragment progressDialogFragment = (TaskExecutionDialogFragment) context
+        .getSupportFragmentManager().findFragmentByTag(progressDialogTag);
+    if (progressDialogFragment == null) {
+      TaskExecutionDialogFragment.newInstance(queueSize)
+          .show(context.getSupportFragmentManager(), progressDialogTag);
+    } else {
+      progressDialogFragment.clearDialog();
+    }
   }
 
   /**
    * Accumulates tasks in scenario
    */
-  public void submitTask(Task asyncTask) {
+  public void submitTask(Task asyncTask, long timeoutAfter) {
     taskQueue.add(asyncTask);
+    Task timeoutAfterTask = new TimeoutTask(context, Arrays
+        .asList(timeoutAfter));
+    taskQueue.add(timeoutAfterTask);
   }
 
   /**
@@ -52,21 +64,27 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
     if (taskQueue.isEmpty()) {
       throw new EmptyTaskQueueException(context.getString(R.string.task_queue_empty_exception));
     }
-    while (!taskQueue.isEmpty()) {
-      Task asyncTask = taskQueue.poll();
-      this.executeTask(asyncTask);
-      try {
-        Thread.sleep(TimeUnit.SECONDS.toMillis(asyncTask.getTimeoutAfter()));
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        logger.warn(context.getString(R.string.scenario_execution_interrupted_exception), e);
-      }
+    initProgressDialog(taskQueue.size());
+    executeTask(taskQueue.poll());
+  }
+
+  public void terminateScenarioExec() {
+    taskQueue.clear();
+    if (asyncTask != null) {
+      asyncTask.setResult(TaskStatus.CANCELLED);
     }
   }
 
   /**
+   * Setup dialog and execute task
+   */
+  public void setupTask(Task asyncTask) {
+    initProgressDialog(0);
+    executeTask(asyncTask);
+  }
+
+  /**
    * Executes one task
-   * @param asyncTask
    */
   public void executeTask(Task asyncTask) {
     // Keep task
@@ -78,21 +96,28 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
   }
 
   @Override
-  public void onProgress(Object message) {
-    // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
-    if (!progressDialog.isShowing()) {
-      progressDialog.show();
-    }
+  public void onProgress(Object progressUpdateData) {
     // Show current message in progress dialog
-    if (message instanceof String) {
-      progressDialog.setMessage(message.toString());
+    if (progressUpdateData != null && progressUpdateData instanceof ProgressUpdateDataWrraper) {
+      TaskExecutionDialogFragment progressDialogFragment = (TaskExecutionDialogFragment) context
+          .getSupportFragmentManager().findFragmentByTag(progressDialogTag);
+      if (((ProgressUpdateDataWrraper) progressUpdateData).isUpdateProgressBar()) {
+        progressDialogFragment.updateProgress(progressDialogFragment.getProgress() + 1);
+      }
+      progressDialogFragment.updateProgressMessage(
+          ((ProgressUpdateDataWrraper) progressUpdateData).getMessage().toString());
     }
   }
 
+  /**
+   * On Cancel listener for Dialog
+   */
   @Override
   public void onCancel(DialogInterface dialog) {
     // Cancel task
     asyncTask.cancel(true);
+    // Cancel scenario execution
+    terminateScenarioExec();
     // Notify activity about completion
     taskCompleteListener.onTaskComplete(asyncTask);
     // Reset task
@@ -101,12 +126,26 @@ public final class AsyncTaskManager<Params> implements TaskProgressTracker, OnCa
 
   @Override
   public void onComplete() {
-    // Close progress dialog
-    progressDialog.dismiss();
-    // Notify activity about completion
-    taskCompleteListener.onTaskComplete(asyncTask);
-    // Reset task
-    asyncTask = null;
+    if (asyncTask.getResult().equals(TaskStatus.ERROR)) {
+      terminateScenarioExec();
+    } else {
+      if (!taskQueue.isEmpty()) {
+        Task asyncTask = taskQueue.poll();
+        executeTask(asyncTask);
+      } else {
+        // Close progress dialog
+        TaskExecutionDialogFragment progressDialogFragment = (TaskExecutionDialogFragment) context
+            .getSupportFragmentManager().findFragmentByTag(progressDialogTag);
+        if (progressDialogFragment != null) {
+          context.getSupportFragmentManager().beginTransaction().remove(progressDialogFragment)
+              .commitAllowingStateLoss();
+        }
+        // Notify activity about completion
+        taskCompleteListener.onTaskComplete(asyncTask);
+        // Reset task
+        asyncTask = null;
+      }
+    }
   }
 
   public Object retainTask() {

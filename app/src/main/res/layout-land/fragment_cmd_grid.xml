@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:fab="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/fragmentCmdGrid"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <android.support.design.widget.CoordinatorLayout
+    android:id="@+id/coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+
+      <GridView
+        android:id="@+id/commands_grid_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="10dp"
+        android:columnWidth="100dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="4"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" />
+    </LinearLayout>
+
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+      android:id="@+id/cmd_list_fab_menu"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginRight="16dp"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_gravity="bottom|right"
+      fab:fab_addButtonColorNormal="@color/blue"
+      fab:fab_addButtonColorPressed="@color/blue_pressed"
+      fab:fab_addButtonPlusIconColor="@color/white"
+      fab:fab_labelStyle="@style/fab_labels_style">
+
+      <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/cmd_fab_menu_add_cmd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_colorNormal="@color/blue"
+        fab:fab_colorPressed="@color/blue_pressed"
+        fab:fab_icon="@drawable/ic_settings_remote_white_24dp"
+        fab:fab_title="@string/cmd_fab_action_add_cmd" />
+
+      <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/cmd_fab_menu_add_scnr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_colorNormal="@color/blue"
+        fab:fab_colorPressed="@color/blue_pressed"
+        fab:fab_icon="@drawable/ic_dashboard_white_24dp"
+        fab:fab_title="@string/cmd_fab_action_add_scnr" />
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/transparent"></RelativeLayout>
+
+  </android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>
